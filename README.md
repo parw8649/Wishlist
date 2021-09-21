@@ -1,5 +1,6 @@
 # CST438-Project2
 CST438-Project2 (Group C)
+Title :- Wishlist 
 
 - [Chaitanya Parwatkar](https://github.com/parw8649)
 - [Noah Ahmed](https://github.com/noa316)
@@ -11,3 +12,6 @@ This project creates an API to allow users to create and edit a web-based wishli
 ***Libraries Used:***
 
 ***Demo Video:***
+
+
+
