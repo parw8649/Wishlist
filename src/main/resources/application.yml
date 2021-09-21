@@ -1,0 +1,23 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  profiles:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+  datasource: #TODO: Need to update firebase as DB
+    url: jdbc:mysql://localhost:3306/wishlistdb
+    username: root
+    password: root
+  jpa:
+    hibernate.ddl-auto: update
+    generate-ddl: true
+    show-sql: false
+  jackson:
+    time-zone: America/New_York
+
+logging:
+  level:
+    root: info
