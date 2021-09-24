@@ -7,6 +7,7 @@ import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
 import com.wishlist.cst438project2.Common.Constants;
+import com.wishlist.cst438project2.Common.Utils;
 import com.wishlist.cst438project2.document.User;
 import com.wishlist.cst438project2.exception.NotFoundException;
 import com.wishlist.cst438project2.service.UserService;
@@ -14,7 +15,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-//@Service
+@Service
 @Slf4j
 public class UserServiceImpl implements UserService {
 
@@ -26,7 +27,7 @@ public class UserServiceImpl implements UserService {
 
         log.info("UserServiceImpl: Starting saveUser");
 
-        //user.setPassword(Utils.encodePassword(user.getPassword()));
+        user.setPassword(Utils.encodePassword(user.getPassword()));
 
         ApiFuture<WriteResult> collectionApiFuture = dbFirestore.collection(Constants.DOCUMENT_USER).document(user.getUsername()).set(user);
 

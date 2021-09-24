@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 
-//@RestController
+@RestController
 @RequestMapping("/v1/user")
 @Slf4j
 public class UserController {

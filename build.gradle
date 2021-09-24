@@ -32,6 +32,9 @@ dependencies {
 	// Lombok Annotation
 	annotationProcessor 'org.projectlombok:lombok'
 
+	// Spring security
+	compileOnly 'org.springframework.boot:spring-boot-starter-security'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
