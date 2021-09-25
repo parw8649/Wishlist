@@ -6,6 +6,7 @@ import com.wishlist.cst438project2.common.Constants;
 import com.wishlist.cst438project2.document.User;
 import com.wishlist.cst438project2.dto.UserDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
+import com.wishlist.cst438project2.exception.ExternalServerException;
 import com.wishlist.cst438project2.integration.FirebaseIntegration;
 import com.wishlist.cst438project2.service.UserService;
 import lombok.SneakyThrows;
@@ -53,5 +54,34 @@ public class UserServiceImpl implements UserService {
 
         return responseTimestamp;
 
+    }
+
+    @SneakyThrows
+    @Override
+    public UserDTO updateUser(UserDTO userDTO) {
+        log.info("UserServiceImpl: Starting updateUser");
+
+        //TODO: Check Bycrpt Password encoding issue
+        //user.setPassword(Utils.encodePassword(user.getPassword()));
+
+        UserDTO dbUserDTO = firebaseIntegration.getUser(userDTO.getUsername());
+
+        if(Objects.isNull(dbUserDTO)) {
+            throw new BadRequestException(Constants.ERROR_USER_DOES_NOT_EXISTS.replace(Constants.KEY_USERNAME, userDTO.getUsername()));
+        }
+
+        User user = modelMapper.map(userDTO, User.class);
+
+        ApiFuture<WriteResult> collectionApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_USER).document(user.getUsername()).set(user);
+
+        String responseTimestamp = collectionApiFuture.get().getUpdateTime().toString();
+
+        if(responseTimestamp.isEmpty()) {
+            throw new ExternalServerException(Constants.ERROR_UNABLE_TO_UPDATE_USER);
+        }
+
+        log.info("UserServiceImpl: Exiting updateUser");
+
+        return user.fetchUserDTO();
     }
 }

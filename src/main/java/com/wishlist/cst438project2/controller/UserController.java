@@ -5,10 +5,7 @@ import com.wishlist.cst438project2.exception.BadRequestException;
 import com.wishlist.cst438project2.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 
@@ -40,6 +37,33 @@ public class UserController {
             log.info("UserController: Exiting saveUser");
 
             return responseTimestamp;
+
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    /**
+     * This API is used for updating user information in database
+     * @param userDTO, whose details is to be updated
+     * @return user creation timestamp
+     */
+    @PutMapping("/updateUser")
+    public UserDTO updateUser(@RequestBody UserDTO userDTO) {
+
+        log.info("UserController: Starting updateUser");
+
+        try {
+
+            if(Objects.isNull(userDTO))
+                throw new BadRequestException();
+
+            userDTO = userService.updateUser(userDTO);
+
+            log.info("UserController: Exiting updateUser");
+
+            return userDTO;
 
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
