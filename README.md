@@ -10,9 +10,12 @@ Title :- Wishlist
 
 This project creates an API to allow users to create and edit a web-based wishlist.
 
-***Libraries Used:***
+**Entity Relationship Diagrams**
+![Entity Relationship Diagram](https://drive.google.com/file/d/1_F_hUb9IAJ-2h3u0nzsIl1q3JypGcOGA/view?usp=sharing)
 
-***Demo Video:***
+**Sitemap**
+![Sitemap](https://drive.google.com/file/d/1vbdM3Ok-cehSGUDOaZ7QuVI7OVWtSkJi/view?usp=sharing)
 
+**Libraries Used:**
 
-
+**Demo Video:**
