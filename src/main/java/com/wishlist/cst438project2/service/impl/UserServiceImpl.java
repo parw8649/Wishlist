@@ -84,4 +84,25 @@ public class UserServiceImpl implements UserService {
 
         return user.fetchUserDTO();
     }
+
+    @SneakyThrows
+    @Override
+    public void deleteUser(String username) {
+
+        log.info("UserServiceImpl: Starting deleteUser");
+
+        UserDTO dbUserDTO = firebaseIntegration.getUser(username);
+
+        if(Objects.isNull(dbUserDTO)) {
+            throw new BadRequestException(Constants.ERROR_USER_DOES_NOT_EXISTS.replace(Constants.KEY_USERNAME, username));
+        }
+
+        ApiFuture<WriteResult> collectionApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_USER).document(username).delete();
+
+        String responseTimestamp = collectionApiFuture.get().getUpdateTime().toString();
+
+        log.info(Constants.USER_DELETED + " {}" , responseTimestamp);
+
+        log.info("UserServiceImpl: Exiting deleteUser");
+    }
 }

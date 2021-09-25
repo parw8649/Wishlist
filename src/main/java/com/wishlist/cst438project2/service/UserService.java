@@ -6,4 +6,5 @@ public interface UserService {
 
     String saveUser(UserDTO userDTO);
     UserDTO updateUser(UserDTO userDTO);
+    void deleteUser(String username);
 }

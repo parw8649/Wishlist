@@ -1,5 +1,6 @@
 package com.wishlist.cst438project2.controller;
 
+import com.wishlist.cst438project2.common.Constants;
 import com.wishlist.cst438project2.dto.UserDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
 import com.wishlist.cst438project2.service.UserService;
@@ -64,6 +65,32 @@ public class UserController {
             log.info("UserController: Exiting updateUser");
 
             return userDTO;
+
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    /**
+     * This API is used for deleting user from database
+     * @param username, of the user whose account is to be deleted.
+     */
+    @DeleteMapping("/deleteUser")
+    public String deleteUser(@RequestParam String username) {
+
+        log.info("UserController: Starting deleteUser");
+
+        try{
+
+            if(Objects.isNull(username) || username.isEmpty())
+                throw new BadRequestException();
+
+            userService.deleteUser(username);
+
+            log.info("UserController: Exiting deleteUser");
+
+            return Constants.USER_DELETED + " " + username;
 
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
