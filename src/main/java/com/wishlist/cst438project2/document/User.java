@@ -1,11 +1,10 @@
 package com.wishlist.cst438project2.document;
 
 import com.google.cloud.firestore.annotation.DocumentId;
+import com.wishlist.cst438project2.dto.UserDTO;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 public class User {
 
     @DocumentId
@@ -16,11 +15,8 @@ public class User {
     private String username;
     private String password;
 
-    public User(String firstName, String lastName, String emailId, String username, String password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.emailId = emailId;
-        this.username = username;
-        this.password = password;
+    public UserDTO fetchUserDTO() {
+
+        return new UserDTO(firstName, lastName, emailId, username);
     }
 }

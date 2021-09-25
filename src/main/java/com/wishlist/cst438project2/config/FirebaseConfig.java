@@ -1,4 +1,4 @@
-package com.wishlist.cst438project2.Config;
+package com.wishlist.cst438project2.config;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;

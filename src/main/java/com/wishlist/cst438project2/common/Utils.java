@@ -1,4 +1,4 @@
-package com.wishlist.cst438project2.Common;
+package com.wishlist.cst438project2.common;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;

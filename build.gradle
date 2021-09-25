@@ -35,6 +35,12 @@ dependencies {
 	// Spring security
 	compileOnly 'org.springframework.boot:spring-boot-starter-security'
 
+	// https://mvnrepository.com/artifact/javax.validation/validation-api
+	implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+
+	// https://mvnrepository.com/artifact/org.modelmapper/modelmapper
+	implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.4.0'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
