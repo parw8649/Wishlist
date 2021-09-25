@@ -17,7 +17,8 @@ This project creates an API to allow users to create and edit a web-based wishli
 ![Sitemap](https://github.com/parw8649/CST438-Project2/blob/bKondo-patch-1/wk05_project02groupC_sitemap.png)
 
 **Page Mockups: User and Wishlist**
-![Sitemap](https://github.com/parw8649/CST438-Project2/blob/bKondo-patch-1/wk05_project02groupC_user_page_mockups.png)
+![user page mockups](https://github.com/parw8649/CST438-Project2/blob/bKondo-patch-1/wk05_project02groupC_user_page_mockups.png)
+![wishlist page mockups](https://github.com/parw8649/CST438-Project2/blob/bKondo-patch-1/wk05_project02groupC_wishlist_page_mockups.png)
 
 **Libraries Used:**
 
