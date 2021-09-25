@@ -1,6 +1,6 @@
 package com.wishlist.cst438project2.exception;
 
-import com.wishlist.cst438project2.Common.Constants;
+import com.wishlist.cst438project2.common.Constants;
 import org.springframework.http.HttpStatus;
 
 public class BadRequestException extends HttpStatusException {

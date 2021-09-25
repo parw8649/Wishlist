@@ -4,7 +4,7 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
-import com.wishlist.cst438project2.Common.Constants;
+import com.wishlist.cst438project2.common.Constants;
 import com.wishlist.cst438project2.document.Product;
 import com.wishlist.cst438project2.service.ProductService;
 import lombok.SneakyThrows;

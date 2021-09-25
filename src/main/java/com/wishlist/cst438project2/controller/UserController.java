@@ -1,11 +1,14 @@
 package com.wishlist.cst438project2.controller;
 
-import com.wishlist.cst438project2.document.User;
+import com.wishlist.cst438project2.dto.UserDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
 import com.wishlist.cst438project2.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Objects;
 
@@ -19,41 +22,28 @@ public class UserController {
 
     /**
      * This API is used for user registration
-     * @param user
+     * @param userDTO
      * @return user creation timestamp
      */
     @PostMapping("/save")
-    public String saveUser(@RequestBody User user) {
+    public String saveUser(@RequestBody UserDTO userDTO) {
 
         log.info("UserController: Starting saveUser");
 
-        if(Objects.isNull(user))
-            throw new BadRequestException();
+        try {
 
-        String responseTimestamp = userService.saveUser(user);
+            if (Objects.isNull(userDTO))
+                throw new BadRequestException();
 
-        log.info("UserController: Exiting saveUser");
+            String responseTimestamp = userService.saveUser(userDTO);
 
-        return responseTimestamp;
-    }
+            log.info("UserController: Exiting saveUser");
 
-    /**
-     * This API is used for fetching user from firebase
-     * @param username (Unique key)
-     * @return User object
-     */
-    @GetMapping("/getUser")
-    public User getUser(@RequestParam String username) {
+            return responseTimestamp;
 
-        log.info("UserController: Starting getUser");
-
-        if(Objects.isNull(username) || username.isEmpty())
-            throw new BadRequestException();
-
-        User user = userService.getUser(username);
-
-        log.info("UserController: Exiting getUser");
-
-        return user;
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
     }
 }
