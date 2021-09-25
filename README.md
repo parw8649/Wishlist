@@ -10,9 +10,15 @@ Title :- Wishlist
 
 This project creates an API to allow users to create and edit a web-based wishlist.
 
-***Libraries Used:***
+**Entity Relationship Diagrams**
+![Entity Relationship Diagram](https://github.com/parw8649/CST438-Project2/blob/bKondo-patch-1/wk05_project02groupC_ERDs.png)
 
-***Demo Video:***
+**Sitemap**
+![Sitemap](https://github.com/parw8649/CST438-Project2/blob/bKondo-patch-1/wk05_project02groupC_sitemap.png)
 
+**Page Mockups: User and Wishlist**
+![Sitemap](https://github.com/parw8649/CST438-Project2/blob/bKondo-patch-1/wk05_project02groupC_user_page_mockups.png)
 
+**Libraries Used:**
 
+**Demo Video:**
