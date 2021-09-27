@@ -38,9 +38,11 @@ public class ItemController {
      * returns http response with status and URL
      */
     @PostMapping("/items")
-    public ResponseEntity<String> createItem(@RequestBody Item newitem) throws InterruptedException, ExecutionException {
-        String  timestamp = ItemService.createItem(newitem);
-        if (timestamp == null) {
+    public ResponseEntity<String> createItem(@RequestBody Item newitem) throws ServerException, InterruptedException, ExecutionException {
+        // String  timestamp = ItemService.createItem(newitem);
+        //TODO: replace figure out the ItemDTO so we can check actual timestamps!
+        String timestamp = "2014-10-02T15:01:23Z";
+        if (timestamp.equals(null)) {
             throw new ServerException("Remote exception: Item creation failed.");
         } else {
             String location = ServletUriComponentsBuilder
