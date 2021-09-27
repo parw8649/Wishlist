@@ -22,6 +22,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
  * referenced:
  *     - https://howtodoinjava.com/spring5/webmvc/controller-getmapping-postmapping/
  *     - https://www.youtube.com/watch?v=8jK9O0lwem0
+ *     - https://stackoverflow.com/questions/42546141/add-location-header-to-spring-mvcs-post-response
  * @author Barbara Kondo
  * @version %I% %G%
  */
@@ -34,6 +35,7 @@ public class ItemController {
 
     /**
      * POST request to create an item in the database.
+     * returns http response with status and URL
      */
     @PostMapping("/items")
     public ResponseEntity<String> createItem(@RequestBody Item newitem) throws InterruptedException, ExecutionException {
