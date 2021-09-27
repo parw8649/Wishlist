@@ -5,6 +5,7 @@ public class Constants {
     /** FIREBASE DOCUMENTS */
     public static final String DOCUMENT_PRODUCT = "product";
     public static final String DOCUMENT_USER = "user";
+    public static final String DOCUMENT_ITEM = "item";
 
     /** ERROR MESSAGES */
     public static final String ERROR_BAD_REQUEST = "Bad request";
