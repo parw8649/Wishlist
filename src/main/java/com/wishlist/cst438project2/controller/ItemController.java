@@ -39,8 +39,8 @@ public class ItemController {
      */
     @PostMapping("/items")
     public ResponseEntity<String> createItem(@RequestBody Item newitem) throws InterruptedException, ExecutionException {
-        Item  item = ItemService.createItem(newitem);
-        if (item == null) {
+        String  timestamp = ItemService.createItem(newitem);
+        if (timestamp == null) {
             throw new ServerException("Remote exception: Item creation failed.");
         } else {
             String location = ServletUriComponentsBuilder
