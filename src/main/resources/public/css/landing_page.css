@@ -1,0 +1,26 @@
+html {
+    background-color: #b5eef7;
+}
+
+#title {
+    font-size: 350%;
+/*    text-align: center;*/
+}
+
+#options {
+    margin: auto;
+    width: 400px;
+    /*text-align: center;*/
+}
+
+p {
+    font-size: 130%
+}
+
+body {
+    text-align: center;
+    /*margin-top: 250px;*/
+    border: 3px ridge black;
+    border-radius: 15px;
+    background-color: white;
+}
