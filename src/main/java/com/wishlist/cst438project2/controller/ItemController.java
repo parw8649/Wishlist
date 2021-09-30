@@ -38,7 +38,7 @@ public class ItemController {
 
     /**
      * POST request to create an item in the database.
-     * returns http response with status and URL
+     * returns item creation timestamp
      */
     @PostMapping("/items")
     public ResponseEntity<String> createItem(@RequestBody ItemDTO itemDTO) throws ServerException, InterruptedException, ExecutionException {
