@@ -42,5 +42,20 @@ public class Item {
     public Item(String name) {
         this.name = name;
     }
+
+    public String itemToPostString() {
+        string itemPost = "";
+        itemPost += String.format("item_name=%s", name);
+        if (!link.equals(null)) {
+            itemPost += String.format("&url=%s", link);
+        }
+        if (!description.equals(null)) {
+            itemPost += String.format("&description=%s", description);
+        }
+        if (!imgUrl.equals(null)) {
+            itemPost += String.format("&img=%s", imgUrl);
+        }
+        return itemPost;        
+    }
     
 }

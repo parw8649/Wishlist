@@ -26,6 +26,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
  * @author Barbara Kondo
  * @version %I% %G%
  */
+@RestController
+@RequestMapping("/items")
 public class ItemController {
     public ItemService itemService;
 
@@ -37,7 +39,7 @@ public class ItemController {
      * POST request to create an item in the database.
      * returns http response with status and URL
      */
-    @PostMapping("/items")
+    @PostMapping("/{newitem.itemToPostString()}")
     public ResponseEntity<String> createItem(@RequestBody Item newitem) throws ServerException, InterruptedException, ExecutionException {
         // String  timestamp = ItemService.createItem(newitem);
         //TODO: replace figure out the ItemDTO so we can check actual timestamps!
