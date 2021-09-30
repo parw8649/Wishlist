@@ -50,6 +50,7 @@ public class Item {
         return new ItemDTO(name, link, description, imgUrl);
     }
 
+    /*
     public String itemToPostString() {
         string itemPost = "";
         itemPost += String.format("item_name=%s", name);
@@ -64,5 +65,6 @@ public class Item {
         }
         return itemPost;        
     }
+    */
     
 }

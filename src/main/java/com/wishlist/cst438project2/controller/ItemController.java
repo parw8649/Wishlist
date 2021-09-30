@@ -40,23 +40,18 @@ public class ItemController {
      * POST request to create an item in the database.
      * returns http response with status and URL
      */
-    @PostMapping("/{newitem.itemToPostString()}")
+    @PostMapping("/items")
     public ResponseEntity<String> createItem(@RequestBody ItemDTO itemDTO) throws ServerException, InterruptedException, ExecutionException {
         log.info("ItemController: Starting createItem");
-        String  timestamp = ItemService.createItem(itemDTO);
+        
 
         try {
-            if (timestamp.equals(null)) {
-                throw new ServerException("Remote exception: Item creation failed.");
+            if (Objects.isNull(itemDTO)) {
+                throw new BadRequestException();
             } else {
-                String location = ServletUriComponentsBuilder
-                                    .fromCurrentRequest()
-                                    .path("/items")
-                                    .buildAndExpand()
-                                    .toUriString();
+                String  timestamp = ItemService.createItem(itemDTO);
                 log.info("ItemController: exiting successful createItem");
-                //TODO: Is this correct for a POST response? 
-                return ResponseEntity.status(HttpStatus.SC_CREATED).header(HttpHeaders.LOCATION, location).build();
+                return timestamp;
             }
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
