@@ -46,7 +46,7 @@ public class ItemServiceImpl implements ItemService {
         String responseTimeStamp = collectionsApiFuture.get().getUpdateTime().toString();
         
         log.info("ItemServiceImpl: createItem: responseTimeStamp: {}", responseTimeStamp);
-        log.info("ItemServiceImpl: exiting createItem")
+        log.info("ItemServiceImpl: exiting createItem");
         return responseTimeStamp;
     }
 }
