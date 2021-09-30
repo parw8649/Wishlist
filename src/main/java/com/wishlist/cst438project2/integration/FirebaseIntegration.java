@@ -48,4 +48,27 @@ public class FirebaseIntegration {
             throw ex;
         }
     }
+
+    @SneakyThrows
+    public ItemDTO getItem(String name) {
+        log.info("FirebaseIntegration: Starting getItem");
+        DocumentReference documentReference = dbFirestore.collection(Constants.DOCUMENT_ITEM).document(name);
+        ApiFuture<DocumentSnapshot> snapshotApiFuture = documentReference.get();
+
+        try {
+            DocumentSnapshot documentSnapshot = snapshotApiFuture.get();
+            Item item;
+
+            if (documentSnapshot.exists()) {
+                item = documentSnapshot.toObject(Item.class);
+            } else {
+                throw new NotFoundException(Constants.ERROR_ITEM_NOT_FOUND);
+            }
+            log.info("FirebaseIntegration: Exiting getItem");
+            return item.fetchItemDTO();
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
 }

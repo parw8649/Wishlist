@@ -1,8 +1,8 @@
 package com.wishlist.cst438project2.document;
 
 import com.google.cloud.firestore.annotation.DocumentId;
+import com.wishlist.cst438project2.dto.ItemDTO;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * represents an item to be referenced by Wishlist Class.
@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
  */
 
 @Data
-@NoArgsConstructor
 public class Item {
     @DocumentId
     private String name;
@@ -20,6 +19,7 @@ public class Item {
     private String description;
     private String imgUrl;
 
+    /*
     public Item(String name, String link, String description, String imgUrl) {
         this(name, link, description);
         this.imgUrl = imgUrl;
@@ -34,13 +34,20 @@ public class Item {
         this(name);
         this.link = link;
     }
+    */
 
     /**
      * Creates an Item with a given String name. Item objects must have an assigned name.
      * @param name is the name or title of the item
      */
+     /*
     public Item(String name) {
         this.name = name;
+    }
+    */
+
+    public ItemDTO fetchItemDTO() {
+        return new ItemDTO(name, link, description, imgUrl);
     }
 
     public String itemToPostString() {

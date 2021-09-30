@@ -1,12 +1,13 @@
 package com.wishlist.cst438project2.controller;
 
+import com.wishlist.cst438project2.common.Constants;
+import com.wishlist.cst438project2.dto.ItemDTO;
+import com.wishlist.cst438project2.service.ItemService;
+
 import java.net.URI;
 import java.rmi.RemoteException;
 import java.rmi.ServerException;
 import java.util.concurrent.ExecutionException;
-
-import com.wishlist.cst438project2.document.Item;
-import com.wishlist.cst438project2.service.ItemService;
 
 import org.apache.http.HttpStatus;
 import org.springframework.http.HttpHeaders;
@@ -40,20 +41,27 @@ public class ItemController {
      * returns http response with status and URL
      */
     @PostMapping("/{newitem.itemToPostString()}")
-    public ResponseEntity<String> createItem(@RequestBody Item newitem) throws ServerException, InterruptedException, ExecutionException {
-        // String  timestamp = ItemService.createItem(newitem);
-        //TODO: replace figure out the ItemDTO so we can check actual timestamps!
-        String timestamp = "2014-10-02T15:01:23Z";
-        if (timestamp.equals(null)) {
-            throw new ServerException("Remote exception: Item creation failed.");
-        } else {
-            String location = ServletUriComponentsBuilder
-                                .fromCurrentRequest()
-                                .path("/items")
-                                .buildAndExpand()
-                                .toUriString();
-            //TODO: Is this correct for a POST response? 
-            return ResponseEntity.status(HttpStatus.SC_CREATED).header(HttpHeaders.LOCATION, location).build();
+    public ResponseEntity<String> createItem(@RequestBody ItemDTO itemDTO) throws ServerException, InterruptedException, ExecutionException {
+        log.info("ItemController: Starting createItem");
+        String  timestamp = ItemService.createItem(itemDTO);
+
+        try {
+            if (timestamp.equals(null)) {
+                throw new ServerException("Remote exception: Item creation failed.");
+            } else {
+                String location = ServletUriComponentsBuilder
+                                    .fromCurrentRequest()
+                                    .path("/items")
+                                    .buildAndExpand()
+                                    .toUriString();
+                log.info("ItemController: exiting successful createItem");
+                //TODO: Is this correct for a POST response? 
+                return ResponseEntity.status(HttpStatus.SC_CREATED).header(HttpHeaders.LOCATION, location).build();
+            }
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
         }
+        
     }
 }

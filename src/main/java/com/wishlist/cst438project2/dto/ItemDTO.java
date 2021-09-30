@@ -25,4 +25,6 @@ public class ItemDTO {
         this.description = description;
         this.imgUrl = imgUrl;
     }
+
+    public String getName() { return name; }
 }

@@ -16,14 +16,15 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+@Service
+@Slf4j
 public class ItemServiceImpl implements ItemService {
 
-       @Autowired
+    @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
     private FirebaseIntegration firebaseIntegration;
-    private final Firestore dbFirestore = FirestoreClient.getFirestore();
 
     /**
      * database record creation route for item. Each new item will be set to an auto-incremented id
@@ -32,8 +33,20 @@ public class ItemServiceImpl implements ItemService {
      */
     @SneakyThrows
     @Override
-    public String createItem(Item item) {
-        ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection(Constants.DOCUMENT_ITEM).document().set(item);
-        return collectionsApiFuture.get().getUpdateTime().toString();
+    public String createItem(ItemDTO itemDTO) {
+        log.info("ItemServiceImpl: starting createItem");
+        
+        ItemDTO dbItemDTO = firebaseIntegration.getItem(itemDTO.getName());
+        if (Objects.nonNull(dbItemDTO)) {
+            throw new BadRequestException(Constants.ERROR_ITEM_ALREADY_EXISTS.replace(Constants.KEY_ITEM_NAME, itemDTO.getName()));
+        }
+        
+        Item item = modelMapper.map(ItemDTO, Item.class);
+        ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection(Constants.DOCUMENT_ITEM).document(item.getName()).set(item);
+        String responseTimeStamp = collectionsApiFuture.get().getUpdateTime().toString();
+        
+        log.info("ItemServiceImpl: createItem: responseTimeStamp: {}", responseTimeStamp);
+        log.info("ItemServiceImpl: exiting createItem")
+        return responseTimeStamp;
     }
 }
