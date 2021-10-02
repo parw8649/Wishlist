@@ -16,6 +16,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 @Slf4j
 public class ItemServiceImpl implements ItemService {
@@ -41,8 +43,8 @@ public class ItemServiceImpl implements ItemService {
             throw new BadRequestException(Constants.ERROR_ITEM_ALREADY_EXISTS.replace(Constants.KEY_ITEM_NAME, itemDTO.getName()));
         }
         
-        Item item = modelMapper.map(ItemDTO, Item.class);
-        ApiFuture<WriteResult> collectionsApiFuture = dbFirestore.collection(Constants.DOCUMENT_ITEM).document(item.getName()).set(item);
+        Item item = modelMapper.map(itemDTO, Item.class);
+        ApiFuture<WriteResult> collectionsApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_ITEM).document(item.getName()).set(item);
         String responseTimeStamp = collectionsApiFuture.get().getUpdateTime().toString();
         
         log.info("ItemServiceImpl: createItem: responseTimeStamp: {}", responseTimeStamp);

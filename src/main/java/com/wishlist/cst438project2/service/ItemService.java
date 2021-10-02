@@ -1,8 +1,7 @@
 package com.wishlist.cst438project2.service;
 
-import com.wishlist.cst438project2.dto.itemDTO;
+import com.wishlist.cst438project2.dto.ItemDTO;
 
-@Service
 public interface ItemService {
     String createItem(ItemDTO itemDTO);
 }

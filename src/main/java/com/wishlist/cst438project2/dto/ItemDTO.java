@@ -11,12 +11,12 @@ public class ItemDTO {
     @NotEmpty(message = "Item must have a name.")
     private String name;
 
-    @Pattern(regex = "((http|https)://)(www.)+[a-zA-Z0-9@:%._\\+~#?&//=]{2,256}.[a-z]{2,6}/([-a-zA-Z0-9@:%._\\+~#?&//=]*)", message = "Please enter a valid URL")
+    @Pattern(regexp = "((http|https)://)(www.)+[a-zA-Z0-9@:%._\\+~#?&//=]{2,256}.[a-z]{2,6}/([-a-zA-Z0-9@:%._\\+~#?&//=]*)", message = "Please enter a valid URL")
     private String link;
 
     private String description;
 
-    @Pattern(regex = "((http|https)://)(www.)+[a-zA-Z0-9@:%._\\+~#?&//=]{2,256}.[a-z]{2,6}/([-a-zA-Z0-9@:%._\\+~#?&//=]*)", message = "Please enter a valid URL")
+    @Pattern(regexp = "((http|https)://)(www.)+[a-zA-Z0-9@:%._\\+~#?&//=]{2,256}.[a-z]{2,6}/([-a-zA-Z0-9@:%._\\+~#?&//=]*)", message = "Please enter a valid URL")
     private String imgUrl;
 
     public ItemDTO(String name, String link, String description, String imgUrl) {
@@ -26,5 +26,5 @@ public class ItemDTO {
         this.imgUrl = imgUrl;
     }
 
-    public String getName() { return name; }
+//    public String getName() { return name; }
 }
