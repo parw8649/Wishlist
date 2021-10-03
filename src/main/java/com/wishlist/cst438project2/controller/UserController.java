@@ -1,5 +1,8 @@
 package com.wishlist.cst438project2.controller;
 
+import com.wishlist.cst438project2.common.Constants;
+import com.wishlist.cst438project2.common.Utils;
+import com.wishlist.cst438project2.dto.ChangePasswordDTO;
 import com.wishlist.cst438project2.dto.SignUpDTO;
 import com.wishlist.cst438project2.dto.UserDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
@@ -65,6 +68,36 @@ public class UserController {
             log.info("UserController: Exiting updateUser");
 
             return userDTO;
+
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    /**
+     */
+    @PutMapping("/changePassword")
+    public String changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
+
+        log.info("UserController: Starting changePassword");
+
+        try {
+
+            if(Objects.isNull(changePasswordDTO))
+                throw new BadRequestException();
+
+            boolean isValid = Utils.validatePassword(changePasswordDTO.getPassword(), changePasswordDTO.getConfirmPassword());
+
+            String msg = "";
+            if(isValid) {
+                msg = userService.changePassword(changePasswordDTO);
+            } else {
+                msg = Constants.ERROR_USER_PASSWORD_MISMATCH;
+            }
+            log.info("UserController: Exiting changePassword");
+
+            return msg;
 
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
