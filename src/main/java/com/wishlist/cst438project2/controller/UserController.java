@@ -3,6 +3,7 @@ package com.wishlist.cst438project2.controller;
 import com.wishlist.cst438project2.common.Constants;
 import com.wishlist.cst438project2.common.Utils;
 import com.wishlist.cst438project2.dto.ChangePasswordDTO;
+import com.wishlist.cst438project2.dto.SignInDTO;
 import com.wishlist.cst438project2.dto.SignUpDTO;
 import com.wishlist.cst438project2.dto.UserDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
@@ -76,6 +77,9 @@ public class UserController {
     }
 
     /**
+     * This API is used to change user's password
+     * @param changePasswordDTO
+     * @return message if the password was changed successfully or returns error message
      */
     @PutMapping("/changePassword")
     public String changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
@@ -98,6 +102,28 @@ public class UserController {
             log.info("UserController: Exiting changePassword");
 
             return msg;
+
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestBody SignInDTO signInDTO) {
+
+        log.info("UserController: Starting login");
+
+        try {
+
+            if (Objects.isNull(signInDTO))
+                throw new BadRequestException();
+
+            String responseTimestamp = userService.login(signInDTO);
+
+            log.info("UserController: Exiting login");
+
+            return responseTimestamp;
 
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);

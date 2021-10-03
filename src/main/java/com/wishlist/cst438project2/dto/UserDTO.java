@@ -11,6 +11,7 @@ public class UserDTO {
     private String lastName;
     private String emailId;
     private String username;
+    private String password;
 
     public UserDTO(String firstName, String lastName, String emailId, String username) {
         this.firstName = firstName;
