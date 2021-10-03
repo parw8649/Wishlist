@@ -34,16 +34,14 @@ public class FirebaseIntegration {
 
             DocumentSnapshot documentSnapshot = snapshotApiFuture.get();
 
-            User user;
+            User user = null;
             if (documentSnapshot.exists()) {
                 user = documentSnapshot.toObject(User.class);
-            } else {
-                throw new NotFoundException(Constants.ERROR_USER_NOT_FOUND);
             }
 
             log.info("UserServiceImpl: Exiting getUser");
 
-            return user.fetchUserDTO();
+            return user == null ? null : user.fetchUserDTO();
 
         } catch(Exception ex) {
             log.error(ex.getMessage(), ex);

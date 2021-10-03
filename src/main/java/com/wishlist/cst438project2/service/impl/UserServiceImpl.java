@@ -3,6 +3,7 @@ package com.wishlist.cst438project2.service.impl;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.WriteResult;
 import com.wishlist.cst438project2.common.Constants;
+import com.wishlist.cst438project2.common.Utils;
 import com.wishlist.cst438project2.document.User;
 import com.wishlist.cst438project2.dto.UserDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
@@ -41,8 +42,7 @@ public class UserServiceImpl implements UserService {
         
         User user = modelMapper.map(userDTO, User.class);
 
-        //TODO: Check Bycrpt Password encoding issue
-        //user.setPassword(Utils.encodePassword(user.getPassword()));
+        user.setPassword(Utils.encodePassword(user.getPassword()));
 
         ApiFuture<WriteResult> collectionApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_USER).document(user.getUsername()).set(user);
 
@@ -61,9 +61,6 @@ public class UserServiceImpl implements UserService {
     public UserDTO updateUser(UserDTO userDTO) {
         log.info("UserServiceImpl: Starting updateUser");
 
-        //TODO: Check Bycrpt Password encoding issue
-        //user.setPassword(Utils.encodePassword(user.getPassword()));
-
         UserDTO dbUserDTO = firebaseIntegration.getUser(userDTO.getUsername());
 
         if(Objects.isNull(dbUserDTO)) {
@@ -71,6 +68,10 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = modelMapper.map(userDTO, User.class);
+
+        if(Objects.nonNull(userDTO.getPassword()) && !userDTO.getPassword().isEmpty()) {
+            user.setPassword(Utils.encodePassword(userDTO.getPassword()));
+        }
 
         ApiFuture<WriteResult> collectionApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_USER).document(user.getUsername()).set(user);
 
