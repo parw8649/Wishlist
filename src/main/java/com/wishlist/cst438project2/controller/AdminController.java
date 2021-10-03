@@ -1,14 +1,15 @@
 package com.wishlist.cst438project2.controller;
 
+import com.wishlist.cst438project2.common.Constants;
 import com.wishlist.cst438project2.dto.UserDTO;
+import com.wishlist.cst438project2.exception.BadRequestException;
 import com.wishlist.cst438project2.service.AdminService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/v1/admin")
@@ -30,6 +31,32 @@ public class AdminController {
             log.info("UserController: Exiting saveUser");
 
             return userDTOList;
+
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    /**
+     * This API is used for deleting user from database
+     * @param username, of the user whose account is to be deleted.
+     */
+    @DeleteMapping("/deleteUser")
+    public String deleteUser(@RequestParam String username) {
+
+        log.info("AdminController: Starting deleteUser");
+
+        try{
+
+            if(Objects.isNull(username) || username.isEmpty())
+                throw new BadRequestException();
+
+            adminService.deleteUser(username);
+
+            log.info("AdminController: Exiting deleteUser");
+
+            return Constants.USER_DELETED + " " + username;
 
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
