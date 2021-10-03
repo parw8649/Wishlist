@@ -1,9 +1,7 @@
 package com.wishlist.cst438project2.integration;
 
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import com.wishlist.cst438project2.common.Constants;
 import com.wishlist.cst438project2.document.User;
@@ -12,6 +10,10 @@ import com.wishlist.cst438project2.exception.NotFoundException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Component
 @Slf4j
@@ -40,6 +42,37 @@ public class FirebaseIntegration {
             log.info("UserServiceImpl: Exiting getUser");
 
             return user == null ? null : user.fetchUserDTO();
+
+        } catch(Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    @SneakyThrows
+    public List<UserDTO> getAllUsers() {
+
+        log.info("UserServiceImpl: Starting getAllUsers");
+
+        List<UserDTO> userDTOList = new ArrayList<>();
+
+        try {
+
+            ApiFuture<QuerySnapshot> future = dbFirestore.collection(Constants.DOCUMENT_USER).get();
+            List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+
+            if(!documents.isEmpty()) {
+
+                log.info("User count: " + documents.size());
+
+                for(QueryDocumentSnapshot document: documents) {
+                    userDTOList.add(document.toObject(UserDTO.class));
+                }
+            }
+
+            log.info("UserServiceImpl: Exiting getAllUsers");
+
+            return userDTOList;
 
         } catch(Exception ex) {
             log.error(ex.getMessage(), ex);
