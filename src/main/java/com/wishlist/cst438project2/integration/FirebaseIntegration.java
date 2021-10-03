@@ -57,15 +57,14 @@ public class FirebaseIntegration {
 
         try {
             DocumentSnapshot documentSnapshot = snapshotApiFuture.get();
-            Item item;
+            Item item = null;
 
             if (documentSnapshot.exists()) {
                 item = documentSnapshot.toObject(Item.class);
-            } else {
-                throw new NotFoundException(Constants.ERROR_ITEM_NOT_FOUND);
             }
+
             log.info("FirebaseIntegration: Exiting getItem");
-            return item.fetchItemDTO();
+            return item == null ? null : item.fetchItemDTO();
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
             throw ex;
