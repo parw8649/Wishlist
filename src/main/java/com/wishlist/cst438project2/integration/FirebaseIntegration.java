@@ -24,7 +24,7 @@ public class FirebaseIntegration {
     @SneakyThrows
     public UserDTO getUser(String username) {
 
-        log.info("UserServiceImpl: Starting getUser");
+        log.info("FirebaseIntegration: Starting getUser");
 
         DocumentReference documentReference = dbFirestore.collection(Constants.DOCUMENT_USER).document(username);
 
@@ -39,7 +39,7 @@ public class FirebaseIntegration {
                 user = documentSnapshot.toObject(User.class);
             }
 
-            log.info("UserServiceImpl: Exiting getUser");
+            log.info("FirebaseIntegration: Exiting getUser");
 
             return user == null ? null : user.fetchUserDTO();
 
@@ -52,7 +52,7 @@ public class FirebaseIntegration {
     @SneakyThrows
     public List<UserDTO> getAllUsers() {
 
-        log.info("UserServiceImpl: Starting getAllUsers");
+        log.info("FirebaseIntegration: Starting getAllUsers");
 
         List<UserDTO> userDTOList = new ArrayList<>();
 
@@ -70,9 +70,30 @@ public class FirebaseIntegration {
                 }
             }
 
-            log.info("UserServiceImpl: Exiting getAllUsers");
+            log.info("FirebaseIntegration: Exiting getAllUsers");
 
             return userDTOList;
+
+        } catch(Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    @SneakyThrows
+    public void deleteUser(String username) {
+
+        log.info("FirebaseIntegration: Starting deleteUser");
+
+        try {
+
+            ApiFuture<WriteResult> collectionApiFuture = dbFirestore.collection(Constants.DOCUMENT_USER).document(username).delete();
+
+            String responseTimestamp = collectionApiFuture.get().getUpdateTime().toString();
+
+            log.info(Constants.USER_DELETED + " {}" , responseTimestamp);
+
+            log.info("FirebaseIntegration: Exiting deleteUser");
 
         } catch(Exception ex) {
             log.error(ex.getMessage(), ex);

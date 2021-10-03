@@ -5,6 +5,7 @@ import com.google.cloud.firestore.WriteResult;
 import com.wishlist.cst438project2.common.Constants;
 import com.wishlist.cst438project2.common.Utils;
 import com.wishlist.cst438project2.document.User;
+import com.wishlist.cst438project2.dto.SignUpDTO;
 import com.wishlist.cst438project2.dto.UserDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
 import com.wishlist.cst438project2.exception.ExternalServerException;
@@ -30,17 +31,17 @@ public class UserServiceImpl implements UserService {
 
     @SneakyThrows
     @Override
-    public String saveUser(UserDTO userDTO) {
+    public String saveUser(SignUpDTO signUpDTO) {
 
         log.info("UserServiceImpl: Starting saveUser");
 
-        UserDTO dbUserDTO = firebaseIntegration.getUser(userDTO.getUsername());
+        UserDTO dbUserDTO = firebaseIntegration.getUser(signUpDTO.getUsername());
 
         if (Objects.nonNull(dbUserDTO)) {
-            throw new BadRequestException(Constants.ERROR_USER_ALREADY_EXISTS.replace(Constants.KEY_USERNAME, userDTO.getUsername()));
+            throw new BadRequestException(Constants.ERROR_USER_ALREADY_EXISTS.replace(Constants.KEY_USERNAME, signUpDTO.getUsername()));
         }
         
-        User user = modelMapper.map(userDTO, User.class);
+        User user = modelMapper.map(signUpDTO, User.class);
 
         user.setPassword(Utils.encodePassword(user.getPassword()));
 
@@ -69,9 +70,10 @@ public class UserServiceImpl implements UserService {
 
         User user = modelMapper.map(userDTO, User.class);
 
-        if(Objects.nonNull(userDTO.getPassword()) && !userDTO.getPassword().isEmpty()) {
+        //TODO: Need to add changePassword API to update user password.
+        /*if(Objects.nonNull(userDTO.getPassword()) && !userDTO.getPassword().isEmpty()) {
             user.setPassword(Utils.encodePassword(userDTO.getPassword()));
-        }
+        }*/
 
         ApiFuture<WriteResult> collectionApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_USER).document(user.getUsername()).set(user);
 
@@ -84,26 +86,5 @@ public class UserServiceImpl implements UserService {
         log.info("UserServiceImpl: Exiting updateUser");
 
         return user.fetchUserDTO();
-    }
-
-    @SneakyThrows
-    @Override
-    public void deleteUser(String username) {
-
-        log.info("UserServiceImpl: Starting deleteUser");
-
-        UserDTO dbUserDTO = firebaseIntegration.getUser(username);
-
-        if(Objects.isNull(dbUserDTO)) {
-            throw new BadRequestException(Constants.ERROR_USER_DOES_NOT_EXISTS.replace(Constants.KEY_USERNAME, username));
-        }
-
-        ApiFuture<WriteResult> collectionApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_USER).document(username).delete();
-
-        String responseTimestamp = collectionApiFuture.get().getUpdateTime().toString();
-
-        log.info(Constants.USER_DELETED + " {}" , responseTimestamp);
-
-        log.info("UserServiceImpl: Exiting deleteUser");
     }
 }
