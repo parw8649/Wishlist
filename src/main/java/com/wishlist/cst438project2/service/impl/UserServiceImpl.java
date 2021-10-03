@@ -6,6 +6,7 @@ import com.wishlist.cst438project2.common.Constants;
 import com.wishlist.cst438project2.common.Utils;
 import com.wishlist.cst438project2.document.User;
 import com.wishlist.cst438project2.dto.ChangePasswordDTO;
+import com.wishlist.cst438project2.dto.SignInDTO;
 import com.wishlist.cst438project2.dto.SignUpDTO;
 import com.wishlist.cst438project2.dto.UserDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
@@ -16,6 +17,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -36,13 +38,7 @@ public class UserServiceImpl implements UserService {
 
         log.info("UserServiceImpl: Starting saveUser");
 
-        UserDTO dbUserDTO = firebaseIntegration.getUser(signUpDTO.getUsername());
-
-        if (Objects.nonNull(dbUserDTO)) {
-            throw new BadRequestException(Constants.ERROR_USER_ALREADY_EXISTS.replace(Constants.KEY_USERNAME, signUpDTO.getUsername()));
-        }
-        
-        User user = modelMapper.map(signUpDTO, User.class);
+        User user = fetchUser(signUpDTO.getUsername());
 
         user.setPassword(Utils.encodePassword(user.getPassword()));
 
@@ -63,13 +59,7 @@ public class UserServiceImpl implements UserService {
     public UserDTO updateUser(UserDTO userDTO) {
         log.info("UserServiceImpl: Starting updateUser");
 
-        UserDTO dbUserDTO = firebaseIntegration.getUser(userDTO.getUsername());
-
-        if(Objects.isNull(dbUserDTO)) {
-            throw new BadRequestException(Constants.ERROR_USER_DOES_NOT_EXISTS.replace(Constants.KEY_USERNAME, userDTO.getUsername()));
-        }
-
-        User user = modelMapper.map(userDTO, User.class);
+        User user = fetchUser(userDTO.getUsername());
 
         ApiFuture<WriteResult> collectionApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_USER).document(user.getUsername()).set(user);
 
@@ -90,13 +80,7 @@ public class UserServiceImpl implements UserService {
 
         log.info("UserServiceImpl: Starting changePassword");
 
-        UserDTO dbUserDTO = firebaseIntegration.getUser(changePasswordDTO.getUsername());
-
-        if(Objects.isNull(dbUserDTO)) {
-            throw new BadRequestException(Constants.ERROR_USER_DOES_NOT_EXISTS.replace(Constants.KEY_USERNAME, changePasswordDTO.getUsername()));
-        }
-
-        User user = modelMapper.map(dbUserDTO, User.class);
+        User user = fetchUser(changePasswordDTO.getUsername());
 
         user.setPassword(Utils.encodePassword(changePasswordDTO.getPassword()));
 
@@ -111,5 +95,39 @@ public class UserServiceImpl implements UserService {
         log.info("UserServiceImpl: Exiting changePassword");
 
         return Constants.USER_PASSWORD_CHANGED_SUCCESSFULLY;
+    }
+
+    @Override
+    public String login(SignInDTO signInDTO) {
+
+        log.info("UserServiceImpl: Starting login");
+
+        User user = fetchUser(signInDTO.getUsername());
+
+        String msg = HttpStatus.UNAUTHORIZED.toString();
+
+        //TODO: Login API password check using BCrypt (Pending)
+
+        /*log.info("DB Pass: " + user.getPassword());
+        log.info("login Pass: " + signInDTO.getPassword());
+        log.info("BCrypt Salt: " + BCrypt.gensalt());*/
+
+        if(Utils.checkPassword(signInDTO.getPassword(), user.getPassword())) {
+            msg = Constants.USER_LOGIN_SUCCESSFUL;
+        }
+
+        log.info("UserServiceImpl: Exiting login");
+        return msg;
+    }
+
+    private User fetchUser(String username) {
+
+        UserDTO dbUserDTO = firebaseIntegration.getUser(username);
+
+        if(Objects.isNull(dbUserDTO)) {
+            throw new BadRequestException(Constants.ERROR_USER_DOES_NOT_EXISTS.replace(Constants.KEY_USERNAME, username));
+        }
+
+        return modelMapper.map(dbUserDTO, User.class);
     }
 }

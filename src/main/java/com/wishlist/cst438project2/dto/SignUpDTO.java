@@ -23,6 +23,6 @@ public class SignUpDTO {
     private String username;
 
     @Pattern(regexp = "^[a-zA-Z0-9!@&_?$#]+$", message = "Invalid Password format.")
-    @Size(min = 6, message = "Password size must be min 6")
+    @Size(min = 6, message = "Password size must be minimum 6")
     private String password;
 }
