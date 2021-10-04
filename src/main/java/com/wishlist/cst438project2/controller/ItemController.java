@@ -46,6 +46,8 @@ public class ItemController {
             if (Objects.isNull(name)) {
                 throw new BadRequestException();
             } else {
+                log.info("\n    name: " + name + "\n" + "    link: " + link + "\n"
+                        + "    description: " + description + "\n" + "    imgUrl: " + imgUrl);
                 String timestamp = itemService.createItem(new ItemDTO(name, link, description, imgUrl));
                 log.info("ItemController: exiting successful createItem");
                 return timestamp;

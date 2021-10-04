@@ -46,6 +46,8 @@ public class ItemServiceImpl implements ItemService {
 
         // If item does not exist, add the item
         Item item = modelMapper.map(itemDTO, Item.class);
+        log.info("\n    name: " + item.getName() + "\n" + "    link: " + item.getLink() + "\n"
+                + "    description: " + item.getDescription() + "\n" + "    imgUrl: " + item.getImgUrl());
         ApiFuture<WriteResult> collectionsApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_ITEM).document(item.getName()).set(item);
         String responseTimeStamp = collectionsApiFuture.get().getUpdateTime().toString();
 
