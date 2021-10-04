@@ -14,4 +14,8 @@ public class Utils {
     public static boolean checkPassword(String password, String dbPassword) {
         return BCrypt.checkpw(password, dbPassword);
     }
+
+    public static boolean validatePassword(String password, String confirmPassword) {
+        return password.equals(confirmPassword);
+    }
 }
