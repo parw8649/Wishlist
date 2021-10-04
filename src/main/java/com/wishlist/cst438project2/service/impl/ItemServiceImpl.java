@@ -53,4 +53,17 @@ public class ItemServiceImpl implements ItemService {
         log.info("ItemServiceImpl: exiting createItem");
         return responseTimeStamp;
     }
+
+    /**
+     * returns the item found in database by given name
+     */
+    private Item fetchItem(String name) {
+        ItemDTO dbItemDTO = firebaseIntegration.getItem(name);
+
+        if(Objects.isNull(dbItemDTO)) {
+            throw new BadRequestException(Constants.ERROR_ITEM_DOES_NOT_EXISTS.replace(Constants.KEY_ITEM_NAME, name));
+        }
+
+        return modelMapper.map(dbItemDTO, Item.class);
+    }
 }

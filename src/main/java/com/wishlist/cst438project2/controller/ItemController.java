@@ -1,10 +1,14 @@
 package com.wishlist.cst438project2.controller;
 
+import com.wishlist.cst438project2.common.Constants;
+import com.wishlist.cst438project2.document.Item;
 import com.wishlist.cst438project2.dto.ItemDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
+import com.wishlist.cst438project2.integration.FirebaseIntegration;
 import com.wishlist.cst438project2.service.ItemService;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +30,9 @@ public class ItemController {
     @Autowired
     private ItemService itemService;
 
+    @Autowired
+    private FirebaseIntegration firebaseIntegration;
+
     /**
      * POST request to create an item in the database.
      * returns item creation timestamp
@@ -39,7 +46,7 @@ public class ItemController {
             if (Objects.isNull(name)) {
                 throw new BadRequestException();
             } else {
-                String  timestamp = itemService.createItem(new ItemDTO(name,link,description,imgUrl));
+                String timestamp = itemService.createItem(new ItemDTO(name, link, description, imgUrl));
                 log.info("ItemController: exiting successful createItem");
                 return timestamp;
             }
@@ -47,6 +54,5 @@ public class ItemController {
             log.error(ex.getMessage(), ex);
             throw ex;
         }
-
     }
 }
