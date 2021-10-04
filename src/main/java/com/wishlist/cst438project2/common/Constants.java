@@ -19,6 +19,7 @@ public class Constants {
 
     /** SUCCESS MESSAGES */
     public static final String USER_DELETED = "User deleted successfully";
+    public static final String ITEM_REMOVED = "Item removed successfully: ";
 
     /** KEYS */
     public static final String KEY_USERNAME = "{username}";
