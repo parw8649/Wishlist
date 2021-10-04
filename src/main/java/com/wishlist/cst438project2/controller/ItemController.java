@@ -55,4 +55,28 @@ public class ItemController {
             throw ex;
         }
     }
+
+    // TODO: make list document, DTO, controller, service, serviceImpl
+    // TODO: move removeItem to listController --> removing item from list
+//    /**
+//     * DELETE request to remove an list document from the database.
+//     * returns item update timestamp
+//     */
+//    @DeleteMapping("/items")
+//    public String removeItem(@RequestParam String item_name) {
+//        log.info("ItemController: Starting removeItem");
+//
+//        try {
+//            if (Objects.isNull(item_name) || item_name.isEmpty()) {
+//                throw new BadRequestException();
+//            }
+//            itemService.removeItem(item_name);
+//            log.info("ItemController: Exiting removeItem");
+//
+//            return Constants.ITEM_REMOVED + item_name;
+//        } catch (Exception ex) {
+//            log.error(ex.getMessage(), ex);
+//            throw ex;
+//        }
+//    }
 }

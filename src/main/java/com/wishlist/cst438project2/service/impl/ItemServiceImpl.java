@@ -28,7 +28,7 @@ public class ItemServiceImpl implements ItemService {
     private FirebaseIntegration firebaseIntegration;
 
     /**
-     * database record creation route for item. Each new item will be set to an auto-incremented id
+     * database record creation route for item.
      * <p>
      * returns timestamp of record creation.
      */
@@ -53,6 +53,7 @@ public class ItemServiceImpl implements ItemService {
         log.info("ItemServiceImpl: exiting createItem");
         return responseTimeStamp;
     }
+
 
     /**
      * returns the item found in database by given name
