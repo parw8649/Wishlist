@@ -14,12 +14,16 @@ public class Constants {
     public static final String ERROR_UNABLE_TO_UPDATE_USER = "Unable to update user at the moment";
     public static final String ERROR_USER_ALREADY_EXISTS = "User with {username} already exists!";
     public static final String ERROR_USER_DOES_NOT_EXISTS = "User with {username} does not exists!";
+    public static final String ERROR_USER_PASSWORD_MISMATCH = "Password & Confirm password does not match!";
     public static final String ERROR_ITEM_NOT_FOUND = "Item not found";
     public static final String ERROR_ITEM_ALREADY_EXISTS = "Item with name: {name} already exists!";
     public static final String ERROR_ITEM_DOES_NOT_EXISTS = "Item with name: {name} does not exists!";
 
     /** SUCCESS MESSAGES */
     public static final String USER_DELETED = "User deleted successfully";
+    public static final String USER_PASSWORD_CHANGED_SUCCESSFULLY = "User password changed successfully";
+    public static final String USER_UPDATED = "User updated successfully";
+    public static final String USER_LOGIN_SUCCESSFUL = "User logged-in successfully";
     public static final String ITEM_REMOVED = "Item removed successfully: ";
 
     /** KEYS */
