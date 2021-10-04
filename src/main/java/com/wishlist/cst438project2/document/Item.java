@@ -20,7 +20,7 @@ public class Item {
     private String imgUrl;
 
     /**
-     * returns ItemDTO from database with matching parameters
+     * returns ItemDTO with given parameters
      */
     public ItemDTO fetchItemDTO() {
         return new ItemDTO(name, link, description, imgUrl);
