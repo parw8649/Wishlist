@@ -31,13 +31,15 @@ public class ItemController {
      * returns item creation timestamp
      */
     @PostMapping("/items")
-    public String createItem(@RequestBody ItemDTO itemDTO) {
+    public String createItem(@RequestParam String name, @RequestParam(required = false) String link,
+                             @RequestParam(required = false) String description,
+                             @RequestParam(required = false) String imgUrl) {
         log.info("ItemController: Starting createItem");
         try {
-            if (Objects.isNull(itemDTO)) {
+            if (Objects.isNull(name)) {
                 throw new BadRequestException();
             } else {
-                String  timestamp = itemService.createItem(itemDTO);
+                String  timestamp = itemService.createItem(new ItemDTO(name,link,description,imgUrl));
                 log.info("ItemController: exiting successful createItem");
                 return timestamp;
             }
