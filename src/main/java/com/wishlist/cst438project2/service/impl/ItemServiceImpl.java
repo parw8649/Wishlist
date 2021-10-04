@@ -37,12 +37,15 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public String createItem(ItemDTO itemDTO) {
         log.info("ItemServiceImpl: starting createItem");
-        
+
+        // check for existence of item by name
         ItemDTO dbItemDTO = firebaseIntegration.getItem(itemDTO.getName());
+        // if item exists, don't add an identical item? throw err
         if (Objects.nonNull(dbItemDTO)) {
             throw new BadRequestException(Constants.ERROR_ITEM_ALREADY_EXISTS.replace(Constants.KEY_ITEM_NAME, itemDTO.getName()));
         }
-        
+
+        // If item does not exist, add the item
         Item item = modelMapper.map(itemDTO, Item.class);
         ApiFuture<WriteResult> collectionsApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_ITEM).document(item.getName()).set(item);
         String responseTimeStamp = collectionsApiFuture.get().getUpdateTime().toString();
