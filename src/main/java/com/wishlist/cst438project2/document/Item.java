@@ -20,7 +20,7 @@ public class Item {
     private String imgUrl;
 
     /**
-     * returns ItemDTO with given parameters
+     * returns an Item Data Transfer Object with parameters matching the current Item obj
      */
     public ItemDTO fetchItemDTO() {
         return new ItemDTO(name, link, description, imgUrl);
