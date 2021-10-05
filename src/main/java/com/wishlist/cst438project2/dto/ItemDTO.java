@@ -16,6 +16,7 @@ public class ItemDTO {
 
     private String description;
 
+    // TODO: later: get imgUrl to pass correctly, currently processed as null on intake
 //    @Pattern(regexp = "((http|https)://)((www|cdn).)+[a-zA-Z0-9@:%._+~#?&//=]{2,256}.[a-z]{2,6}/([-a-zA-Z0-9@:%._+~#?&//=]*)", message = "Please enter a valid URL")
     private String imgUrl;
 
