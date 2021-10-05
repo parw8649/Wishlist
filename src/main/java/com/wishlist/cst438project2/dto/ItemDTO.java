@@ -16,8 +16,10 @@ public class ItemDTO {
 
     private String description;
 
-    @Pattern(regexp = "((http|https)://)((www|cdn).)+[a-zA-Z0-9@:%._+~#?&//=]{2,256}.[a-z]{2,6}/([-a-zA-Z0-9@:%._+~#?&//=]*)", message = "Please enter a valid URL")
+//    @Pattern(regexp = "((http|https)://)((www|cdn).)+[a-zA-Z0-9@:%._+~#?&//=]{2,256}.[a-z]{2,6}/([-a-zA-Z0-9@:%._+~#?&//=]*)", message = "Please enter a valid URL")
     private String imgUrl;
+
+    private int userId;
 
     /**
      * Constructor for an Item Data Transfer Object
@@ -26,10 +28,11 @@ public class ItemDTO {
      * @param description
      * @param imgUrl is the given URL for where a picture of the item is available
      */
-    public ItemDTO(String name, String link, String description, String imgUrl) {
+    public ItemDTO(String name, String link, String description, String imgUrl, int userId) {
         this.name = name;
         this.link = link;
         this.description = description;
         this.imgUrl = imgUrl;
+        this.userId = userId;
     }
 }

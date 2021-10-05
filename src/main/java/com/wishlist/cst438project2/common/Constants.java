@@ -7,6 +7,11 @@ public class Constants {
     public static final String DOCUMENT_USER = "user";
     public static final String DOCUMENT_ITEM = "item";
 
+    /** FIREBASE FIELDS **/
+    public static final String FIELD_USERNAME = "username";
+    public static final String FIELD_USER_ID = "userId";
+    public static final String FIELD_ITEM_NAME = "name";
+
     /** ERROR MESSAGES */
     public static final String ERROR_BAD_REQUEST = "Bad request";
     public static final String ERROR_USER_NOT_FOUND = "User not found";

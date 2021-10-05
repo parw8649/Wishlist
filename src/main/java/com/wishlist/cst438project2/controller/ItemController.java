@@ -38,17 +38,16 @@ public class ItemController {
      * returns item creation timestamp
      */
     @PostMapping("/items")
-    public String createItem(@RequestParam String name, @RequestParam(required = false) String link,
-                             @RequestParam(required = false) String description,
-                             @RequestParam(required = false) String imgUrl) {
+    public String createItem(@RequestBody ItemDTO itemDTO) {
         log.info("ItemController: Starting createItem");
         try {
-            if (Objects.isNull(name)) {
+            if (Objects.isNull(itemDTO) || (itemDTO.getName().isBlank() || Objects.isNull(itemDTO.getUserId()))) {
                 throw new BadRequestException();
             } else {
-                log.info("\n    name: " + name + "\n" + "    link: " + link + "\n"
-                        + "    description: " + description + "\n" + "    imgUrl: " + imgUrl);
-                String timestamp = itemService.createItem(new ItemDTO(name, link, description, imgUrl));
+                log.info("\n    name: " + itemDTO.getName() + "\n" + "    link: " + itemDTO.getLink() + "\n"
+                        + "    description: " + itemDTO.getDescription() + "\n" + "    imgUrl: "
+                        + itemDTO.getImgUrl() + "\n" + "    userId: " + itemDTO.getUserId());
+                String timestamp = itemService.createItem(itemDTO);
                 log.info("ItemController: exiting successful createItem");
                 return timestamp;
             }

@@ -18,12 +18,13 @@ public class Item {
     private String link;
     private String description;
     private String imgUrl;
+    private int userId;
 
     /**
      * returns an Item Data Transfer Object with parameters matching the current Item obj
      */
     public ItemDTO fetchItemDTO() {
-        return new ItemDTO(name, link, description, imgUrl);
+        return new ItemDTO(name, link, description, imgUrl, userId);
     }
 
     /*

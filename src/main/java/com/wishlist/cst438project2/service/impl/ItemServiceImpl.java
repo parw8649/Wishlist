@@ -38,7 +38,7 @@ public class ItemServiceImpl implements ItemService {
         log.info("ItemServiceImpl: starting createItem");
 
         // check for existence of item by name
-        ItemDTO dbItemDTO = firebaseIntegration.getItem(itemDTO.getName());
+        ItemDTO dbItemDTO = firebaseIntegration.getItem(itemDTO.getName(), itemDTO.getUserId());
         // if item exists, don't add an identical item? throw err
         if (Objects.nonNull(dbItemDTO)) {
             throw new BadRequestException(Constants.ERROR_ITEM_ALREADY_EXISTS.replace(Constants.KEY_ITEM_NAME, itemDTO.getName()));
@@ -47,7 +47,8 @@ public class ItemServiceImpl implements ItemService {
         // If item does not exist, add the item
         Item item = modelMapper.map(itemDTO, Item.class);
         log.info("\n    name: " + item.getName() + "\n" + "    link: " + item.getLink() + "\n"
-                + "    description: " + item.getDescription() + "\n" + "    imgUrl: " + item.getImgUrl());
+                + "    description: " + item.getDescription() + "\n" + "    imgUrl: "
+                + item.getImgUrl() + "\n" + "    userId: " + item.getUserId());
         ApiFuture<WriteResult> collectionsApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_ITEM).document(item.getName()).set(item);
         String responseTimeStamp = collectionsApiFuture.get().getUpdateTime().toString();
 
@@ -59,8 +60,8 @@ public class ItemServiceImpl implements ItemService {
     /**
      * returns the item found in database by given name
      */
-    private Item fetchItem(String name) {
-        ItemDTO dbItemDTO = firebaseIntegration.getItem(name);
+    private Item fetchItem(String name, int userId) {
+        ItemDTO dbItemDTO = firebaseIntegration.getItem(name, userId);
 
         if(Objects.isNull(dbItemDTO)) {
             throw new BadRequestException(Constants.ERROR_ITEM_DOES_NOT_EXISTS.replace(Constants.KEY_ITEM_NAME, name));

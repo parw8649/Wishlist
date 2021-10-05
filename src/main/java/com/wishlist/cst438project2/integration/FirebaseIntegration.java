@@ -52,25 +52,26 @@ public class FirebaseIntegration {
     }
 
     /**
-     * returns the db item that matches given String or null if not found
+     * returns the db item that matches given item name and userId or null if not found
      * @param name item name to be matched against Item db
      */
     @SneakyThrows
-    public ItemDTO getItem(String name) {
+    public ItemDTO getItem(String name, int userId) {
         log.info("FirebaseIntegration: Starting getItem");
-        DocumentReference documentReference = dbFirestore.collection(Constants.DOCUMENT_ITEM).document(name);
-        ApiFuture<DocumentSnapshot> snapshotApiFuture = documentReference.get();
+        CollectionReference collectionReference = dbFirestore.collection(Constants.DOCUMENT_ITEM);
+        Query query = collectionReference.whereEqualTo(Constants.FIELD_ITEM_NAME, name).whereEqualTo(Constants.FIELD_USER_ID, userId);
+        ApiFuture<QuerySnapshot> snapshotApiFuture = query.get();
 
         try {
-            DocumentSnapshot documentSnapshot = snapshotApiFuture.get();
-            Item item = null;
+            QuerySnapshot querySnapshot = snapshotApiFuture.get();
+            List<Item> item = null;
 
-            if (documentSnapshot.exists()) {
-                item = documentSnapshot.toObject(Item.class);
+            if (querySnapshot.size() == 0) {
+                item = querySnapshot.toObjects(Item.class);
             }
 
             log.info("FirebaseIntegration: Exiting getItem");
-            return item == null ? null : item.fetchItemDTO();
+            return item == null ? null : item.get(0).fetchItemDTO();
         } catch (Exception ex) {
           log.error(ex.getMessage(), ex);
             throw ex;
