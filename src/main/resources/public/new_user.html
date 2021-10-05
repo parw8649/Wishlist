@@ -2,16 +2,34 @@
 <html>
 <head>
     <title>Create Account</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
 </head>
 <body>
-    <h1> New User Information </h1>
-    Username:
-    <input type="text" />
-    <br />
-    Password:
-    <input type="text" />
-    <br />
-    Verify Password:
-    <input type="password" />
+    <div class="card" style="width: 500px; margin: auto; margin-top: 10px; text-align: left; padding: 10px">
+        <h1 class="card-title"> Create New User </h1>
+        <h5 class="card-subtitle mb-2 text-muted">Password must be at least 6 characters long and contain 1 or more special characters (!,$,&,_,etc.)</h5>
+        <div style="margin-left: 20px">
+            <!-- no duplicate usernames -->
+            <div style="margin-block: 15px">
+                <p style="font-size: 150%">Username:</p>
+                <input type="text" placeholder="Enter a username" value="" style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
+            </div>
+            <!-- simple password rules:
+                    minimum length >=6 characters,
+                    alphanumeric,
+                    at least one special character -->
+            <div style="margin-block: 15px">
+                <p style="font-size: 150%">Password:</p>
+                <input type="text" placeholder="Enter a password" value="" style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
+            </div>
+            <div style="margin-block: 15px">
+                <p style="font-size: 150%">Verify Password:</p>
+                <input type="password" placeholder="Verify password" value="" style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
+            </div>
+            <!-- On click, insert new user and direct to /login_page -->
+            <button style="border-radius: 5px; background-color: blue; color: white"><b> Create Account </b></button>
+        </div>
+    </div>
 </body>
 </html>
