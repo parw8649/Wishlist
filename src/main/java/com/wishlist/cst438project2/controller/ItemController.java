@@ -30,9 +30,6 @@ public class ItemController {
     @Autowired
     private ItemService itemService;
 
-    @Autowired
-    private FirebaseIntegration firebaseIntegration;
-
     /**
      * POST request to create an item in the database.
      * returns item creation timestamp
