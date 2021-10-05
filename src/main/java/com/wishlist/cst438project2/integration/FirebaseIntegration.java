@@ -64,14 +64,17 @@ public class FirebaseIntegration {
 
         try {
             QuerySnapshot querySnapshot = snapshotApiFuture.get();
-            List<Item> item = null;
+            Item item = null;
 
-            if (querySnapshot.size() == 0) {
-                item = querySnapshot.toObjects(Item.class);
+            // if item exists, return the item?
+            if (querySnapshot.size() > 0) {
+                log.info("\nFirebaseIntegration: createItem: querySnapshot:");
+                log.info(querySnapshot.toString());
+                item = querySnapshot.toObjects(Item.class).get(0);
             }
 
             log.info("FirebaseIntegration: Exiting getItem");
-            return item == null ? null : item.get(0).fetchItemDTO();
+            return item == null ? null : item.fetchItemDTO();
         } catch (Exception ex) {
           log.error(ex.getMessage(), ex);
             throw ex;
