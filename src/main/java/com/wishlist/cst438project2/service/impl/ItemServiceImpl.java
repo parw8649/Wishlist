@@ -37,7 +37,7 @@ public class ItemServiceImpl implements ItemService {
     public String createItem(ItemDTO itemDTO) {
         log.info("ItemServiceImpl: starting createItem");
 
-        // check for existence of item by name
+        // check for existence of item by name and userId
         ItemDTO dbItemDTO = firebaseIntegration.getItem(itemDTO.getName(), itemDTO.getUserId());
         // if item exists, don't add an identical item? throw err
         if (Objects.nonNull(dbItemDTO)) {
