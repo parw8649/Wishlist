@@ -6,6 +6,8 @@ import com.wishlist.cst438project2.dto.ItemDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
 import com.wishlist.cst438project2.integration.FirebaseIntegration;
 import com.wishlist.cst438project2.service.ItemService;
+
+import java.util.List;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -56,4 +58,22 @@ public class ItemController {
             throw ex;
         }
     }
+
+    /**
+     * GET request to retrieve all items from item collection
+     * returns List<ItemDTO> collection
+     */
+    @RequestMapping("/items")
+    public List<ItemDTO> getAllItems() {
+        log.info("ItemController: Starting getAllItems");
+        try {
+            List<ItemDTO> collection = itemService.getAllItems();
+            log.info("ItemController: Exiting successful getAllItems");
+            return collection;
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
 }

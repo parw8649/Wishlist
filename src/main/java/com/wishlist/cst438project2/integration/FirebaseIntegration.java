@@ -53,6 +53,8 @@ public class FirebaseIntegration {
 
     /**
      * returns the db item that matches given item name and userId or null if not found
+     * <p>
+     * NOTE: some items may have the same name but be connected to different users
      * @param name item name to be matched against Item db
      */
     @SneakyThrows
@@ -77,6 +79,30 @@ public class FirebaseIntegration {
             return item == null ? null : item.fetchItemDTO();
         } catch (Exception ex) {
           log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    /**
+     * returns list of all documents within item collection
+     */
+    @SneakyThrows
+    public List<ItemDTO> getAllItems() {
+        log.info("FirebaseIntegration: Starting getAllItems");
+        List<ItemDTO> collection = new ArrayList<>();
+
+        try {
+            ApiFuture<QuerySnapshot> dbNudge = dbFirestore.collection(Constants.DOCUMENT_ITEM).get();
+            List<QueryDocumentSnapshot> documents = dbNudge.get().getDocuments();
+
+            for(QueryDocumentSnapshot snap : documents) {
+                collection.add(snap.toObject(ItemDTO.class));
+            }
+
+            log.info("FirebaseIntegration: Exiting getAllItems");
+            return collection;
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
             throw ex;
         }
     }

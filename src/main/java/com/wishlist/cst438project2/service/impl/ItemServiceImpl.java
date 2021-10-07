@@ -10,6 +10,8 @@ import com.wishlist.cst438project2.exception.BadRequestException;
 import com.wishlist.cst438project2.exception.ExternalServerException;
 import com.wishlist.cst438project2.integration.FirebaseIntegration;
 import com.wishlist.cst438project2.service.ItemService;
+
+import java.util.List;
 import java.util.Objects;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +57,20 @@ public class ItemServiceImpl implements ItemService {
         log.info("ItemServiceImpl: createItem: responseTimeStamp: {}", responseTimeStamp);
         log.info("ItemServiceImpl: exiting createItem");
         return responseTimeStamp;
+    }
+
+    /**
+     * retrieve all documents from item collection
+     * returns a list of all created items
+     */
+    @SneakyThrows
+    @Override
+    public List<ItemDTO> getAllItems() {
+        log.info("ItemServiceImpl: starting getAllItems");
+        List<ItemDTO> collection = firebaseIntegration.getAllItems();
+
+        log.info("ItemServiceImpl: exiting getAllItems");
+        return collection;
     }
 
     /**
