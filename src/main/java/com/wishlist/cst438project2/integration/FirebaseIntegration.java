@@ -52,27 +52,57 @@ public class FirebaseIntegration {
     }
 
     /**
-     * returns the db item that matches given String or null if not found
+     * returns the db item that matches given item name and userId or null if not found
+     * <p>
+     * NOTE: some items may have the same name but be connected to different users
      * @param name item name to be matched against Item db
      */
     @SneakyThrows
-    public ItemDTO getItem(String name) {
+    public ItemDTO getItem(String name, int userId) {
         log.info("FirebaseIntegration: Starting getItem");
-        DocumentReference documentReference = dbFirestore.collection(Constants.DOCUMENT_ITEM).document(name);
-        ApiFuture<DocumentSnapshot> snapshotApiFuture = documentReference.get();
+        CollectionReference collectionReference = dbFirestore.collection(Constants.DOCUMENT_ITEM);
+        Query query = collectionReference.whereEqualTo(Constants.FIELD_ITEM_NAME, name).whereEqualTo(Constants.FIELD_USER_ID, userId);
+        ApiFuture<QuerySnapshot> snapshotApiFuture = query.get();
 
         try {
-            DocumentSnapshot documentSnapshot = snapshotApiFuture.get();
+            QuerySnapshot querySnapshot = snapshotApiFuture.get();
             Item item = null;
 
-            if (documentSnapshot.exists()) {
-                item = documentSnapshot.toObject(Item.class);
+            // if item exists, return the item?
+            if (querySnapshot.size() > 0) {
+                log.info("\nFirebaseIntegration: createItem: querySnapshot:");
+                log.info(querySnapshot.toString());
+                item = querySnapshot.toObjects(Item.class).get(0);
             }
 
             log.info("FirebaseIntegration: Exiting getItem");
             return item == null ? null : item.fetchItemDTO();
         } catch (Exception ex) {
           log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    /**
+     * returns list of all documents within item collection
+     */
+    @SneakyThrows
+    public List<ItemDTO> getAllItems() {
+        log.info("FirebaseIntegration: Starting getAllItems");
+        List<ItemDTO> collection = new ArrayList<>();
+
+        try {
+            ApiFuture<QuerySnapshot> dbNudge = dbFirestore.collection(Constants.DOCUMENT_ITEM).get();
+            List<QueryDocumentSnapshot> documents = dbNudge.get().getDocuments();
+
+            for(QueryDocumentSnapshot snap : documents) {
+                collection.add(snap.toObject(ItemDTO.class));
+            }
+
+            log.info("FirebaseIntegration: Exiting getAllItems");
+            return collection;
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
             throw ex;
         }
     }
