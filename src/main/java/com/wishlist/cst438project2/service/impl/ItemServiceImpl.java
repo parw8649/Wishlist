@@ -10,6 +10,9 @@ import com.wishlist.cst438project2.exception.BadRequestException;
 import com.wishlist.cst438project2.exception.ExternalServerException;
 import com.wishlist.cst438project2.integration.FirebaseIntegration;
 import com.wishlist.cst438project2.service.ItemService;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +53,15 @@ public class ItemServiceImpl implements ItemService {
                     + item.getImgUrl() + "\n" + "    userId: " + item.getUserId());
         }
         String docId = item.getName();
-        ApiFuture<WriteResult> collectionsApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_ITEM).document(docId).set(item);
+
+        Map<String, Object> docData = new HashMap<>();
+        docData.put(Constants.FIELD_ITEM_NAME, item.getName());
+        docData.put(Constants.FIELD_ITEM_LINK, item.getLink());
+        docData.put(Constants.FIELD_ITEM_DESCRIPTION, item.getDescription());
+        docData.put(Constants.FIELD_ITEM_IMG_URL, item.getImgUrl());
+        docData.put(Constants.FIELD_ITEM_USER_ID, item.getUserId());
+
+        ApiFuture<WriteResult> collectionsApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_ITEM).document(docId).set(docData);
         String responseTimeStamp = collectionsApiFuture.get().getUpdateTime().toString();
 
         log.info("ItemServiceImpl: createItem: responseTimeStamp: {}", responseTimeStamp);
