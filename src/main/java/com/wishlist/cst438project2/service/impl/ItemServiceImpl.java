@@ -38,18 +38,19 @@ public class ItemServiceImpl implements ItemService {
         log.info("ItemServiceImpl: starting createItem");
 
         // check for existence of item by name and userId
-        ItemDTO dbItemDTO = firebaseIntegration.getItem(itemDTO.getName(), itemDTO.getUserId());
+        Item item = fetchItem(itemDTO.getName(), itemDTO.getUserId());
         // if item exists, don't add an identical item? throw err
-        if (Objects.nonNull(dbItemDTO)) {
+        if (Objects.nonNull(item)) {
             throw new BadRequestException(Constants.ERROR_ITEM_ALREADY_EXISTS.replace(Constants.KEY_ITEM_NAME, itemDTO.getName()));
+        } else {
+            // If item does not exist, add the item
+            item = modelMapper.map(itemDTO, Item.class);
+            log.info("\n    name: " + item.getName() + "\n" + "    link: " + item.getLink() + "\n"
+                    + "    description: " + item.getDescription() + "\n" + "    imgUrl: "
+                    + item.getImgUrl() + "\n" + "    userId: " + item.getUserId());
         }
-
-        // If item does not exist, add the item
-        Item item = modelMapper.map(itemDTO, Item.class);
-        log.info("\n    name: " + item.getName() + "\n" + "    link: " + item.getLink() + "\n"
-                + "    description: " + item.getDescription() + "\n" + "    imgUrl: "
-                + item.getImgUrl() + "\n" + "    userId: " + item.getUserId());
-        ApiFuture<WriteResult> collectionsApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_ITEM).document(item.getName()).set(item);
+        String docId = item.getName();
+        ApiFuture<WriteResult> collectionsApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_ITEM).document(docId).set(item);
         String responseTimeStamp = collectionsApiFuture.get().getUpdateTime().toString();
 
         log.info("ItemServiceImpl: createItem: responseTimeStamp: {}", responseTimeStamp);
@@ -64,7 +65,9 @@ public class ItemServiceImpl implements ItemService {
         ItemDTO dbItemDTO = firebaseIntegration.getItem(name, userId);
 
         if(Objects.isNull(dbItemDTO)) {
-            throw new BadRequestException(Constants.ERROR_ITEM_DOES_NOT_EXISTS.replace(Constants.KEY_ITEM_NAME, name));
+//            throw new BadRequestException(Constants.ERROR_ITEM_DOES_NOT_EXISTS.replace(Constants.KEY_ITEM_NAME, name));
+            Item item = null;
+            return item;
         }
 
         return modelMapper.map(dbItemDTO, Item.class);
