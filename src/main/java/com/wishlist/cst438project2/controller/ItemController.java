@@ -1,7 +1,5 @@
 package com.wishlist.cst438project2.controller;
 
-import com.wishlist.cst438project2.common.Constants;
-import com.wishlist.cst438project2.document.Item;
 import com.wishlist.cst438project2.dto.ItemDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
 import com.wishlist.cst438project2.integration.FirebaseIntegration;
@@ -45,7 +43,8 @@ public class ItemController {
             } else {
                 log.info("\n    name: " + itemDTO.getName() + "\n" + "    link: " + itemDTO.getLink() + "\n"
                         + "    description: " + itemDTO.getDescription() + "\n" + "    imgUrl: "
-                        + itemDTO.getImgUrl() + "\n" + "    userId: " + itemDTO.getUserId());
+                        + itemDTO.getImgUrl() + "\n" + "    userId: " + itemDTO.getUserId() + "\n"
+                        + "    priority: " + itemDTO.getPriority());
                 String timestamp = itemService.createItem(itemDTO);
                 log.info("ItemController: exiting successful createItem");
                 return timestamp;
@@ -71,6 +70,19 @@ public class ItemController {
             log.error(ex.getMessage(), ex);
             throw ex;
         }
+    }
+
+    /**
+     * DELETE request to remove the item associated with a given user ID and item name
+     * returns timestamp of successful deletion
+     */
+    @DeleteMapping("/items")
+    public String removeItem(String item_name, int userId) {
+        log.info("ItemController: Starting removeItem");
+        log.info(String.format("ItemController: removeItem:\n    name: %s\n    userId: %s", item_name, userId));
+        // TODO: add item delete confirmation message --> I think that's front end
+        String timestamp = itemService.removeItem(item_name, userId);
+        return timestamp;
     }
 
 }

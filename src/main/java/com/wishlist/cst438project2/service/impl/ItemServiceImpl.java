@@ -1,7 +1,10 @@
 package com.wishlist.cst438project2.service.impl;
 
 import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.WriteResult;
+import com.google.firebase.cloud.FirestoreClient;
 import com.wishlist.cst438project2.common.Constants;
 import com.wishlist.cst438project2.common.Utils;
 import com.wishlist.cst438project2.document.Item;
@@ -31,9 +34,9 @@ public class ItemServiceImpl implements ItemService {
     private FirebaseIntegration firebaseIntegration;
 
     /**
-     * database record creation route for item. Each new item will be set to an auto-incremented id
+     * database record creation route for item.
      * <p>
-     * returns timestamp of record creation.
+     * returns timestamp of successful record creation.
      */
     @SneakyThrows
     @Override
@@ -50,23 +53,20 @@ public class ItemServiceImpl implements ItemService {
             item = modelMapper.map(itemDTO, Item.class);
             log.info("\n    name: " + item.getName() + "\n" + "    link: " + item.getLink() + "\n"
                     + "    description: " + item.getDescription() + "\n" + "    imgUrl: "
-                    + item.getImgUrl() + "\n" + "    userId: " + item.getUserId());
+                    + item.getImgUrl() + "\n" + "    userId: " + item.getUserId() + "\n"
+                    + "    priority: " + item.getPriority());
         }
-        String docId = item.getName();
 
-        Map<String, Object> docData = new HashMap<>();
-        docData.put(Constants.FIELD_ITEM_NAME, item.getName());
-        docData.put(Constants.FIELD_ITEM_LINK, item.getLink());
-        docData.put(Constants.FIELD_ITEM_DESCRIPTION, item.getDescription());
-        docData.put(Constants.FIELD_ITEM_IMG_URL, item.getImgUrl());
-        docData.put(Constants.FIELD_ITEM_USER_ID, item.getUserId());
+        /*
+         * let item documents have a randomly assigned docId, otherwise multiple users can't have items with the same name. . .
+         * I had issues before because I was setting the docId to the item name --> firebase overrode the name field in favor of docId
+         */
+        ApiFuture<WriteResult> collectionsApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_ITEM).document().set(item);
+        String timestamp = collectionsApiFuture.get().getUpdateTime().toString();
 
-        ApiFuture<WriteResult> collectionsApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_ITEM).document(docId).set(docData);
-        String responseTimeStamp = collectionsApiFuture.get().getUpdateTime().toString();
-
-        log.info("ItemServiceImpl: createItem: responseTimeStamp: {}", responseTimeStamp);
+        log.info("ItemServiceImpl: createItem: timestamp: {}", timestamp);
         log.info("ItemServiceImpl: exiting createItem");
-        return responseTimeStamp;
+        return timestamp;
     }
 
     /**
@@ -81,6 +81,18 @@ public class ItemServiceImpl implements ItemService {
 
         log.info("ItemServiceImpl: exiting getAllItems");
         return collection;
+    }
+
+    /**
+     * remove the item associated with a given user ID and item name
+     * returns timestamp of deletion
+     */
+    public String removeItem(String name, int userId) {
+        log.info("ItemServiceImpl: Starting removeItem");
+        // TODO: add item delete confirmation message
+        String docId = firebaseIntegration.getItemDocId(name, userId);
+        String timestamp = firebaseIntegration.removeItem(docId);
+        return timestamp;
     }
 
     /**
