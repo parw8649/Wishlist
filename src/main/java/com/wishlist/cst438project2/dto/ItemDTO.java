@@ -4,6 +4,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Data
 @NoArgsConstructor
@@ -22,6 +23,9 @@ public class ItemDTO {
 
     private int userId;
 
+    @Pattern(regexp = "(low|med|high)", message = "valid priority levels: low, med, high")
+    private String priority;
+
     /**
      * Constructor for an Item Data Transfer Object
      * @param name is the given name of an item, cannot be null
@@ -29,11 +33,12 @@ public class ItemDTO {
      * @param description
      * @param imgUrl is the given URL for where a picture of the item is available
      */
-    public ItemDTO(String name, String link, String description, String imgUrl, int userId) {
+    public ItemDTO(String name, String link, String description, String imgUrl, int userId, String priority) {
         this.name = name;
         this.link = link;
         this.description = description;
         this.imgUrl = imgUrl;
         this.userId = userId;
+        this.priority = priority;
     }
 }
