@@ -40,7 +40,8 @@ public class ItemController {
     @PostMapping("/items")
     public String createItem(@RequestParam String name, @RequestParam(required = false) String link,
                              @RequestParam(required = false) String description,
-                             @RequestParam(required = false) String imgUrl) {
+                             @RequestParam(required = false) String imgUrl,
+                             @RequestParam(defaultValue = "low") String priority) {
         log.info("ItemController: Starting createItem");
         try {
             if (Objects.isNull(name)) {
