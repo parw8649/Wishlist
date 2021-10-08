@@ -16,14 +16,11 @@ public class ItemDTO {
 
     private String description;
 
-    // TODO: later: work on pattern regexp for valid urls
+    // TODO: later: get imgUrl to pass correctly, currently processed as null on intake
 //    @Pattern(regexp = "((http|https)://)((www|cdn).)+[a-zA-Z0-9@:%._+~#?&//=]{2,256}.[a-z]{2,6}/([-a-zA-Z0-9@:%._+~#?&//=]*)", message = "Please enter a valid URL")
     private String imgUrl;
 
     private int userId;
-
-    @Pattern(regexp = "(low|med|high)", message = "valid priorty levles: low, med, high")
-    private String priority;
 
     /**
      * Constructor for an Item Data Transfer Object
@@ -31,14 +28,12 @@ public class ItemDTO {
      * @param link is the given URL for where the item is available
      * @param description
      * @param imgUrl is the given URL for where a picture of the item is available
-     * @param priority is the degree to which a user wants the item
      */
-    public ItemDTO(String name, String link, String description, String imgUrl, int userId, String priority) {
+    public ItemDTO(String name, String link, String description, String imgUrl, int userId) {
         this.name = name;
         this.link = link;
         this.description = description;
         this.imgUrl = imgUrl;
         this.userId = userId;
-        this.priority = priority;
     }
 }

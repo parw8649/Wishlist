@@ -6,6 +6,8 @@ import com.wishlist.cst438project2.dto.ItemDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
 import com.wishlist.cst438project2.integration.FirebaseIntegration;
 import com.wishlist.cst438project2.service.ItemService;
+
+import java.util.List;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -38,16 +40,16 @@ public class ItemController {
      * returns item creation timestamp
      */
     @PostMapping("/items")
-    public String createItem(@RequestParam String name, @RequestParam(required = false) String link,
-                             @RequestParam(required = false) String description,
-                             @RequestParam(required = false) String imgUrl,
-                             @RequestParam(defaultValue = "low") String priority) {
+    public String createItem(@RequestBody ItemDTO itemDTO) {
         log.info("ItemController: Starting createItem");
         try {
-            if (Objects.isNull(name)) {
+            if (Objects.isNull(itemDTO) || (itemDTO.getName().isBlank() || Objects.isNull(itemDTO.getUserId()))) {
                 throw new BadRequestException();
             } else {
-                String timestamp = itemService.createItem(new ItemDTO(name, link, description, imgUrl));
+                log.info("\n    name: " + itemDTO.getName() + "\n" + "    link: " + itemDTO.getLink() + "\n"
+                        + "    description: " + itemDTO.getDescription() + "\n" + "    imgUrl: "
+                        + itemDTO.getImgUrl() + "\n" + "    userId: " + itemDTO.getUserId());
+                String timestamp = itemService.createItem(itemDTO);
                 log.info("ItemController: exiting successful createItem");
                 return timestamp;
             }
@@ -57,27 +59,21 @@ public class ItemController {
         }
     }
 
-    // TODO: make list document, DTO, controller, service, serviceImpl
-    // TODO: move removeItem to listController --> removing item from list
-//    /**
-//     * DELETE request to remove an list document from the database.
-//     * returns item update timestamp
-//     */
-//    @DeleteMapping("/items")
-//    public String removeItem(@RequestParam String item_name) {
-//        log.info("ItemController: Starting removeItem");
-//
-//        try {
-//            if (Objects.isNull(item_name) || item_name.isEmpty()) {
-//                throw new BadRequestException();
-//            }
-//            itemService.removeItem(item_name);
-//            log.info("ItemController: Exiting removeItem");
-//
-//            return Constants.ITEM_REMOVED + item_name;
-//        } catch (Exception ex) {
-//            log.error(ex.getMessage(), ex);
-//            throw ex;
-//        }
-//    }
+    /**
+     * GET request to retrieve all items from item collection
+     * returns List<ItemDTO> collection
+     */
+    @RequestMapping("/items")
+    public List<ItemDTO> getAllItems() {
+        log.info("ItemController: Starting getAllItems");
+        try {
+            List<ItemDTO> collection = itemService.getAllItems();
+            log.info("ItemController: Exiting successful getAllItems");
+            return collection;
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
 }

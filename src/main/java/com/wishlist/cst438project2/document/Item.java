@@ -13,19 +13,18 @@ import lombok.Data;
 
 @Data
 public class Item {
-//    @DocumentId
+    @DocumentId
     private String name;
     private String link;
     private String description;
     private String imgUrl;
     private int userId;
-    private String priority;
 
     /**
      * returns an Item Data Transfer Object with parameters matching the current Item obj
      */
     public ItemDTO fetchItemDTO() {
-        return new ItemDTO(name, link, description, imgUrl, userId, priority);
+        return new ItemDTO(name, link, description, imgUrl, userId);
     }
 
     /*
