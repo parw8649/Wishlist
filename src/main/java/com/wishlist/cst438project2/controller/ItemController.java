@@ -77,13 +77,14 @@ public class ItemController {
 
     /**
      * DELETE request to remove the item associated with a given user ID and item name
-     * returns timestamp of deletion
+     * returns timestamp of successful deletion
      */
     @DeleteMapping("/items")
-    public String removeItem(String name, int userId) {
+    public String removeItem(String item_name, int userId) {
         log.info("ItemController: Starting removeItem");
-        // TODO: add item delete confirmation message
-        String timestamp = itemService.removeItem(name, userId);
+        log.info(String.format("ItemController: removeItem:\n    name: %s\n    userId: %s", item_name, userId));
+        // TODO: add item delete confirmation message --> I think that's front end
+        String timestamp = itemService.removeItem(item_name, userId);
         return timestamp;
     }
 

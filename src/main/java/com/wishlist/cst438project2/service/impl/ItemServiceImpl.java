@@ -36,7 +36,7 @@ public class ItemServiceImpl implements ItemService {
     /**
      * database record creation route for item.
      * <p>
-     * returns document id of record creation.
+     * returns timestamp of successful record creation.
      */
     @SneakyThrows
     @Override
@@ -56,22 +56,17 @@ public class ItemServiceImpl implements ItemService {
                     + item.getImgUrl() + "\n" + "    userId: " + item.getUserId() + "\n"
                     + "    priority: " + item.getPriority());
         }
-//        String docId = item.getName();
 
-        Map<String, Object> docData = new HashMap<>();
-        docData.put(Constants.FIELD_ITEM_NAME, item.getName());
-        docData.put(Constants.FIELD_ITEM_LINK, item.getLink());
-        docData.put(Constants.FIELD_ITEM_DESCRIPTION, item.getDescription());
-        docData.put(Constants.FIELD_ITEM_IMG_URL, item.getImgUrl());
-        docData.put(Constants.FIELD_ITEM_USER_ID, item.getUserId());
+        /*
+         * let item documents have a randomly assigned docId, otherwise multiple users can't have items with the same name. . .
+         * I had issues before because I was setting the docId to the item name --> firebase overrode the name field in favor of docId
+         */
+        ApiFuture<WriteResult> collectionsApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_ITEM).document().set(item);
+        String timestamp = collectionsApiFuture.get().getUpdateTime().toString();
 
-        // let item documents have a randomly assigned docId, otherwise multiple users can't have items with the same name. . .
-        ApiFuture<DocumentReference> collectionsApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_ITEM).add(docData);
-        String docId = collectionsApiFuture.get().getId();
-
-        log.info("ItemServiceImpl: createItem: docId: {}", docId);
+        log.info("ItemServiceImpl: createItem: timestamp: {}", timestamp);
         log.info("ItemServiceImpl: exiting createItem");
-        return docId;
+        return timestamp;
     }
 
     /**

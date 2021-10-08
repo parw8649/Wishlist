@@ -143,17 +143,21 @@ public class FirebaseIntegration {
      */
     @SneakyThrows
     public String getItemDocId(String name, int userId) {
-        log.info("FirebaseIntegration: Starting getItem");
+        log.info("FirebaseIntegration: Starting getItemdocId");
         CollectionReference collectionReference = dbFirestore.collection(Constants.DOCUMENT_ITEM);
         Query query = collectionReference.whereEqualTo(Constants.FIELD_ITEM_NAME, name).whereEqualTo(Constants.FIELD_USER_ID, userId);
         ApiFuture<QuerySnapshot> snapshotApiFuture = query.get();
 
         try {
             QuerySnapshot querySnapshot = snapshotApiFuture.get();
+//            log.info(String.format("FirebaseIntegration: getItemDocId:\n    querySnapshot.size(): %d", querySnapshot.size()));
+
             if ((querySnapshot.size() < 1) || (querySnapshot.size() > 1)) {
                 throw new BadRequestException(Constants.ERROR_ITEM_NOT_FOUND);
             }
 
+            log.info(String.format("FirebaseIntegration: getItemdocId: %s", querySnapshot.getDocuments().get(0).getId()));
+            log.info("FirebaseIntegration: Exiting getItemdocId");
             return querySnapshot.getDocuments().get(0).getId();
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
