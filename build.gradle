@@ -2,7 +2,6 @@ plugins {
 	id 'org.springframework.boot' version '2.5.4'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
-	id 'war'
 }
 
 group = 'com.wishlist'
@@ -20,7 +19,6 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 
 	// https://mvnrepository.com/artifact/com.google.firebase/firebase-admin
 	implementation group: 'com.google.firebase', name: 'firebase-admin', version: '7.1.1'
