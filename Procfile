@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT $JAVA_OPTS -jar build/libs/cst438-project2-1.0-SNAPSHOT.jar
+java -war -Dspring.profiles.active=dev build/libs/cst438-project2-0.0.1-SNAPSHOT.war
