@@ -3,6 +3,10 @@ server:
   servlet:
     context-path: /wishlist
 
+java:
+  runtime:
+    version: 11
+
 wishlist:
   firebase:
     service-account-filename: service_account_key.json
