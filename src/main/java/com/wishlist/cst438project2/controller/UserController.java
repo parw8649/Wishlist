@@ -2,16 +2,14 @@ package com.wishlist.cst438project2.controller;
 
 import com.wishlist.cst438project2.common.Constants;
 import com.wishlist.cst438project2.common.Utils;
-import com.wishlist.cst438project2.dto.ChangePasswordDTO;
-import com.wishlist.cst438project2.dto.SignInDTO;
-import com.wishlist.cst438project2.dto.SignUpDTO;
-import com.wishlist.cst438project2.dto.UserDTO;
+import com.wishlist.cst438project2.dto.*;
 import com.wishlist.cst438project2.exception.BadRequestException;
 import com.wishlist.cst438project2.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Objects;
 
 @RestController
@@ -124,6 +122,26 @@ public class UserController {
             log.info("UserController: Exiting login");
 
             return responseTimestamp;
+
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+
+    @DeleteMapping("/deleteUser")
+    public String deleteUser(@RequestBody DeleteUserDTO deleteUserDTO) {
+
+        log.info("AdminController: Starting deleteUser");
+
+        try{
+
+            userService.deleteUser(deleteUserDTO);
+
+            log.info("AdminController: Exiting deleteUser");
+
+            return Constants.USER_DELETED + " " + deleteUserDTO.getUsername();
 
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
