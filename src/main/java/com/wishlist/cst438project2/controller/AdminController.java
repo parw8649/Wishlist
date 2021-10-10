@@ -1,6 +1,7 @@
 package com.wishlist.cst438project2.controller;
 
 import com.wishlist.cst438project2.common.Constants;
+import com.wishlist.cst438project2.dto.ItemDTO;
 import com.wishlist.cst438project2.dto.SignInDTO;
 import com.wishlist.cst438project2.dto.SignUpDTO;
 import com.wishlist.cst438project2.dto.UserDTO;
@@ -113,5 +114,37 @@ public class AdminController {
             log.error(ex.getMessage(), ex);
             throw ex;
         }
+    }
+
+    /**
+     * POST request to create an item in the database.
+     * returns item creation timestamp
+     */
+    @PostMapping("/createItem")
+    public String createItem(@RequestBody ItemDTO itemDTO) {
+        log.info("ItemController: Starting createItem");
+        try {
+            if (Objects.isNull(itemDTO) || (itemDTO.getName().isBlank() || Objects.isNull(itemDTO.getUserId()))) {
+                throw new BadRequestException();
+            } else {
+                String timestamp = adminService.createItem(itemDTO);
+                log.info("ItemController: exiting successful createItem");
+                return timestamp;
+            }
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    /**
+     * DELETE request to remove the item associated with a given user ID and item name
+     * returns timestamp of successful deletion
+     */
+    @DeleteMapping("/removeItems")
+    public String removeItem(@RequestParam String itemName, @RequestParam int userId) {
+        log.info("ItemController: Starting removeItem");
+        log.info("ItemController: removeItem:\n    name: {}\n    userId: {}", itemName, userId);
+        return adminService.removeItem(itemName, userId);
     }
 }
