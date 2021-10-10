@@ -2,12 +2,10 @@ plugins {
 	id 'org.springframework.boot' version '2.5.4'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
-	id 'war'
 }
 
 group = 'com.wishlist'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
 
 configurations {
 	compileOnly {
@@ -21,7 +19,6 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 
 	// https://mvnrepository.com/artifact/com.google.firebase/firebase-admin
 	implementation group: 'com.google.firebase', name: 'firebase-admin', version: '7.1.1'
@@ -32,14 +29,8 @@ dependencies {
 	// Lombok Annotation
 	annotationProcessor 'org.projectlombok:lombok'
 
-	/*// Spring security
-	compileOnly 'org.springframework.boot:spring-boot-starter-security'*/
-
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.5.4'
-
-	/*// https://mvnrepository.com/artifact/org.mindrot.bcrypt/bcrypt
-	implementation group: 'org.mindrot.bcrypt', name: 'bcrypt', version: '0.3'*/
 
 	// https://mvnrepository.com/artifact/javax.validation/validation-api
 	implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'

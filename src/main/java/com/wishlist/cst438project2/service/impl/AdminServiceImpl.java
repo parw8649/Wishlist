@@ -1,12 +1,18 @@
 package com.wishlist.cst438project2.service.impl;
 
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.WriteResult;
 import com.wishlist.cst438project2.common.Constants;
+import com.wishlist.cst438project2.common.Utils;
+import com.wishlist.cst438project2.document.User;
+import com.wishlist.cst438project2.dto.SignUpDTO;
 import com.wishlist.cst438project2.dto.UserDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
 import com.wishlist.cst438project2.integration.FirebaseIntegration;
 import com.wishlist.cst438project2.service.AdminService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +25,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private FirebaseIntegration firebaseIntegration;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public List<UserDTO> getAllUsers() {
@@ -47,5 +56,32 @@ public class AdminServiceImpl implements AdminService {
         firebaseIntegration.deleteUser(username);
 
         log.info("AdminServiceImpl: Exiting deleteUser");
+    }
+
+    @SneakyThrows
+    @Override
+    public String createUser(SignUpDTO signUpDTO) {
+
+        log.info("AdminServiceImpl: Starting createUser");
+
+        UserDTO dbUserDTO = firebaseIntegration.getUser(signUpDTO.getUsername());
+
+        User user;
+        if(Objects.isNull(dbUserDTO)) {
+            user = modelMapper.map(signUpDTO, User.class);
+        } else
+            throw new BadRequestException(Constants.ERROR_USER_ALREADY_EXISTS.replace(Constants.KEY_USERNAME, signUpDTO.getUsername()));
+
+        user.setPassword(Utils.encodePassword(user.getPassword()));
+
+        ApiFuture<WriteResult> collectionApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_USER).document(user.getUsername()).set(user);
+
+        String responseTimestamp = collectionApiFuture.get().getUpdateTime().toString();
+
+        log.info("ResponseTimestamp: {}", responseTimestamp);
+
+        log.info("UserServiceImpl: Exiting saveUser");
+
+        return responseTimestamp;
     }
 }

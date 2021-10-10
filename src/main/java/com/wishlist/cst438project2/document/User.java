@@ -8,7 +8,7 @@ import lombok.Data;
 public class User {
 
     @DocumentId
-    private String id;
+    private String userId;
     private String firstName;
     private String lastName;
     private String emailId;
@@ -17,6 +17,6 @@ public class User {
 
     public UserDTO fetchUserDTO() {
 
-        return new UserDTO(firstName, lastName, emailId, username);
+        return new UserDTO(userId, firstName, lastName, emailId, username);
     }
 }

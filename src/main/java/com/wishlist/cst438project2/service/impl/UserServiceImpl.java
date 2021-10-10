@@ -38,7 +38,13 @@ public class UserServiceImpl implements UserService {
 
         log.info("UserServiceImpl: Starting saveUser");
 
-        User user = fetchUser(signUpDTO.getUsername());
+        UserDTO dbUserDTO = firebaseIntegration.getUser(signUpDTO.getUsername());
+
+        User user;
+        if(Objects.isNull(dbUserDTO)) {
+            user = modelMapper.map(signUpDTO, User.class);
+        } else
+            throw new BadRequestException(Constants.ERROR_USER_ALREADY_EXISTS.replace(Constants.KEY_USERNAME, signUpDTO.getUsername()));
 
         user.setPassword(Utils.encodePassword(user.getPassword()));
 
@@ -105,12 +111,6 @@ public class UserServiceImpl implements UserService {
         User user = fetchUser(signInDTO.getUsername());
 
         String msg = HttpStatus.UNAUTHORIZED.toString();
-
-        //TODO: Login API password check using BCrypt (Pending)
-
-        /*log.info("DB Pass: " + user.getPassword());
-        log.info("login Pass: " + signInDTO.getPassword());
-        log.info("BCrypt Salt: " + BCrypt.gensalt());*/
 
         if(Utils.checkPassword(signInDTO.getPassword(), user.getPassword())) {
             msg = Constants.USER_LOGIN_SUCCESSFUL;

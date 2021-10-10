@@ -1,6 +1,7 @@
 package com.wishlist.cst438project2.controller;
 
 import com.wishlist.cst438project2.common.Constants;
+import com.wishlist.cst438project2.dto.SignUpDTO;
 import com.wishlist.cst438project2.dto.UserDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
 import com.wishlist.cst438project2.service.AdminService;
@@ -57,6 +58,33 @@ public class AdminController {
             log.info("AdminController: Exiting deleteUser");
 
             return Constants.USER_DELETED + " " + username;
+
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    /**
+     * This API is used for user registration by admin
+     * @param signUpDTO
+     * @return user creation timestamp
+     */
+    @PostMapping("/createUser")
+    public String createUser(@RequestBody SignUpDTO signUpDTO) {
+
+        log.info("AdminController: Starting createUser");
+
+        try {
+
+            if (Objects.isNull(signUpDTO))
+                throw new BadRequestException();
+
+            String responseTimestamp = adminService.createUser(signUpDTO);
+
+            log.info("AdminController: Exiting createUser");
+
+            return responseTimestamp;
 
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
