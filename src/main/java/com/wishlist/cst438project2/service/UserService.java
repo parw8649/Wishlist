@@ -1,9 +1,6 @@
 package com.wishlist.cst438project2.service;
 
-import com.wishlist.cst438project2.dto.ChangePasswordDTO;
-import com.wishlist.cst438project2.dto.SignInDTO;
-import com.wishlist.cst438project2.dto.SignUpDTO;
-import com.wishlist.cst438project2.dto.UserDTO;
+import com.wishlist.cst438project2.dto.*;
 
 public interface UserService {
 
@@ -13,4 +10,6 @@ public interface UserService {
     String changePassword(ChangePasswordDTO changePasswordDTO);
 
     String login(SignInDTO signInDTO);
+
+    void deleteUser(DeleteUserDTO deleteUserDTO);
 }

@@ -5,10 +5,7 @@ import com.google.cloud.firestore.WriteResult;
 import com.wishlist.cst438project2.common.Constants;
 import com.wishlist.cst438project2.common.Utils;
 import com.wishlist.cst438project2.document.User;
-import com.wishlist.cst438project2.dto.ChangePasswordDTO;
-import com.wishlist.cst438project2.dto.SignInDTO;
-import com.wishlist.cst438project2.dto.SignUpDTO;
-import com.wishlist.cst438project2.dto.UserDTO;
+import com.wishlist.cst438project2.dto.*;
 import com.wishlist.cst438project2.exception.BadRequestException;
 import com.wishlist.cst438project2.exception.ExternalServerException;
 import com.wishlist.cst438project2.integration.FirebaseIntegration;
@@ -120,6 +117,29 @@ public class UserServiceImpl implements UserService {
         return msg;
     }
 
+    @Override
+    public void deleteUser(DeleteUserDTO deleteUserDTO) {
+
+        log.info("AdminServiceImpl: Starting deleteUser");
+
+        User user = fetchUser(deleteUserDTO.getUsername());
+
+        try {
+
+            if (Utils.checkPassword(deleteUserDTO.getPassword(), user.getPassword()))
+                firebaseIntegration.deleteUser(user.getUsername());
+            else
+                throw new BadRequestException(Constants.ERROR_INVALID_PASSWORD);
+
+        } catch(Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+
+        log.info("AdminServiceImpl: Exiting deleteUser");
+    }
+
+    //Private Methods
     private User fetchUser(String username) {
 
         UserDTO dbUserDTO = firebaseIntegration.getUser(username);
