@@ -5,6 +5,7 @@ import com.google.cloud.firestore.WriteResult;
 import com.wishlist.cst438project2.common.Constants;
 import com.wishlist.cst438project2.common.Utils;
 import com.wishlist.cst438project2.document.User;
+import com.wishlist.cst438project2.dto.SignInDTO;
 import com.wishlist.cst438project2.dto.SignUpDTO;
 import com.wishlist.cst438project2.dto.UserDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
@@ -14,6 +15,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -83,5 +85,33 @@ public class AdminServiceImpl implements AdminService {
         log.info("UserServiceImpl: Exiting saveUser");
 
         return responseTimestamp;
+    }
+
+    @Override
+    public String login(SignInDTO signInDTO) {
+
+        log.info("AdminServiceImpl: Starting login");
+
+        User user = fetchUser(signInDTO.getUsername());
+
+        String msg = HttpStatus.UNAUTHORIZED.toString();
+
+        if(Utils.checkPassword(signInDTO.getPassword(), user.getPassword())) {
+            msg = Constants.USER_LOGIN_SUCCESSFUL;
+        }
+
+        log.info("AdminServiceImpl: Exiting login");
+        return msg;
+    }
+
+    private User fetchUser(String username) {
+
+        UserDTO dbUserDTO = firebaseIntegration.getUser(username);
+
+        if(Objects.isNull(dbUserDTO)) {
+            throw new BadRequestException(Constants.ERROR_USER_DOES_NOT_EXISTS.replace(Constants.KEY_USERNAME, username));
+        }
+
+        return modelMapper.map(dbUserDTO, User.class);
     }
 }
