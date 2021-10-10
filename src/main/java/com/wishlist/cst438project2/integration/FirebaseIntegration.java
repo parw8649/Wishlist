@@ -6,6 +6,7 @@ import com.google.firebase.cloud.FirestoreClient;
 import com.wishlist.cst438project2.common.Constants;
 import com.wishlist.cst438project2.document.Item;
 import com.wishlist.cst438project2.document.User;
+import com.wishlist.cst438project2.document.Wishlist;
 import com.wishlist.cst438project2.dto.ItemDTO;
 import com.wishlist.cst438project2.dto.UserDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
@@ -207,6 +208,33 @@ public class FirebaseIntegration {
             log.info("FirebaseIntegration: Exiting removeItem");
             return responseTimestamp;
         } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    @SneakyThrows
+    public Wishlist getUserWishlist(String userId) {
+
+        log.info("FirebaseIntegration: Starting getUserWishlist for User: {}", userId);
+
+        DocumentReference documentReference = dbFirestore.collection(Constants.DOCUMENT_USER_WISHLIST).document(userId);
+
+        ApiFuture<DocumentSnapshot> snapshotApiFuture = documentReference.get();
+
+        try {
+
+            DocumentSnapshot documentSnapshot = snapshotApiFuture.get();
+
+            Wishlist wishlist = null;
+            if (documentSnapshot.exists()) {
+                wishlist = documentSnapshot.toObject(Wishlist.class);
+            }
+
+            log.info("FirebaseIntegration: Exiting getUserWishlist");
+            return wishlist;
+            
+        } catch(Exception ex) {
             log.error(ex.getMessage(), ex);
             throw ex;
         }

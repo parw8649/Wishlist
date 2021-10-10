@@ -6,6 +6,7 @@ public class Constants {
     public static final String DOCUMENT_PRODUCT = "product";
     public static final String DOCUMENT_USER = "user";
     public static final String DOCUMENT_ITEM = "item";
+    public static final String DOCUMENT_USER_WISHLIST = "wishlist";
 
     /** FIREBASE FIELDS **/
     public static final String FIELD_USERNAME = "username";
@@ -40,4 +41,6 @@ public class Constants {
     /** KEYS */
     public static final String KEY_USERNAME = "{username}";
     public static final String KEY_ITEM_NAME = "{name}";
+    public static final String KEY_USER_ID = "USER_";
+    public static final String KEY_ITEM_ID = "ITEM_";
 }
