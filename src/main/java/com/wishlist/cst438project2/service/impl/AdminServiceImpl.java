@@ -4,7 +4,9 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.WriteResult;
 import com.wishlist.cst438project2.common.Constants;
 import com.wishlist.cst438project2.common.Utils;
+import com.wishlist.cst438project2.document.Item;
 import com.wishlist.cst438project2.document.User;
+import com.wishlist.cst438project2.dto.ItemDTO;
 import com.wishlist.cst438project2.dto.SignInDTO;
 import com.wishlist.cst438project2.dto.SignUpDTO;
 import com.wishlist.cst438project2.dto.UserDTO;
@@ -100,6 +102,47 @@ public class AdminServiceImpl implements AdminService {
         return msg;
     }
 
+    /**
+     * database record creation route for item.
+     * <p>
+     * returns timestamp of successful record creation.
+     */
+    @SneakyThrows
+    @Override
+    public String createItem(ItemDTO itemDTO) {
+        log.info("ItemServiceImpl: starting createItem");
+
+        Item item = fetchItem(itemDTO.getName(), itemDTO.getUserId());
+        if (Objects.nonNull(item)) {
+            throw new BadRequestException(Constants.ERROR_ITEM_ALREADY_EXISTS.replace(Constants.KEY_ITEM_NAME, itemDTO.getName()));
+        } else {
+            item = modelMapper.map(itemDTO, Item.class);
+            log.info("\n    name: " + item.getName() + "\n" + "    link: " + item.getLink() + "\n"
+                    + "    description: " + item.getDescription() + "\n" + "    imgUrl: "
+                    + item.getImgUrl() + "\n" + "    userId: " + item.getUserId() + "\n"
+                    + "    priority: " + item.getPriority());
+        }
+
+        ApiFuture<WriteResult> collectionsApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_ITEM).document().set(item);
+        String timestamp = collectionsApiFuture.get().getUpdateTime().toString();
+
+        log.info("ItemServiceImpl: createItem: timestamp: {}", timestamp);
+        log.info("ItemServiceImpl: exiting createItem");
+        return timestamp;
+    }
+
+    /**
+     * remove the item associated with a given user ID and item name
+     * returns timestamp of deletion
+     */
+    @Override
+    public String removeItem(String name, int userId) {
+        log.info("ItemServiceImpl: Starting removeItem");
+        String docId = firebaseIntegration.getItemDocId(name, userId);
+        return  firebaseIntegration.removeItem(docId);
+    }
+
+    //Private Methods
     private User fetchUser(String username) {
 
         UserDTO dbUserDTO = firebaseIntegration.getUser(username);
@@ -109,5 +152,18 @@ public class AdminServiceImpl implements AdminService {
         }
 
         return modelMapper.map(dbUserDTO, User.class);
+    }
+
+    /**
+     * returns the item found in database by given name
+     */
+    private Item fetchItem(String name, int userId) {
+        ItemDTO dbItemDTO = firebaseIntegration.getItem(name, userId);
+
+        if(Objects.isNull(dbItemDTO)) {
+            return null;
+        }
+
+        return modelMapper.map(dbItemDTO, Item.class);
     }
 }
