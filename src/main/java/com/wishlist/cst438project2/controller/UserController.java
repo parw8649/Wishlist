@@ -129,17 +129,16 @@ public class UserController {
         }
     }
 
-
     @DeleteMapping("/deleteUser")
     public String deleteUser(@RequestBody DeleteUserDTO deleteUserDTO) {
 
-        log.info("AdminController: Starting deleteUser");
+        log.info("UserController: Starting deleteUser");
 
         try{
 
             userService.deleteUser(deleteUserDTO);
 
-            log.info("AdminController: Exiting deleteUser");
+            log.info("UserController: Exiting deleteUser");
 
             return Constants.USER_DELETED + " " + deleteUserDTO.getUsername();
 
