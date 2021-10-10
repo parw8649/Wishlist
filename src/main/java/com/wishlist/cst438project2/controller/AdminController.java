@@ -1,6 +1,7 @@
 package com.wishlist.cst438project2.controller;
 
 import com.wishlist.cst438project2.common.Constants;
+import com.wishlist.cst438project2.dto.SignInDTO;
 import com.wishlist.cst438project2.dto.SignUpDTO;
 import com.wishlist.cst438project2.dto.UserDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
@@ -83,6 +84,28 @@ public class AdminController {
             String responseTimestamp = adminService.createUser(signUpDTO);
 
             log.info("AdminController: Exiting createUser");
+
+            return responseTimestamp;
+
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestBody SignInDTO signInDTO) {
+
+        log.info("AdminController: Starting login");
+
+        try {
+
+            if (Objects.isNull(signInDTO))
+                throw new BadRequestException();
+
+            String responseTimestamp = adminService.login(signInDTO);
+
+            log.info("AdminController: Exiting login");
 
             return responseTimestamp;
 
