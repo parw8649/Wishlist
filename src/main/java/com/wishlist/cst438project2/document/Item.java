@@ -1,6 +1,8 @@
 package com.wishlist.cst438project2.document;
 
 import com.google.cloud.firestore.annotation.DocumentId;
+import com.wishlist.cst438project2.common.Constants;
+import com.wishlist.cst438project2.common.Utils;
 import com.wishlist.cst438project2.dto.ItemDTO;
 import lombok.Data;
 
@@ -14,6 +16,8 @@ import lombok.Data;
 @Data
 public class Item {
 //    @DocumentId
+    //Added to generate unique id required for item --Chaitanya
+    private String itemId = Utils.generateId(Constants.KEY_ITEM_ID);
     private String name;
     private String link;
     private String description;

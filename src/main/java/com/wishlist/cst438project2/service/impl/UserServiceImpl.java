@@ -120,7 +120,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(DeleteUserDTO deleteUserDTO) {
 
-        log.info("AdminServiceImpl: Starting deleteUser");
+        log.info("UserServiceImpl: Starting deleteUser");
 
         User user = fetchUser(deleteUserDTO.getUsername());
 
@@ -136,7 +136,7 @@ public class UserServiceImpl implements UserService {
             throw ex;
         }
 
-        log.info("AdminServiceImpl: Exiting deleteUser");
+        log.info("UserServiceImpl: Exiting deleteUser");
     }
 
     //Private Methods
