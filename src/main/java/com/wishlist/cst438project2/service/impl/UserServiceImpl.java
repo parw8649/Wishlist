@@ -38,7 +38,13 @@ public class UserServiceImpl implements UserService {
 
         log.info("UserServiceImpl: Starting saveUser");
 
-        User user = fetchUser(signUpDTO.getUsername());
+        UserDTO dbUserDTO = firebaseIntegration.getUser(signUpDTO.getUsername());
+
+        User user;
+        if(Objects.isNull(dbUserDTO)) {
+            user = modelMapper.map(signUpDTO, User.class);
+        } else
+            throw new BadRequestException(Constants.ERROR_USER_ALREADY_EXISTS.replace(Constants.KEY_USERNAME, signUpDTO.getUsername()));
 
         user.setPassword(Utils.encodePassword(user.getPassword()));
 
