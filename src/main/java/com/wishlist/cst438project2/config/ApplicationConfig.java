@@ -23,13 +23,13 @@ public class ApplicationConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests()
                 .antMatchers("/*/(?!admin)/**").permitAll()
-                .antMatchers("/*/admin/**").authenticated()
+                //.antMatchers("/*/admin/**").authenticated()
                 .and().httpBasic()
                 .and()
                 .csrf().disable()
                 .cors().and()
                 .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/*/admin/logout"))
+                //.logoutRequestMatcher(new AntPathRequestMatcher("/*/admin/logout"))
                 .deleteCookies("JSESSIONID")
                 .logoutSuccessUrl("/")
                 .invalidateHttpSession(true);

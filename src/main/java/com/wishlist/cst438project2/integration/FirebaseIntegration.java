@@ -9,20 +9,23 @@ import com.wishlist.cst438project2.document.User;
 import com.wishlist.cst438project2.dto.ItemDTO;
 import com.wishlist.cst438project2.dto.UserDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
-import com.wishlist.cst438project2.exception.NotFoundException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Component
 @Slf4j
 public class FirebaseIntegration {
 
     public final Firestore dbFirestore = FirestoreClient.getFirestore();
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @SneakyThrows
     public UserDTO getUser(String username) {
@@ -44,7 +47,7 @@ public class FirebaseIntegration {
 
             log.info("FirebaseIntegration: Exiting getUser");
 
-            return user == null ? null : user.fetchUserDTO();
+            return user == null ? null : modelMapper.map(user, UserDTO.class);
 
         } catch(Exception ex) {
             log.error(ex.getMessage(), ex);
