@@ -24,6 +24,8 @@ public class Constants {
     public static final String ERROR_USER_ALREADY_EXISTS = "User with {username} already exists!";
     public static final String ERROR_USER_DOES_NOT_EXISTS = "User with {username} does not exists!";
     public static final String ERROR_USER_PASSWORD_MISMATCH = "Password & Confirm password does not match!";
+    public static final String ERROR_USERNAME_PASSWORD_MUST_NOT_BE_NULL = "Username or password must not be null or empty";
+    public static final String ERROR_INVALID_PASSWORD = "Invalid password!";
     public static final String ERROR_ITEM_NOT_FOUND = "Item not found";
     public static final String ERROR_ITEM_ALREADY_EXISTS = "Item with name: {name} already exists!";
     public static final String ERROR_ITEM_DOES_NOT_EXISTS = "Item with name: {name} does not exists!";

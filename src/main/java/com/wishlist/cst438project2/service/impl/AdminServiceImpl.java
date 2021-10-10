@@ -49,13 +49,9 @@ public class AdminServiceImpl implements AdminService {
 
         log.info("AdminServiceImpl: Starting deleteUser");
 
-        UserDTO dbUserDTO = firebaseIntegration.getUser(username);
+        User user = fetchUser(username);
 
-        if(Objects.isNull(dbUserDTO)) {
-            throw new BadRequestException(Constants.ERROR_USER_DOES_NOT_EXISTS.replace(Constants.KEY_USERNAME, username));
-        }
-
-        firebaseIntegration.deleteUser(username);
+        firebaseIntegration.deleteUser(user.getUsername());
 
         log.info("AdminServiceImpl: Exiting deleteUser");
     }
