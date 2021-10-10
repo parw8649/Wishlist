@@ -106,12 +106,6 @@ public class UserServiceImpl implements UserService {
 
         String msg = HttpStatus.UNAUTHORIZED.toString();
 
-        //TODO: Login API password check using BCrypt (Pending)
-
-        /*log.info("DB Pass: " + user.getPassword());
-        log.info("login Pass: " + signInDTO.getPassword());
-        log.info("BCrypt Salt: " + BCrypt.gensalt());*/
-
         if(Utils.checkPassword(signInDTO.getPassword(), user.getPassword())) {
             msg = Constants.USER_LOGIN_SUCCESSFUL;
         }
