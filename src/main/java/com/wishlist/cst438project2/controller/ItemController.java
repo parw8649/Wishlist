@@ -1,5 +1,6 @@
 package com.wishlist.cst438project2.controller;
 
+import com.wishlist.cst438project2.document.Item;
 import com.wishlist.cst438project2.dto.ItemDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
 import com.wishlist.cst438project2.integration.FirebaseIntegration;
@@ -85,4 +86,15 @@ public class ItemController {
         return timestamp;
     }
 
+    /**
+     * PATCH request to update information of given name and userId
+     * returns timestamp of successful update
+     */
+    @PatchMapping("items")
+    public String updateItem(String item_name, @RequestBody ItemDTO updatedItemDTO) {
+        log.info("ItemController: Starting updateItem");
+        log.info(String.format("ItemController: updateItem:\n    name: %s\n    userId: %s", item_name, updatedItemDTO.getUserId()));
+        String timestamp = itemService.updateItem(item_name, updatedItemDTO);
+        return timestamp;
+    }
 }
