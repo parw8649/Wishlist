@@ -1,9 +1,7 @@
 package com.wishlist.cst438project2.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class IndexController {
@@ -13,10 +11,9 @@ public class IndexController {
         return "Service is running!";
     }
 
-    // reference: https://stackoverflow.com/a/55286922
-    @GetMapping("/")
-    @ResponseBody
+    // reference: https://stackoverflow.com/a/66986791
+    @RequestMapping(path = "/")
     public String showLanding() {
-        return "landing_page";
+        return "landing_page.html";
     }
 }
