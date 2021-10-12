@@ -17,6 +17,17 @@ repositories {
 	mavenCentral()
 }
 
+jar {
+
+    enabled = true
+    baseName = 'wishlist-app-group-c'
+    version =  '1.0'
+
+}
+bootJar {
+    classifier = 'boot'
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
