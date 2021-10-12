@@ -8,4 +8,5 @@ public interface ItemService {
     String createItem(ItemDTO itemDTO);
     List<ItemDTO> getAllItems();
     String removeItem(String name, int userId);
+    String updateItem(String name, ItemDTO updatedItem);
 }

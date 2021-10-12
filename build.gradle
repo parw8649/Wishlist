@@ -30,6 +30,8 @@ bootJar {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implemenataion 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implemenataion 'org.springframework.boot:spring-boot-devtools'
 
 	// https://mvnrepository.com/artifact/com.google.firebase/firebase-admin
 	implementation group: 'com.google.firebase', name: 'firebase-admin', version: '7.1.1'

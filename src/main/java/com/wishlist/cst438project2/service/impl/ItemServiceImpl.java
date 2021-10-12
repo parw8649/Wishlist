@@ -96,6 +96,18 @@ public class ItemServiceImpl implements ItemService {
     }
 
     /**
+     * update the item associated with a given user ID and item name
+     * returns timestamp of successful update
+     */
+    public String updateItem(String name, ItemDTO updatedItemDTO) {
+        log.info("ItemServiceImpl: Starting updateItem");
+        // TODO: add item delete confirmation message
+        String docId = firebaseIntegration.getItemDocId(name, updatedItemDTO.getUserId());
+        String timestamp = firebaseIntegration.updateItem(docId, updatedItemDTO);
+        return timestamp;
+    }
+
+    /**
      * returns the item found in database by given name
      */
     private Item fetchItem(String name, int userId) {

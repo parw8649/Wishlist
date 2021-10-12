@@ -213,6 +213,27 @@ public class FirebaseIntegration {
         }
     }
 
+    /**
+     * update the item associated with a given document ID
+     * returns timestamp of successful update
+     */
+    @SneakyThrows
+    public String updateItem(String docId, ItemDTO updatedItemDTO) {
+        log.info("FirebaseIntegration: Starting updateItem");
+        try {
+            ApiFuture<WriteResult> writeResult = dbFirestore.collection(Constants.DOCUMENT_ITEM)
+                                                            .document(docId).set(updatedItemDTO);
+            String responseTimestamp = writeResult.get().getUpdateTime().toString();
+            log.info(Constants.ITEM_UPDATED + " {}" , responseTimestamp);
+
+            log.info("FirebaseIntegration: Exiting updateItem");
+            return responseTimestamp;
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
     @SneakyThrows
     public Wishlist getUserWishlist(String userId) {
 
