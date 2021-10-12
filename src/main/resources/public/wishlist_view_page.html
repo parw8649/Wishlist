@@ -2,8 +2,84 @@
 <html>
 <head>
 	<title>My Wishlist</title>
+	<script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.7/dist/handlebars.min.js"></script>
+	<!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+
 </head>
-<body>
-	<h1> Here is your Wishlist! </h1>
+<body class="p-3 mb-2 bg-light text-dark"">
+	<h1 class="text-center"> Here is your Wishlist! </h1>
+	<br>
+	<div class="d-grid gap-2 col-6 mx-auto">
+		<a href="add_item_page.html" class="btn btn-outline-success">Add Item</a>
+	</div>
+	<script type="text/x-handlebars-template" id="wishlist_template">
+			{{#each list}}
+			<br>
+			<div class="card text-dark bg-light mb-3 mx-auto" style="width: 30%; margin-bottom: 10px;">
+				<img class="card-img-top" src="{{this.imgUrl}}" alt="Card image cap">
+				<div class="card-body text-center">
+				  <h5 class="card-title">{{this.name}}</h5>
+				  <h6 class="card-subtitle mb-2 text-muted">Priority: {{this.priority}}</h6>
+				  <p class="card-text">{{this.description}}</p>
+				  <a href="{{this.link}}" class="btn btn-primary">Purchase</a>
+				  <a href="edit_item_page.html" class="btn btn-secondary">Edit Item</a>
+				</div>
+			</div>
+			{{/each}}
+	</script>
+
+
+	<div id="output">
+
+	</div>
+	<script>
+		async function fill_template() {
+			// let url = "127.0.0.1:8080/wishlist/items";
+			// let data = await getData(url);
+			// console.log(data.error);
+			// if (data.error == "There is nothing here"){
+			// 	alert("Name not recognized")
+			// }
+			let data = { 
+				"list": [
+					{
+						"name": "Playstation 5",
+						"link": "https://www.bestbuy.com/site/sony-playstation-5-console/6426149.p?skuId=6426149",
+						"description": "For some epic gaming",
+						"imgUrl": "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8cGxheXN0YXRpb258ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+						"userId": 7,
+						"priority": "high"
+					},
+					{
+						"name": "Xbox Series X",
+						"link": "https://www.bestbuy.com/site/microsoft-xbox-series-x-1tb-console-black/6428324.p?skuId=6428324",
+						"description": "For some epic gaming + Halo",
+						"imgUrl": "https://images.unsplash.com/photo-1605901309584-818e25960a8f?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8eGJveHxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+						"userId": 7,
+						"priority": "high"
+					},
+					{
+						"name": "Black Poplin Long Sleeve Button-Up",
+						"link": "https://www.dapperboi.com/collections/button-ups/products/black-poplin-long-sleeve-button-up",
+						"description": "comfy with good fit. medium please :D",
+						"imgUrl": "https://cdn.shopify.com/s/files/1/0876/1046/products/dapper-boi-shirts-pre-order-campaign-black-poplin-long-sleeve-button-up-30307667378349_555x.png?v=1631752257",
+						"userId": 7,
+						"priority": "med"
+					},
+				]
+			};
+			var template = Handlebars.compile(document.querySelector("#wishlist_template").innerHTML);
+			var filled = template(data, { noEscape: true });
+			document.querySelector("#output").innerHTML = filled;
+		}
+
+		// async function getData(url){
+		// 	let response = await fetch(url);
+		// 	let data     = await response.json();
+		// 	return data;
+		// }
+		fill_template();
+	</script>
 </body>
 </html>
