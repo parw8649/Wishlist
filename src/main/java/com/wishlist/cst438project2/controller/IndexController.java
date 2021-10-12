@@ -8,6 +8,6 @@ public class IndexController {
 
     @GetMapping("/")
     public String healthCheck() {
-        return "Service is running!";
+        return "Home Page";
     }
 }
