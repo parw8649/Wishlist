@@ -37,6 +37,7 @@ public class Constants {
     public static final String USER_UPDATED = "User updated successfully";
     public static final String USER_LOGIN_SUCCESSFUL = "User logged-in successfully";
     public static final String ITEM_REMOVED = "Item removed successfully: ";
+    public static final String ITEM_UPDATED = "Item updated successfully: ";
 
     /** KEYS */
     public static final String KEY_USERNAME = "{username}";
