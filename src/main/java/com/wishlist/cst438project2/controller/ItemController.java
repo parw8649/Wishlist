@@ -60,7 +60,7 @@ public class ItemController {
      * GET request to retrieve all items from item collection
      * returns List<ItemDTO> collection
      */
-    @RequestMapping("/items")
+    @GetMapping("/items")
     public List<ItemDTO> getAllItems() {
         log.info("ItemController: Starting getAllItems");
         try {
@@ -77,8 +77,8 @@ public class ItemController {
      * DELETE request to remove the item associated with a given user ID and item name
      * returns timestamp of successful deletion
      */
-    @DeleteMapping("/items")
-    public String removeItem(String item_name, int userId) {
+    @DeleteMapping("/items?item_name={item_name}")
+    public String removeItem(@PathVariable String item_name, @RequestParam int userId) {
         log.info("ItemController: Starting removeItem");
         log.info(String.format("ItemController: removeItem:\n    name: %s\n    userId: %s", item_name, userId));
         // TODO: add item delete confirmation message --> I think that's front end
@@ -90,11 +90,23 @@ public class ItemController {
      * PATCH request to update information of given name and userId
      * returns timestamp of successful update
      */
-    @PatchMapping("items")
-    public String updateItem(String item_name, @RequestBody ItemDTO updatedItemDTO) {
+    @PatchMapping("/items?item_name={item_name}")
+    public String updateItem(@PathVariable String item_name, @RequestBody ItemDTO updatedItemDTO) {
         log.info("ItemController: Starting updateItem");
         log.info(String.format("ItemController: updateItem:\n    name: %s\n    userId: %s", item_name, updatedItemDTO.getUserId()));
         String timestamp = itemService.updateItem(item_name, updatedItemDTO);
         return timestamp;
+    }
+
+    /**
+     * GET request to retrieve a list of items given a user's id as list identifier
+     * returns list of items
+     */
+    @GetMapping("/items?list={list}")
+    public List<ItemDTO> getUserItems(@PathVariable int list) {
+        log.info("ItemController: Starting getUserItems");
+        log.info(String.format("ItemController: getUserItems:\n     userId: %s", list));
+        List<ItemDTO> userItems = itemService.getUserItems(list);
+        return userItems;
     }
 }
