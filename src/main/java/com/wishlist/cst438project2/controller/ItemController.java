@@ -110,4 +110,17 @@ public class ItemController {
         List<ItemDTO> userItems = itemService.getUserItems(userId);
         return userItems;
     }
+
+    /**
+     * GET request to retrieve list of items matching given keywords
+     * returns list of keyword relevant items
+     */
+    @RequestMapping(method = RequestMethod.GET, params = "search")
+    public List<ItemDTO> getSearchItems(@RequestParam("search") List<String> keywords) {
+        log.info("ItemController: Starting getSearchItems");
+        log.info(String.format("ItemController: getSearchItems:\n     keywords: %s", keywords));
+        // TODO: add functionality to ItemService, ItemServiceImpl, and FirebaseIntegration
+        List<ItemDTO> userItems = itemService.getSearchItems(keywords);
+        return userItems;
+    }
 }
