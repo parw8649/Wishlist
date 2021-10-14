@@ -234,6 +234,33 @@ public class FirebaseIntegration {
         }
     }
 
+    /**
+     * retrieve a list of items given a user's id
+     * returns list of items
+     */
+    @SneakyThrows
+    public List<ItemDTO> getUserItems(int userId) {
+        log.info("FirebaseIntegration: Starting getUserItems");
+        List<ItemDTO> userItems = new ArrayList<>();
+
+        CollectionReference collectionReference = dbFirestore.collection(Constants.DOCUMENT_ITEM);
+        Query query = collectionReference.whereEqualTo(Constants.FIELD_USER_ID, userId);
+        ApiFuture<QuerySnapshot> snapshotApiFuture = query.get();
+
+        try {
+            QuerySnapshot querySnapshot = snapshotApiFuture.get();
+            List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
+            for(QueryDocumentSnapshot doc : documents) {
+                userItems.add(doc.toObject(ItemDTO.class));
+            }
+
+            return userItems;
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
     @SneakyThrows
     public Wishlist getUserWishlist(String userId) {
 

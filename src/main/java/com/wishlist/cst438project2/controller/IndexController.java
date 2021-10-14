@@ -8,7 +8,7 @@ public class IndexController {
 
     @GetMapping("/health-check")
     public String healthCheck() {
-        return "Service is running!";
+        return "health_check.html";
     }
 
     // reference: https://stackoverflow.com/a/66986791

@@ -76,10 +76,10 @@ public class ItemServiceImpl implements ItemService {
     @SneakyThrows
     @Override
     public List<ItemDTO> getAllItems() {
-        log.info("ItemServiceImpl: starting getAllItems");
+//        log.info("ItemServiceImpl: starting getAllItems");
         List<ItemDTO> collection = firebaseIntegration.getAllItems();
 
-        log.info("ItemServiceImpl: exiting getAllItems");
+//        log.info("ItemServiceImpl: exiting getAllItems");
         return collection;
     }
 
@@ -87,9 +87,11 @@ public class ItemServiceImpl implements ItemService {
      * remove the item associated with a given user ID and item name
      * returns timestamp of deletion
      */
+    @SneakyThrows
+    @Override
     public String removeItem(String name, int userId) {
-        log.info("ItemServiceImpl: Starting removeItem");
-        // TODO: add item delete confirmation message
+//        log.info("ItemServiceImpl: Starting removeItem");
+        // TODO: add item delete confirmation message --> front end??
         String docId = firebaseIntegration.getItemDocId(name, userId);
         String timestamp = firebaseIntegration.removeItem(docId);
         return timestamp;
@@ -99,12 +101,24 @@ public class ItemServiceImpl implements ItemService {
      * update the item associated with a given user ID and item name
      * returns timestamp of successful update
      */
+    @SneakyThrows
+    @Override
     public String updateItem(String name, ItemDTO updatedItemDTO) {
-        log.info("ItemServiceImpl: Starting updateItem");
-        // TODO: add item delete confirmation message
+//        log.info("ItemServiceImpl: Starting updateItem");
         String docId = firebaseIntegration.getItemDocId(name, updatedItemDTO.getUserId());
         String timestamp = firebaseIntegration.updateItem(docId, updatedItemDTO);
         return timestamp;
+    }
+
+    /**
+     * returns a list of items given a user's id
+     */
+    @SneakyThrows
+    @Override
+    public List<ItemDTO> getUserItems(int userId) {
+        log.info("ItemServiceImpl: Starting updateItem");
+        List<ItemDTO> userItems = firebaseIntegration.getUserItems(userId);
+        return userItems;
     }
 
     /**
