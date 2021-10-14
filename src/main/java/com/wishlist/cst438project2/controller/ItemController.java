@@ -102,8 +102,9 @@ public class ItemController {
      * GET request to retrieve a list of items given a user's id as list identifier
      * returns list of items
      */
-    @GetMapping
-    public List<ItemDTO> getUserItems(@RequestParam int list) {
+    @RequestMapping(value = "", method = RequestMethod.GET, ,params = "userId")
+    // https://stackoverflow.com/a/43546809
+    public List<ItemDTO> getUserItems(@RequestParam("userId") int list) {
         log.info("ItemController: Starting getUserItems");
         log.info(String.format("ItemController: getUserItems:\n     userId: %s", list));
         List<ItemDTO> userItems = itemService.getUserItems(list);
