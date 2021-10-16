@@ -24,7 +24,7 @@ public class WishlistServiceImpl implements WishlistService {
 
     @SneakyThrows
     @Override
-    public String addItemsWishlist(AddItemsWishlistDTO addItemsWishlistDTO) {
+    public Wishlist addItemsWishlist(AddItemsWishlistDTO addItemsWishlistDTO) {
 
         log.info("WishlistServiceImpl: Starting addItemsWishlist");
 
@@ -45,7 +45,11 @@ public class WishlistServiceImpl implements WishlistService {
 
         log.info("WishlistServiceImpl: Exiting addItemsWishlist");
 
-        return responseTimestamp;
+        if(!responseTimestamp.isEmpty()) {
+             return dbWishlist;
+        }
+
+        return null;
     }
 
     private Wishlist fetchWishlistByUser(String userId) {
