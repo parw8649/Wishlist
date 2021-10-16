@@ -262,21 +262,21 @@ public class FirebaseIntegration {
     }
 
     /**
-     * retrieve a list of items based on search keywords
+     * retrieve a list of items based on search keywords within name and description
      * returns list of items
      */
     @SneakyThrows
-    public List<ItemDTO> getSearchItems(List<String> keywords) {
+    public List<ItemDTO> getSearchAllItems(List<String> keywords) {
         log.info("FirebaseIntegration: Starting getSearchItems");
         List<ItemDTO> allItems = getAllItems();
         List<ItemDTO> searchItems = new ArrayList<>();
 
         for (ItemDTO item : allItems) {
-            if (item.keywordsPresent(keywords)) {
+            if (keywordsPresent(item, keywords)) {
                 searchItems.add(item);
             }
-
         }
+        return searchItems;
     }
     /**
      * ulitity function to search for a list of keywords in a given item

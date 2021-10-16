@@ -126,9 +126,9 @@ public class ItemServiceImpl implements ItemService {
      */
     @SneakyThrows
     @Override
-    public List<ItemDTO> getSearchItems(List<String> keywords) {
+    public List<ItemDTO> getSearchAllItems(List<String> keywords) {
         log.info("ItemServiceImpl: Starting getSearchItems");
-        List<ItemDTO> searchItems = firebaseIntegration.getSearchItems(keywords);
+        List<ItemDTO> searchItems = firebaseIntegration.getSearchAllItems(keywords);
         return searchItems;
     }
 
