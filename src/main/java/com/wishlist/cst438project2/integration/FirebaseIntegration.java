@@ -4,6 +4,7 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import com.wishlist.cst438project2.common.Constants;
+import com.wishlist.cst438project2.document.AccessToken;
 import com.wishlist.cst438project2.document.Item;
 import com.wishlist.cst438project2.document.User;
 import com.wishlist.cst438project2.document.Wishlist;
@@ -281,7 +282,53 @@ public class FirebaseIntegration {
 
             log.info("FirebaseIntegration: Exiting getUserWishlist");
             return wishlist;
-            
+
+        } catch(Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    @SneakyThrows
+    public void saveAccessToken(AccessToken accessToken) {
+
+        log.info("FirebaseIntegration: Starting saveAccessToken");
+
+        try {
+            ApiFuture<WriteResult> collectionApiFuture = dbFirestore.collection(Constants.DOCUMENT_ACCESS_TOKEN).document(accessToken.getToken()).set(accessToken);
+
+            String responseTimestamp = collectionApiFuture.get().getUpdateTime().toString();
+
+            log.info("ResponseTimestamp: {}", responseTimestamp);
+
+            log.info("FirebaseIntegration: Exiting saveAccessToken");
+
+        } catch(Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    @SneakyThrows
+    public AccessToken fetchAccessToken(String token) {
+
+        log.info("FirebaseIntegration: Starting fetchAccessToken");
+
+        try {
+            DocumentReference documentReference = dbFirestore.collection(Constants.DOCUMENT_ACCESS_TOKEN).document(token);
+
+            ApiFuture<DocumentSnapshot> snapshotApiFuture = documentReference.get();
+
+            DocumentSnapshot documentSnapshot = snapshotApiFuture.get();
+
+            AccessToken accessToken = null;
+            if (documentSnapshot.exists()) {
+                accessToken = documentSnapshot.toObject(AccessToken.class);
+            }
+
+            log.info("FirebaseIntegration: Exiting fetchAccessToken");
+            return accessToken;
+
         } catch(Exception ex) {
             log.error(ex.getMessage(), ex);
             throw ex;

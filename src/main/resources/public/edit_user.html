@@ -4,6 +4,8 @@
     <title>Edit Information</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="testScript.js"></script>
 </head>
 <body>
     <div class="card" style="width: 500px; margin: auto; margin-top: 10px; text-align: left; padding: 10px">
@@ -34,7 +36,13 @@
             <p class="text-muted">To delete your account and all associated data:</p>
             <button style="border-radius: 5px; background-color: red; color: white"><b>Delete Account</b></button>
         </div>
-        
+        <!-- Example: GetAllUsers API (Remove it after testing)-->
+        <div>
+            <button onclick="getAllUsers()">Click me</button>
+            <p id = "demo">
+
+            </p>
+        </div>
     </div>
     
 </body>

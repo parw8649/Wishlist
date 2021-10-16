@@ -3,6 +3,7 @@ package com.wishlist.cst438project2.service.impl;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.WriteResult;
 import com.wishlist.cst438project2.common.Constants;
+import com.wishlist.cst438project2.common.TokenManager;
 import com.wishlist.cst438project2.common.Utils;
 import com.wishlist.cst438project2.document.User;
 import com.wishlist.cst438project2.dto.*;
@@ -14,7 +15,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -28,6 +28,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private FirebaseIntegration firebaseIntegration;
+
+    @Autowired
+    private TokenManager tokenManager;
 
     @SneakyThrows
     @Override
@@ -63,6 +66,10 @@ public class UserServiceImpl implements UserService {
         log.info("UserServiceImpl: Starting updateUser");
 
         User user = fetchUser(userDTO.getUsername());
+
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setEmailId(userDTO.getEmailId());
 
         ApiFuture<WriteResult> collectionApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_USER).document(user.getUsername()).set(user);
 
@@ -107,14 +114,15 @@ public class UserServiceImpl implements UserService {
 
         User user = fetchUser(signInDTO.getUsername());
 
-        String msg = HttpStatus.UNAUTHORIZED.toString();
+        String accessToken = null;
 
         if(Utils.checkPassword(signInDTO.getPassword(), user.getPassword())) {
-            msg = Constants.USER_LOGIN_SUCCESSFUL;
+            log.info(Constants.USER_LOGIN_SUCCESSFUL);
+            accessToken = tokenManager.generateToken(user);
         }
 
         log.info("UserServiceImpl: Exiting login");
-        return msg;
+        return accessToken;
     }
 
     @Override
