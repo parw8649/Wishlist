@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Component
 @Slf4j
@@ -261,6 +262,50 @@ public class FirebaseIntegration {
             throw ex;
         }
     }
+
+    /**
+     * retrieve a list of items based on search keywords within name and description
+     * returns list of items
+     */
+    @SneakyThrows
+    public List<ItemDTO> getSearchAllItems(List<String> keywords) {
+        log.info("FirebaseIntegration: Starting getSearchItems");
+        List<ItemDTO> allItems = getAllItems();
+        List<ItemDTO> searchItems = new ArrayList<>();
+
+        for (ItemDTO item : allItems) {
+            if (keywordsPresent(item, keywords)) {
+                searchItems.add(item);
+            }
+        }
+        return searchItems;
+    }
+    /**
+     * ulitity function to search for a list of keywords in a given item
+     * @param keywords refers to list of Strings to look for in an item's name or description
+     * returns true if one or more keywords are present, false in none are present
+     */
+    private boolean keywordsPresent(ItemDTO item, List<String> keywords) {
+        log.info("FirebaseIntegration: Starting keywordsPresent");
+        boolean found = false;
+
+        for (String keyword : keywords) {
+            log.info(String.format("\n    keyword: %s\n    item name: %s\n    item description: %s",
+                    keyword, item.getName(), item.getDescription()));
+            if (item.getName().toLowerCase().contains(keyword)) {
+                found = true;
+                break;
+            }
+            if (item.getDescription() != null && item.getDescription().toLowerCase().contains(keyword)) {
+                found = true;
+                break;
+            }
+        }
+        log.info("FirebaseIntegration: Exiting keywordsPresent");
+        return found;
+    }
+
+
 
     @SneakyThrows
     public Wishlist getUserWishlist(String userId) {

@@ -12,7 +12,7 @@ public class IndexController {
     }
 
     // reference: https://stackoverflow.com/a/66986791
-    @RequestMapping(path = "/")
+    @RequestMapping(method = RequestMethod.GET, path = "/")
     public String showLanding() {
         return "landing_page.html";
     }
