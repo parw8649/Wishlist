@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Component
 @Slf4j
@@ -284,14 +285,22 @@ public class FirebaseIntegration {
      * returns true if one or more keywords are present, false in none are present
      */
     private boolean keywordsPresent(ItemDTO item, List<String> keywords) {
+        log.info("FirebaseIntegration: Starting keywordsPresent");
         boolean found = false;
 
         for (String keyword : keywords) {
-            if (item.getName().contains(keyword) || item.getDescription().contains(keyword)) {
+            log.info(String.format("\n    keyword: %s\n    item name: %s\n    item description: %s",
+                    keyword, item.getName(), item.getDescription()));
+            if (item.getName().toLowerCase().contains(keyword)) {
+                found = true;
+                break;
+            }
+            if (item.getDescription() != null && item.getDescription().toLowerCase().contains(keyword)) {
                 found = true;
                 break;
             }
         }
+        log.info("FirebaseIntegration: Exiting keywordsPresent");
         return found;
     }
 
