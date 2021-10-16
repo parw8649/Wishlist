@@ -7,6 +7,7 @@ public class Constants {
     public static final String DOCUMENT_USER = "user";
     public static final String DOCUMENT_ITEM = "item";
     public static final String DOCUMENT_USER_WISHLIST = "wishlist";
+    public static final String DOCUMENT_ACCESS_TOKEN = "access_token";
 
     /** FIREBASE FIELDS **/
     public static final String FIELD_USERNAME = "username";
@@ -31,6 +32,7 @@ public class Constants {
     public static final String ERROR_ITEM_ALREADY_EXISTS = "Item with name: {name} already exists!";
     public static final String ERROR_ITEM_DOES_NOT_EXISTS = "Item with name: {name} does not exists!";
     public static final String ERROR_UNAUTHORIZED = "Unauthorized";
+    public static final String ERROR_INVALID_TOKEN = "Invalid user token";
 
     /** SUCCESS MESSAGES */
     public static final String USER_DELETED = "User deleted successfully";

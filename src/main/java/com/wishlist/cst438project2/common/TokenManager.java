@@ -15,17 +15,75 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
 import java.util.Date;
+import java.util.Objects;
 
 @Component
 @Slf4j
 public class TokenManager {
+
+    //TODO: Verification check through db
+    /*@Autowired
+    private FirebaseIntegration firebaseIntegration;*/
+
+    /**
+     * This method is used to generate token and save token on firebase
+     * @param user, for which token needs to be generated
+     * @return jwt token
+     */
+    public String generateToken(User user) {
+
+        String token = issueToken(user);
+
+        if(Objects.nonNull(token) && !token.isEmpty()) {
+            //TODO: Verification check through db
+            //firebaseIntegration.saveAccessToken(new AccessToken(user.getUserId(), token));
+            return token;
+        } else
+            return null;
+    }
+
+    /**
+     * This method is used to validate accessToken and fetch user details
+     * @param accessToken
+     * @return user info
+     */
+    public UserTokenDTO getUser(String accessToken) {
+
+        try {
+
+            Claims claims = Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(Constants.KEY_SECRET_TOKEN))
+                    .parseClaimsJws(accessToken).getBody();
+
+            UserTokenDTO userTokenDTO;
+
+            if (claims.containsKey("user")) {
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                userTokenDTO = objectMapper.convertValue(claims.get("user"), UserTokenDTO.class);
+
+                //TODO: Verification check through db
+            /*AccessToken token = null;//firebaseIntegration.fetchAccessToken(accessToken);
+            if(Objects.isNull(token))
+                throw new UnauthorizedException();*/
+
+            } else {
+                log.warn("User token invalid or expired!");
+                throw new UnauthorizedException();
+            }
+
+            return userTokenDTO;
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+            throw new UnauthorizedException();
+        }
+    }
 
     /**
      * This method is used to generate a access token for users when they sign-in
      * @param user, to store some of the user information in the token.
      * @return jwt token
      */
-    public String issueToken(User user) {
+    private String issueToken(User user) {
 
         // The JWT signature algorithm we will be using to sign the token
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
@@ -44,31 +102,5 @@ public class TokenManager {
         JwtBuilder builder = Jwts.builder().claim("user", userTokenDTO).setId(userTokenDTO.getUserId()).setIssuedAt(now);
 
         return builder.signWith(signatureAlgorithm, signingKey).compact();
-    }
-
-    /**
-     * This method is used to validate accessToken and fetch user details
-     * @param accessToken
-     * @return user info
-     */
-    public UserTokenDTO getUser(String accessToken) {
-
-        Claims claims = Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(Constants.KEY_SECRET_TOKEN))
-                .parseClaimsJws(accessToken).getBody();
-
-        UserTokenDTO userTokenDTO;
-
-        if(claims.containsKey("user")) {
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            userTokenDTO = objectMapper.convertValue(claims.get("user"), UserTokenDTO.class);
-
-            //TODO: Need to verify the token against userId from DB
-        } else {
-            log.warn("User token invalid or expired!");
-            throw new UnauthorizedException();
-        }
-
-        return userTokenDTO;
     }
 }
