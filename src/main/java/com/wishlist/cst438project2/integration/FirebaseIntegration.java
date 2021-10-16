@@ -261,6 +261,42 @@ public class FirebaseIntegration {
         }
     }
 
+    /**
+     * retrieve a list of items based on search keywords
+     * returns list of items
+     */
+    @SneakyThrows
+    public List<ItemDTO> getSearchItems(List<String> keywords) {
+        log.info("FirebaseIntegration: Starting getSearchItems");
+        List<ItemDTO> allItems = getAllItems();
+        List<ItemDTO> searchItems = new ArrayList<>();
+
+        for (ItemDTO item : allItems) {
+            if (item.keywordsPresent(keywords)) {
+                searchItems.add(item);
+            }
+
+        }
+    }
+    /**
+     * ulitity function to search for a list of keywords in a given item
+     * @param keywords refers to list of Strings to look for in an item's name or description
+     * returns true if one or more keywords are present, false in none are present
+     */
+    private boolean keywordsPresent(ItemDTO item, List<String> keywords) {
+        boolean found = false;
+
+        for (String keyword : keywords) {
+            if (item.getName().contains(keyword) || item.getDescription().contains(keyword)) {
+                found = true;
+                break;
+            }
+        }
+        return found;
+    }
+
+
+
     @SneakyThrows
     public Wishlist getUserWishlist(String userId) {
 
