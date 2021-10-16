@@ -10,4 +10,5 @@ public interface ItemService {
     String removeItem(String name, int userId);
     String updateItem(String name, ItemDTO updatedItem);
     List<ItemDTO> getUserItems(int userId);
+    List<ItemDTO> getSearchItems(List<String> keywords);
 }
