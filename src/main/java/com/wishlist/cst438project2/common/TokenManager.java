@@ -1,14 +1,18 @@
 package com.wishlist.cst438project2.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wishlist.cst438project2.document.AccessToken;
 import com.wishlist.cst438project2.document.User;
 import com.wishlist.cst438project2.dto.UserTokenDTO;
 import com.wishlist.cst438project2.exception.UnauthorizedException;
+import com.wishlist.cst438project2.integration.FirebaseIntegration;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -19,11 +23,11 @@ import java.util.Objects;
 
 @Component
 @Slf4j
+@DependsOn("firebaseConfig")
 public class TokenManager {
 
-    //TODO: Verification check through db
-    /*@Autowired
-    private FirebaseIntegration firebaseIntegration;*/
+    @Autowired
+    private FirebaseIntegration firebaseIntegration;
 
     /**
      * This method is used to generate token and save token on firebase
@@ -35,8 +39,7 @@ public class TokenManager {
         String token = issueToken(user);
 
         if(Objects.nonNull(token) && !token.isEmpty()) {
-            //TODO: Verification check through db
-            //firebaseIntegration.saveAccessToken(new AccessToken(user.getUserId(), token));
+            firebaseIntegration.saveAccessToken(new AccessToken(user.getUserId(), token));
             return token;
         } else
             return null;
@@ -61,10 +64,9 @@ public class TokenManager {
                 ObjectMapper objectMapper = new ObjectMapper();
                 userTokenDTO = objectMapper.convertValue(claims.get("user"), UserTokenDTO.class);
 
-                //TODO: Verification check through db
-            /*AccessToken token = null;//firebaseIntegration.fetchAccessToken(accessToken);
-            if(Objects.isNull(token))
-                throw new UnauthorizedException();*/
+                AccessToken token = firebaseIntegration.fetchAccessToken(accessToken);
+                if(Objects.isNull(token))
+                    throw new UnauthorizedException();
 
             } else {
                 log.warn("User token invalid or expired!");

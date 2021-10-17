@@ -147,6 +147,16 @@ public class UserServiceImpl implements UserService {
         log.info("UserServiceImpl: Exiting deleteUser");
     }
 
+    @Override
+    public void logout(String accessToken) {
+
+        log.info("UserServiceImpl: Starting logout");
+
+        firebaseIntegration.deleteAccessToken(accessToken);
+
+        log.info("UserServiceImpl: Exiting logout");
+    }
+
     //Private Methods
     private User fetchUser(String username) {
 

@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 @Component
 @Slf4j
@@ -373,6 +372,27 @@ public class FirebaseIntegration {
 
             log.info("FirebaseIntegration: Exiting fetchAccessToken");
             return accessToken;
+
+        } catch(Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    @SneakyThrows
+    public void deleteAccessToken(String accessToken) {
+
+        log.info("FirebaseIntegration: Starting deleteAccessToken");
+
+        try {
+
+            ApiFuture<WriteResult> collectionApiFuture = dbFirestore.collection(Constants.DOCUMENT_ACCESS_TOKEN).document(accessToken).delete();
+
+            String responseTimestamp = collectionApiFuture.get().getUpdateTime().toString();
+
+            log.info(Constants.USER_ACCESS_TOKEN_DELETED + " {}" , responseTimestamp);
+
+            log.info("FirebaseIntegration: Exiting deleteAccessToken");
 
         } catch(Exception ex) {
             log.error(ex.getMessage(), ex);

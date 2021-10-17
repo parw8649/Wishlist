@@ -12,4 +12,6 @@ public interface UserService {
     String login(SignInDTO signInDTO);
 
     void deleteUser(DeleteUserDTO deleteUserDTO);
+
+    void logout(String accessToken);
 }
