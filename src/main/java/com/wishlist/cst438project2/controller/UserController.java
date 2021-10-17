@@ -168,4 +168,27 @@ public class UserController {
             throw ex;
         }
     }
+
+    @PostMapping("/logout")
+    public String logout(@RequestHeader String accessToken) {
+
+        log.info("UserController: Starting logout");
+
+        try {
+            UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
+
+            if(Objects.isNull(userTokenDTO))
+                throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
+
+            userService.logout(accessToken);
+
+            log.info("UserController: Exiting logout");
+
+            return Constants.USER_LOGOUT_SUCCESSFUL;
+
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw new UnauthorizedException();
+        }
+    }
 }

@@ -42,6 +42,8 @@ public class Constants {
     public static final String USER_LOGIN_SUCCESSFUL = "User logged-in successfully";
     public static final String ITEM_REMOVED = "Item removed successfully: ";
     public static final String ITEM_UPDATED = "Item updated successfully: ";
+    public static final String USER_LOGOUT_SUCCESSFUL = "User logged-out successfully";
+    public static final String USER_ACCESS_TOKEN_DELETED = "User access token deleted!";
 
     /** KEYS */
     public static final String KEY_USERNAME = "{username}";
