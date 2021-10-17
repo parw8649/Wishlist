@@ -4,6 +4,7 @@
     <title>Login</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.7/dist/handlebars.min.js"></script>
 </head>
 <body>
     <div class="card" style="width: 350px; margin: auto; margin-top: 10px; text-align: left; padding: 10px">
@@ -17,11 +18,11 @@
                 <input type="text" value="Password" style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
             </div>
             <button style="border-radius: 5px; background-color: blue; color: white"><b>Login</b></button>
-            or <a href="/new_user.html">Create a new user</a>
+            or <a href="/new_user_page.html">Create a new user</a>
         </div>
     </div>
 
-    <script>
+    <script >
         /* Functions:
          * - take in username + password
          * - process login through UserController.java on button click

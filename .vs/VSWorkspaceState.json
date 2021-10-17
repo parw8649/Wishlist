@@ -5,12 +5,12 @@
     "\\src\\main",
     "\\src\\main\\java",
     "\\src\\main\\java\\com",
+    "\\src\\main\\java\\com\\wishlist",
     "\\src\\main\\java\\com\\wishlist\\cst438project2",
-    "\\src\\main\\java\\com\\wishlist\\cst438project2\\document",
-    "\\src\\main\\java\\com\\wishlist\\cst438project2\\dto",
-    "\\src\\main\\java\\com\\wishlist\\cst438project2\\exception",
-    "\\src\\main\\java\\com\\wishlist\\cst438project2\\integration"
+    "\\src\\main\\java\\com\\wishlist\\cst438project2\\controller",
+    "\\src\\main\\resources",
+    "\\src\\main\\resources\\public"
   ],
-  "SelectedNode": "\\src\\main\\java\\com\\wishlist",
+  "SelectedNode": "\\src\\main\\resources\\public\\wishlist_view_page.html",
   "PreviewInSolutionExplorer": false
 }
