@@ -50,7 +50,10 @@ public class ItemServiceImpl implements ItemService {
             throw new BadRequestException(Constants.ERROR_ITEM_ALREADY_EXISTS.replace(Constants.KEY_ITEM_NAME, itemDTO.getName()));
         } else {
             // If item does not exist, add the item
-            item = modelMapper.map(itemDTO, Item.class);
+            //item = modelMapper.map(itemDTO, Item.class);
+            //Below constructor is needed to generate unique ItemId for Item
+            item = new Item(itemDTO.getName(), itemDTO.getLink(), itemDTO.getDescription(), itemDTO.getImgUrl());
+
             log.info("\n    name: " + item.getName() + "\n" + "    link: " + item.getLink() + "\n"
                     + "    description: " + item.getDescription() + "\n" + "    imgUrl: "
                     + item.getImgUrl() + "\n" + "    userId: " + item.getUserId() + "\n"
@@ -61,7 +64,7 @@ public class ItemServiceImpl implements ItemService {
          * let item documents have a randomly assigned docId, otherwise multiple users can't have items with the same name. . .
          * I had issues before because I was setting the docId to the item name --> firebase overrode the name field in favor of docId
          */
-        ApiFuture<WriteResult> collectionsApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_ITEM).document().set(item);
+        ApiFuture<WriteResult> collectionsApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_ITEM).document(item.getItemId()).set(item);
         String timestamp = collectionsApiFuture.get().getUpdateTime().toString();
 
         log.info("ItemServiceImpl: createItem: timestamp: {}", timestamp);

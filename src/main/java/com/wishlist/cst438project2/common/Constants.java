@@ -34,6 +34,7 @@ public class Constants {
     public static final String ERROR_UNAUTHORIZED = "Unauthorized";
     public static final String ERROR_INVALID_TOKEN = "Invalid user token";
     public static final String ERROR_UNABLE_TO_ADD_ITEM_TO_WISHLIST = "Unable to add item to wishlist at the moment";
+    public static final String ERROR_UNABLE_TO_FETCH_WISHLIST = "Unable to fetch wishlist at the moment";
 
     /** SUCCESS MESSAGES */
     public static final String USER_DELETED = "User deleted successfully";
