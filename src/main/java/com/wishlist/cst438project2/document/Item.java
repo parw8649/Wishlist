@@ -5,6 +5,7 @@ import com.wishlist.cst438project2.common.Constants;
 import com.wishlist.cst438project2.common.Utils;
 import com.wishlist.cst438project2.dto.ItemDTO;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * represents an item to be referenced by Wishlist Class.
@@ -14,6 +15,7 @@ import lombok.Data;
  */
 
 @Data
+@NoArgsConstructor
 public class Item {
 //    @DocumentId
     //Added to generate unique id required for item --Chaitanya
@@ -24,6 +26,13 @@ public class Item {
     private String imgUrl;
     private int userId;
     private String priority;
+
+    public Item(String name, String link, String description, String imgUrl) {
+        this.name = name;
+        this.link = link;
+        this.description = description;
+        this.imgUrl = imgUrl;
+    }
 
     /**
      * returns an Item Data Transfer Object with parameters matching the current Item obj

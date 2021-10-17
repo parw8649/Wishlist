@@ -399,4 +399,32 @@ public class FirebaseIntegration {
             throw ex;
         }
     }
+
+    @SneakyThrows
+    public ItemDTO fetchItemByItemId(String itemId) {
+
+        log.info("FirebaseIntegration: Starting fetchItemByItemId");
+
+        DocumentReference documentReference = dbFirestore.collection(Constants.DOCUMENT_ITEM).document(itemId);
+
+        ApiFuture<DocumentSnapshot> snapshotApiFuture = documentReference.get();
+
+        try {
+
+            DocumentSnapshot documentSnapshot = snapshotApiFuture.get();
+
+            Item item = null;
+            if (documentSnapshot.exists()) {
+                item = documentSnapshot.toObject(Item.class);
+            }
+
+            log.info("FirebaseIntegration: Exiting fetchItemByItemId");
+
+            return item == null ? null : modelMapper.map(item, ItemDTO.class);
+
+        } catch(Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
 }
