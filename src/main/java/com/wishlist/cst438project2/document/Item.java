@@ -17,9 +17,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Item {
-//    @DocumentId
-    //Added to generate unique id required for item --Chaitanya
-    private String itemId = Utils.generateId(Constants.KEY_ITEM_ID);
     private String name;
     private String link;
     private String description;
@@ -27,12 +24,12 @@ public class Item {
     private int userId;
     private String priority;
 
-    public Item(String name, String link, String description, String imgUrl) {
-        this.name = name;
-        this.link = link;
-        this.description = description;
-        this.imgUrl = imgUrl;
-    }
+//    public Item(String name, String link, String description, String imgUrl) {
+//        this.name = name;
+//        this.link = link;
+//        this.description = description;
+//        this.imgUrl = imgUrl;
+//    }
 
     /**
      * returns an Item Data Transfer Object with parameters matching the current Item obj
