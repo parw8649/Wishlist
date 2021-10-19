@@ -77,7 +77,7 @@ public class ItemController {
      * DELETE request to remove the item associated with a given user ID and item name
      * returns timestamp of successful deletion
      */
-    @DeleteMapping
+    @RequestMapping(method = RequestMethod.DELETE, params = {"item_name", "userId"})
     public String removeItem(@RequestParam String item_name, @RequestParam int userId) {
         log.info("ItemController: Starting removeItem");
         log.info(String.format("ItemController: removeItem:\n    name: %s\n    userId: %s", item_name, userId));
