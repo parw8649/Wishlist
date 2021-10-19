@@ -50,7 +50,10 @@ public class ItemServiceImpl implements ItemService {
             throw new BadRequestException(Constants.ERROR_ITEM_ALREADY_EXISTS.replace(Constants.KEY_ITEM_NAME, itemDTO.getName()));
         } else {
             // If item does not exist, add the item
-            item = modelMapper.map(itemDTO, Item.class);
+            //item = modelMapper.map(itemDTO, Item.class);
+            //Below constructor is needed to generate unique ItemId for Item
+            item = new Item(itemDTO.getName(), itemDTO.getLink(), itemDTO.getDescription(), itemDTO.getImgUrl());
+
             log.info("\n    name: " + item.getName() + "\n" + "    link: " + item.getLink() + "\n"
                     + "    description: " + item.getDescription() + "\n" + "    imgUrl: "
                     + item.getImgUrl() + "\n" + "    userId: " + item.getUserId() + "\n"
@@ -61,7 +64,7 @@ public class ItemServiceImpl implements ItemService {
          * let item documents have a randomly assigned docId, otherwise multiple users can't have items with the same name. . .
          * I had issues before because I was setting the docId to the item name --> firebase overrode the name field in favor of docId
          */
-        ApiFuture<WriteResult> collectionsApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_ITEM).document().set(item);
+        ApiFuture<WriteResult> collectionsApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_ITEM).document(item.getItemId()).set(item);
         String timestamp = collectionsApiFuture.get().getUpdateTime().toString();
 
         log.info("ItemServiceImpl: createItem: timestamp: {}", timestamp);
@@ -76,10 +79,10 @@ public class ItemServiceImpl implements ItemService {
     @SneakyThrows
     @Override
     public List<ItemDTO> getAllItems() {
-        log.info("ItemServiceImpl: starting getAllItems");
+//        log.info("ItemServiceImpl: starting getAllItems");
         List<ItemDTO> collection = firebaseIntegration.getAllItems();
 
-        log.info("ItemServiceImpl: exiting getAllItems");
+//        log.info("ItemServiceImpl: exiting getAllItems");
         return collection;
     }
 
@@ -87,9 +90,11 @@ public class ItemServiceImpl implements ItemService {
      * remove the item associated with a given user ID and item name
      * returns timestamp of deletion
      */
+    @SneakyThrows
+    @Override
     public String removeItem(String name, int userId) {
-        log.info("ItemServiceImpl: Starting removeItem");
-        // TODO: add item delete confirmation message
+//        log.info("ItemServiceImpl: Starting removeItem");
+        // TODO: add item delete confirmation message --> front end??
         String docId = firebaseIntegration.getItemDocId(name, userId);
         String timestamp = firebaseIntegration.removeItem(docId);
         return timestamp;
@@ -99,12 +104,35 @@ public class ItemServiceImpl implements ItemService {
      * update the item associated with a given user ID and item name
      * returns timestamp of successful update
      */
+    @SneakyThrows
+    @Override
     public String updateItem(String name, ItemDTO updatedItemDTO) {
-        log.info("ItemServiceImpl: Starting updateItem");
-        // TODO: add item delete confirmation message
+//        log.info("ItemServiceImpl: Starting updateItem");
         String docId = firebaseIntegration.getItemDocId(name, updatedItemDTO.getUserId());
         String timestamp = firebaseIntegration.updateItem(docId, updatedItemDTO);
         return timestamp;
+    }
+
+    /**
+     * returns a list of items given a user's id
+     */
+    @SneakyThrows
+    @Override
+    public List<ItemDTO> getUserItems(int userId) {
+//        log.info("ItemServiceImpl: Starting updateItem");
+        List<ItemDTO> userItems = firebaseIntegration.getUserItems(userId);
+        return userItems;
+    }
+
+    /**
+     * returns a list of items based on search keywords
+     */
+    @SneakyThrows
+    @Override
+    public List<ItemDTO> getSearchAllItems(List<String> keywords) {
+        log.info("ItemServiceImpl: Starting getSearchItems");
+        List<ItemDTO> searchItems = firebaseIntegration.getSearchAllItems(keywords);
+        return searchItems;
     }
 
     /**

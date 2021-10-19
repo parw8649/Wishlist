@@ -4,6 +4,7 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import com.wishlist.cst438project2.common.Constants;
+import com.wishlist.cst438project2.document.AccessToken;
 import com.wishlist.cst438project2.document.Item;
 import com.wishlist.cst438project2.document.User;
 import com.wishlist.cst438project2.document.Wishlist;
@@ -234,6 +235,77 @@ public class FirebaseIntegration {
         }
     }
 
+    /**
+     * retrieve a list of items given a user's id
+     * returns list of items
+     */
+    @SneakyThrows
+    public List<ItemDTO> getUserItems(int userId) {
+        log.info("FirebaseIntegration: Starting getUserItems");
+        List<ItemDTO> userItems = new ArrayList<>();
+
+        CollectionReference collectionReference = dbFirestore.collection(Constants.DOCUMENT_ITEM);
+        Query query = collectionReference.whereEqualTo(Constants.FIELD_USER_ID, userId);
+        ApiFuture<QuerySnapshot> snapshotApiFuture = query.get();
+
+        try {
+            QuerySnapshot querySnapshot = snapshotApiFuture.get();
+            List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
+            for(QueryDocumentSnapshot doc : documents) {
+                userItems.add(doc.toObject(ItemDTO.class));
+            }
+
+            return userItems;
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    /**
+     * retrieve a list of items based on search keywords within name and description
+     * returns list of items
+     */
+    @SneakyThrows
+    public List<ItemDTO> getSearchAllItems(List<String> keywords) {
+        log.info("FirebaseIntegration: Starting getSearchItems");
+        List<ItemDTO> allItems = getAllItems();
+        List<ItemDTO> searchItems = new ArrayList<>();
+
+        for (ItemDTO item : allItems) {
+            if (keywordsPresent(item, keywords)) {
+                searchItems.add(item);
+            }
+        }
+        return searchItems;
+    }
+    /**
+     * ulitity function to search for a list of keywords in a given item
+     * @param keywords refers to list of Strings to look for in an item's name or description
+     * returns true if one or more keywords are present, false in none are present
+     */
+    private boolean keywordsPresent(ItemDTO item, List<String> keywords) {
+        log.info("FirebaseIntegration: Starting keywordsPresent");
+        boolean found = false;
+
+        for (String keyword : keywords) {
+            log.info(String.format("\n    keyword: %s\n    item name: %s\n    item description: %s",
+                    keyword, item.getName(), item.getDescription()));
+            if (item.getName().toLowerCase().contains(keyword)) {
+                found = true;
+                break;
+            }
+            if (item.getDescription() != null && item.getDescription().toLowerCase().contains(keyword)) {
+                found = true;
+                break;
+            }
+        }
+        log.info("FirebaseIntegration: Exiting keywordsPresent");
+        return found;
+    }
+
+
+
     @SneakyThrows
     public Wishlist getUserWishlist(String userId) {
 
@@ -254,7 +326,102 @@ public class FirebaseIntegration {
 
             log.info("FirebaseIntegration: Exiting getUserWishlist");
             return wishlist;
-            
+
+        } catch(Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    @SneakyThrows
+    public void saveAccessToken(AccessToken accessToken) {
+
+        log.info("FirebaseIntegration: Starting saveAccessToken");
+
+        try {
+            ApiFuture<WriteResult> collectionApiFuture = dbFirestore.collection(Constants.DOCUMENT_ACCESS_TOKEN).document(accessToken.getToken()).set(accessToken);
+
+            String responseTimestamp = collectionApiFuture.get().getUpdateTime().toString();
+
+            log.info("ResponseTimestamp: {}", responseTimestamp);
+
+            log.info("FirebaseIntegration: Exiting saveAccessToken");
+
+        } catch(Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    @SneakyThrows
+    public AccessToken fetchAccessToken(String token) {
+
+        log.info("FirebaseIntegration: Starting fetchAccessToken");
+
+        try {
+            DocumentReference documentReference = dbFirestore.collection(Constants.DOCUMENT_ACCESS_TOKEN).document(token);
+
+            ApiFuture<DocumentSnapshot> snapshotApiFuture = documentReference.get();
+
+            DocumentSnapshot documentSnapshot = snapshotApiFuture.get();
+
+            AccessToken accessToken = null;
+            if (documentSnapshot.exists()) {
+                accessToken = documentSnapshot.toObject(AccessToken.class);
+            }
+
+            log.info("FirebaseIntegration: Exiting fetchAccessToken");
+            return accessToken;
+
+        } catch(Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    @SneakyThrows
+    public void deleteAccessToken(String accessToken) {
+
+        log.info("FirebaseIntegration: Starting deleteAccessToken");
+
+        try {
+
+            ApiFuture<WriteResult> collectionApiFuture = dbFirestore.collection(Constants.DOCUMENT_ACCESS_TOKEN).document(accessToken).delete();
+
+            String responseTimestamp = collectionApiFuture.get().getUpdateTime().toString();
+
+            log.info(Constants.USER_ACCESS_TOKEN_DELETED + " {}" , responseTimestamp);
+
+            log.info("FirebaseIntegration: Exiting deleteAccessToken");
+
+        } catch(Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    @SneakyThrows
+    public ItemDTO fetchItemByItemId(String itemId) {
+
+        log.info("FirebaseIntegration: Starting fetchItemByItemId");
+
+        DocumentReference documentReference = dbFirestore.collection(Constants.DOCUMENT_ITEM).document(itemId);
+
+        ApiFuture<DocumentSnapshot> snapshotApiFuture = documentReference.get();
+
+        try {
+
+            DocumentSnapshot documentSnapshot = snapshotApiFuture.get();
+
+            Item item = null;
+            if (documentSnapshot.exists()) {
+                item = documentSnapshot.toObject(Item.class);
+            }
+
+            log.info("FirebaseIntegration: Exiting fetchItemByItemId");
+
+            return item == null ? null : modelMapper.map(item, ItemDTO.class);
+
         } catch(Exception ex) {
             log.error(ex.getMessage(), ex);
             throw ex;

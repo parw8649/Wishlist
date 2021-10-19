@@ -1,15 +1,16 @@
 package com.wishlist.cst438project2.controller;
 
 import com.wishlist.cst438project2.common.Constants;
+import com.wishlist.cst438project2.common.TokenManager;
 import com.wishlist.cst438project2.common.Utils;
 import com.wishlist.cst438project2.dto.*;
 import com.wishlist.cst438project2.exception.BadRequestException;
+import com.wishlist.cst438project2.exception.UnauthorizedException;
 import com.wishlist.cst438project2.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.Objects;
 
 @RestController
@@ -19,6 +20,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private TokenManager tokenManager;
 
     /**
      * This API is used for user registration
@@ -53,11 +57,16 @@ public class UserController {
      * @return user creation timestamp
      */
     @PutMapping("/updateUser")
-    public UserDTO updateUser(@RequestBody UserDTO userDTO) {
+    public UserDTO updateUser(@RequestHeader String accessToken, @RequestBody UserDTO userDTO) {
 
         log.info("UserController: Starting updateUser");
 
         try {
+
+            UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
+
+            if(Objects.isNull(userTokenDTO))
+                throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
 
             if(Objects.isNull(userDTO))
                 throw new BadRequestException();
@@ -80,11 +89,16 @@ public class UserController {
      * @return message if the password was changed successfully or returns error message
      */
     @PutMapping("/changePassword")
-    public String changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
+    public String changePassword(@RequestHeader String accessToken, @RequestBody ChangePasswordDTO changePasswordDTO) {
 
         log.info("UserController: Starting changePassword");
 
         try {
+
+            UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
+
+            if(Objects.isNull(userTokenDTO))
+                throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
 
             if(Objects.isNull(changePasswordDTO))
                 throw new BadRequestException();
@@ -117,24 +131,31 @@ public class UserController {
             if (Objects.isNull(signInDTO))
                 throw new BadRequestException();
 
-            String responseTimestamp = userService.login(signInDTO);
+            String accessToken = userService.login(signInDTO);
+            if(Objects.isNull(accessToken))
+                throw new UnauthorizedException();
 
             log.info("UserController: Exiting login");
 
-            return responseTimestamp;
+            return accessToken;
 
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
-            throw ex;
+            throw new UnauthorizedException();
         }
     }
 
     @DeleteMapping("/deleteUser")
-    public String deleteUser(@RequestBody DeleteUserDTO deleteUserDTO) {
+    public String deleteUser(@RequestHeader String accessToken, @RequestBody DeleteUserDTO deleteUserDTO) {
 
         log.info("UserController: Starting deleteUser");
 
         try{
+
+            UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
+
+            if(Objects.isNull(userTokenDTO))
+                throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
 
             userService.deleteUser(deleteUserDTO);
 
@@ -145,6 +166,29 @@ public class UserController {
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
             throw ex;
+        }
+    }
+
+    @PostMapping("/logout")
+    public String logout(@RequestHeader String accessToken) {
+
+        log.info("UserController: Starting logout");
+
+        try {
+            UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
+
+            if(Objects.isNull(userTokenDTO))
+                throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
+
+            userService.logout(accessToken);
+
+            log.info("UserController: Exiting logout");
+
+            return Constants.USER_LOGOUT_SUCCESSFUL;
+
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw new UnauthorizedException();
         }
     }
 }
