@@ -5,6 +5,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.7/dist/handlebars.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
     <div class="card" style="width: 500px; margin: auto; margin-top: 10px; text-align: left; padding: 10px">
@@ -14,21 +15,21 @@
         <script type="text/x-handlebars-template" id="login_template">
             <div style="margin-left: 20px">
                 <div style="margin-block: 15px">
-                    <p style="font-size: 150%">Username:</p>
-                    <input type="text" value={{this.firstname}} style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
+                    <p style="font-size: 150%">First Name:</p>
+                    <input id="first" type="text" value={{this.firstname}} style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
                 </div>
                 <div style="margin-block: 15px">
-                    <p style="font-size: 150%">Username:</p>
-                    <input type="text" value={{this.lastname}} style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
+                    <p style="font-size: 150%">Last Name:</p>
+                    <input id="last" type="text" value={{this.lastname}} style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
                 </div>
                 <div style="margin-block: 15px">
-                    <p style="font-size: 150%">Username:</p>
-                    <input type="text" value={{this.email}} style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
+                    <p style="font-size: 150%">E-mail Address:</p>
+                    <input id="email" type="text" value={{this.email}} style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
                 </div>
                 <!--no duplicate usernames-->
                 <div style="margin-block: 15px">
                     <p style="font-size: 150%">Username:</p>
-                    <input type="text" value={{this.username}} style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
+                    <input id="user" type="text" value={{this.username}} style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
                 </div>
                 <!--simple password rules:
     minimum length >=6 characters,
@@ -36,32 +37,18 @@
     at least one special character-->
                 <div style="margin-block: 15px">
                     <p style="font-size: 150%">Password:</p>
-                    <input type="text" value={{this.password}} style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
+                    <input id="pass" type="text" value={{this.password}} style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
                 </div>
                 <div style="margin-block: 15px">
                     <p style="font-size: 150%">Verify Password:</p>
-                    <input type="password" value="" style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
+                    <input id="vpass" type="password" value="" style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
                 </div>
                 <!--On click, update user and direct to /login_page-->
-                <button style="border-radius: 5px; background-color: blue; color: white; padding-inline: 20px"><b> Save Changes </b></button>
+                <button id="submit" style="border-radius: 5px; background-color: blue; color: white; padding-inline: 20px"><b> Save Changes </b></button>
                 <br /><br />
                 <!--On click, show modal dropdown for confirmation. If yes, redirect to /landing_page-->
                 <p class="text-muted">To delete your account and all associated data:</p>
-                <button style="border-radius: 5px; background-color: red; color: white"><b>Delete Account</b></button>
-            </div>
-        </script>
-
-        <script type="text/x-handlebars-template" id="wishlist_template">
-            <br>
-            <div class="card text-dark bg-light mb-3 mx-auto" style="width: 30%; margin-bottom: 10px;">
-                <img class="card-img-top" src="{{this.imgUrl}}" alt="Card image cap">
-                <div class="card-body text-center">
-                    <h5 class="card-title">{{this.name}}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Priority: {{this.priority}}</h6>
-                    <p class="card-text">{{this.description}}</p>
-                    <a href="{{this.link}}" class="btn btn-primary">Purchase</a>
-                    <a href="edit_item_page.html" class="btn btn-secondary">Edit Item</a>
-                </div>
+                <button id="delete" style="border-radius: 5px; background-color: red; color: white"><b>Delete Account</b></button>
             </div>
         </script>
 
@@ -100,6 +87,19 @@
         var template = Handlebars.compile(document.querySelector("#login_template").innerHTML);
         var filled = template(data.users[1]);
         document.querySelector("#info").innerHTML = filled;
+
+        $("#submit").on("click", updateUser);
+
+        function updateUser() {
+            let firstname = $("#first").val();
+            let lastname = $("#last").val();
+            let email = $("#email").val();
+            let username = $("#user").val();
+            let password = $("#pass").val();
+            let password_verif = $("#vpass").val();
+
+            alert(firstname + " " + lastname + " " + email + " " + username + " " + password + " " + password_verif);
+        }
         
     </script>
 
