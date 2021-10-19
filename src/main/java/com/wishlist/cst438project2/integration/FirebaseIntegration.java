@@ -114,7 +114,7 @@ public class FirebaseIntegration {
      * returns int userId for a given String username
      */
     @SneakyThrows
-    private int getUserId(String username) {
+    public int getUserId(String username) {
         UserDTO user = getUser(username);
         return user.getUserId();
     }

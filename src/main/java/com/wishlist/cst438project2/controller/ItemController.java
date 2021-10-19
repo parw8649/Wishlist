@@ -1,6 +1,7 @@
 package com.wishlist.cst438project2.controller;
 
 import com.wishlist.cst438project2.document.Item;
+import com.wishlist.cst438project2.dto.CreateItemDTO;
 import com.wishlist.cst438project2.dto.ItemDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
 import com.wishlist.cst438project2.integration.FirebaseIntegration;
@@ -34,19 +35,21 @@ public class ItemController {
     /**
      * POST request to create an item in the database.
      * returns item creation timestamp
+     * referenced:
+     *     - pulling mutiple variables in request body: https://stackoverflow.com/questions/53332930/error-when-performing-post-operation-in-spring
      */
     @PostMapping
-    public String createItem(@RequestBody ItemDTO itemDTO) {
+    public String createItem(@RequestBody CreateItemDTO createItemDTO) {
         log.info("ItemController: Starting createItem");
         try {
-            if (Objects.isNull(itemDTO) || (itemDTO.getName().isBlank() || Objects.isNull(itemDTO.getUserId()))) {
+            if (Objects.isNull(createItemDTO.getItemDTO()) || (createItemDTO.getItemDTO().getName().isBlank())) {
                 throw new BadRequestException();
             } else {
-                log.info("\n    name: " + itemDTO.getName() + "\n" + "    link: " + itemDTO.getLink() + "\n"
-                        + "    description: " + itemDTO.getDescription() + "\n" + "    imgUrl: "
-                        + itemDTO.getImgUrl() + "\n" + "    userId: " + itemDTO.getUserId() + "\n"
-                        + "    priority: " + itemDTO.getPriority());
-                String timestamp = itemService.createItem(itemDTO);
+                log.info("\n    name: " + createItemDTO.getItemDTO().getName() + "\n" + "    link: " + createItemDTO.getItemDTO().getLink() + "\n"
+                        + "    description: " + createItemDTO.getItemDTO().getDescription() + "\n" + "    imgUrl: "
+                        + createItemDTO.getItemDTO().getImgUrl() + "\n" + "    priority: " + createItemDTO.getItemDTO().getPriority() + "\n"
+                        + "    username: " + createItemDTO.getUsername());
+                String timestamp = itemService.createItem(createItemDTO.getItemDTO(), createItemDTO.getUsername());
                 log.info("ItemController: exiting successful createItem");
                 return timestamp;
             }

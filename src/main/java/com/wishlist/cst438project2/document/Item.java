@@ -15,9 +15,6 @@ import lombok.Data;
 
 @Data
 public class Item {
-//    @DocumentId
-    //Added to generate unique id required for item --Chaitanya
-    private String itemId = Utils.generateId(Constants.KEY_ITEM_ID);
     private String name;
     private String link;
     private String description;

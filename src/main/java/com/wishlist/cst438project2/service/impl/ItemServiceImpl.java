@@ -40,17 +40,19 @@ public class ItemServiceImpl implements ItemService {
      */
     @SneakyThrows
     @Override
-    public String createItem(ItemDTO itemDTO) {
+    public String createItem(ItemDTO itemDTO, String username) {
         log.info("ItemServiceImpl: starting createItem");
+        int userId = firebaseIntegration.getUserId(username);
 
         // check for existence of item by name and userId
-        Item item = fetchItem(itemDTO.getName(), itemDTO.getUserId());
+        Item item = fetchItem(itemDTO.getName(), userId);
         // if item exists, don't add an identical item? throw err
         if (Objects.nonNull(item)) {
             throw new BadRequestException(Constants.ERROR_ITEM_ALREADY_EXISTS.replace(Constants.KEY_ITEM_NAME, itemDTO.getName()));
         } else {
             // If item does not exist, add the item
             item = modelMapper.map(itemDTO, Item.class);
+            item.setUserId(userId);
             log.info("\n    name: " + item.getName() + "\n" + "    link: " + item.getLink() + "\n"
                     + "    description: " + item.getDescription() + "\n" + "    imgUrl: "
                     + item.getImgUrl() + "\n" + "    userId: " + item.getUserId() + "\n"
