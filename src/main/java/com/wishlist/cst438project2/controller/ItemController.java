@@ -82,6 +82,7 @@ public class ItemController {
      */
     @DeleteMapping
     public String removeItem(@RequestParam String item_name, @RequestParam int userId) {
+        // TODO: adjust from removeItem onward to take String username --> ItemServiceImpl: convert username to userId via firebaseIntegration.getUserId(username)
         log.info("ItemController: Starting removeItem");
         log.info(String.format("ItemController: removeItem:\n    name: %s\n    userId: %s", item_name, userId));
         // TODO: add item delete confirmation message --> I think that's front end
