@@ -304,6 +304,33 @@ public class FirebaseIntegration {
         return found;
     }
 
+    @SneakyThrows
+    public String removeItemsByUser(int userId) {
+        log.info("FirebaseIntegration: Starting removeItemsByUser");
+        String timestamp = "";
+
+        try {
+            List<ItemDTO> userItems = getUserItems(userId);
+            int removed = 0;
+            log.info("FirebaseIntegration: removeItemsByUser\n    userItems size: {}", userItems.size());
+            for (int i = 0; i < userItems.size(); i++) {
+                String docId = getItemDocId(userItems.get(i).getName(),userId);
+                if (i == userItems.size() - 1) {
+                    timestamp = removeItem(docId);
+                } else {
+                    removeItem(docId);
+                }
+                removed++;
+            }
+            log.info("FirebaseIntegration: removeItemsByUser\n    # items removed: {}", removed);
+        } catch (Exception ex) {
+            log.error(ex.getMessage(),ex);
+            throw ex;
+        }
+
+        log.info("FirebaseIntegration: Exiting removeItemsByUser");
+        return timestamp;
+    }
 
 
     @SneakyThrows

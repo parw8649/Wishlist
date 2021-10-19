@@ -139,7 +139,6 @@ public class ItemServiceImpl implements ItemService {
     @SneakyThrows
     @Override
     public String removeItemsByUser(int userId) {
-        //TODO: finish here with userId, then work on refactoring item methods to convert username to userId
         String timestamp = firebaseIntegration.removeItemsByUser(userId);
         return timestamp;
     }

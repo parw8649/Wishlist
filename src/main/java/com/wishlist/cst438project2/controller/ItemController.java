@@ -128,6 +128,8 @@ public class ItemController {
      * DELETE request to remove all items associated with given userId upon account deletion
      * returns timestamp of successful deletion
      */
+    // TODO: remove mapping! I think this is ONLY supposed to be a helper for the delete user account request mapping.
+    // TODO: removeItemsByUser mapping is for testing purposed only!
     @RequestMapping(method = RequestMethod.DELETE, params = "userId")
     public String removeItemsByUser(@RequestParam int userId) {
         log.info("ItemController: Starting removeItemsByUser");
