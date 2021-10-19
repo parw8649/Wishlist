@@ -110,6 +110,16 @@ public class FirebaseIntegration {
     }
 
     /**
+     * helper method for item endpoints
+     * returns int userId for a given String username
+     */
+    @SneakyThrows
+    private int getUserId(String username) {
+        UserDTO user = getUser(username);
+        return user.getUserId();
+    }
+
+    /**
      * returns the db item that matches given item name and userId or null if not found
      * <p>
      * NOTE: some items may have the same name but be connected to different users

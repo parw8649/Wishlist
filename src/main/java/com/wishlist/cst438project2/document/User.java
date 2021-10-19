@@ -14,7 +14,9 @@ public class User {
     private String id;
 
     //Added to generate unique id required for user
-    private String userId = Utils.generateId(Constants.KEY_USER_ID);
+//    private String userId = Utils.generateId(Constants.KEY_USER_ID);
+    // barbara adjusted next line
+    private int userId;
     private String firstName;
     private String lastName;
     private String emailId;
