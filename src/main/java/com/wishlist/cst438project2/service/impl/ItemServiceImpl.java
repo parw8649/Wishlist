@@ -133,6 +133,18 @@ public class ItemServiceImpl implements ItemService {
     }
 
     /**
+     * remove every item associated with a given userId
+     * returns timestamp of successful deletion
+     */
+    @SneakyThrows
+    @Override
+    public String removeItemsByUser(int userId) {
+        //TODO: finish here with userId, then work on refactoring item methods to convert username to userId
+        String timestamp = firebaseIntegration.removeItemsByUser(userId);
+        return timestamp;
+    }
+
+    /**
      * returns the item found in database by given name
      */
     private Item fetchItem(String name, int userId) {

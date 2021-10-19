@@ -123,4 +123,17 @@ public class ItemController {
         List<ItemDTO> userItems = itemService.getSearchAllItems(keywords);
         return userItems;
     }
+
+    /**
+     * DELETE request to remove all items associated with given userId upon account deletion
+     * returns timestamp of successful deletion
+     */
+    @RequestMapping(method = RequestMethod.DELETE, params = "userId")
+    public String removeItemsByUser(@RequestParam int userId) {
+        log.info("ItemController: Starting removeItemsByUser");
+        log.info(String.format("ItemController: removeItemsByUser:\n    userId: %s", userId));
+        String timestamp = itemService.removeItemsByUser(userId);
+        log.info("ItemController: Exiting removeItemsByUser");
+        return timestamp;
+    }
 }
