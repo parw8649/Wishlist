@@ -86,13 +86,13 @@ public class UserServiceImpl implements UserService {
 
     @SneakyThrows
     @Override
-    public String changePassword(ChangePasswordDTO changePasswordDTO) {
+    public String changePassword(String username, ChangePasswordDTO changePasswordDTO) {
 
         log.info("UserServiceImpl: Starting changePassword");
 
-        User user = fetchUser(changePasswordDTO.getUsername());
+        User user = fetchUser(username);
 
-        user.setPassword(Utils.encodePassword(changePasswordDTO.getPassword()));
+        user.setPassword(Utils.encodePassword(changePasswordDTO.getNewPassword()));
 
         ApiFuture<WriteResult> collectionApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_USER).document(user.getUsername()).set(user);
 
