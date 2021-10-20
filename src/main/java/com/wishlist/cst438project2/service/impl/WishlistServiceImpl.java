@@ -37,12 +37,12 @@ public class WishlistServiceImpl implements WishlistService {
             dbWishlist = new Wishlist(addItemsWishlistDTO.getUserId(), addItemsWishlistDTO.getItemIds());
         else {
 
-            List<String> itemIds = dbWishlist.getItemIds();
+            List<Long> itemIds = dbWishlist.getItemIds();
             itemIds.addAll(addItemsWishlistDTO.getItemIds());
             dbWishlist.setItemIds(itemIds);
         }
 
-        ApiFuture<WriteResult> collectionApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_USER_WISHLIST).document(addItemsWishlistDTO.getUserId()).set(dbWishlist);
+        ApiFuture<WriteResult> collectionApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_USER_WISHLIST).document(String.valueOf(addItemsWishlistDTO.getUserId())).set(dbWishlist);
 
         String responseTimestamp = collectionApiFuture.get().getUpdateTime().toString();
 
@@ -56,7 +56,7 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     @Override
-    public WishlistResponseDTO getWishlistByUser(String userId) {
+    public WishlistResponseDTO getWishlistByUser(Long userId) {
 
         log.info("WishlistServiceImpl: Starting addItemsWishlist");
 
@@ -68,7 +68,7 @@ public class WishlistServiceImpl implements WishlistService {
 
             List<ItemDTO> itemDTOList = new LinkedList<>();
 
-            for(String itemId : dbWishlist.getItemIds()) {
+            for(Long itemId : dbWishlist.getItemIds()) {
 
                 try {
                     ItemDTO itemDTO = firebaseIntegration.fetchItemByItemId(itemId);
@@ -85,7 +85,7 @@ public class WishlistServiceImpl implements WishlistService {
         }
     }
 
-    private Wishlist fetchWishlistByUser(String userId) {
+    private Wishlist fetchWishlistByUser(Long userId) {
 
         return firebaseIntegration.getUserWishlist(userId);
     }

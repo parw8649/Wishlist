@@ -7,11 +7,10 @@ import com.wishlist.cst438project2.common.TokenManager;
 import com.wishlist.cst438project2.common.Utils;
 import com.wishlist.cst438project2.document.Item;
 import com.wishlist.cst438project2.document.User;
-import com.wishlist.cst438project2.dto.ItemDTO;
-import com.wishlist.cst438project2.dto.SignInDTO;
-import com.wishlist.cst438project2.dto.SignUpDTO;
-import com.wishlist.cst438project2.dto.UserDTO;
+import com.wishlist.cst438project2.dto.*;
+import com.wishlist.cst438project2.enums.RoleType;
 import com.wishlist.cst438project2.exception.BadRequestException;
+import com.wishlist.cst438project2.exception.UnauthorizedException;
 import com.wishlist.cst438project2.integration.FirebaseIntegration;
 import com.wishlist.cst438project2.service.AdminService;
 import lombok.SneakyThrows;
@@ -89,11 +88,14 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public String login(SignInDTO signInDTO) {
+    public UserLoginDTO login(SignInDTO signInDTO) {
 
         log.info("AdminServiceImpl: Starting login");
 
         User user = fetchUser(signInDTO.getUsername());
+
+        if(!user.getRole().getValue().equals(RoleType.ADMIN.getValue()))
+            throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
 
         String accessToken = null;
 
@@ -102,8 +104,12 @@ public class AdminServiceImpl implements AdminService {
             accessToken = tokenManager.generateToken(user);
         }
 
+        UserLoginDTO userLoginDTO = null;
+        if(Objects.nonNull(accessToken) && !accessToken.isEmpty())
+            userLoginDTO = new UserLoginDTO(user.getUserId(), accessToken);
+
         log.info("AdminServiceImpl: Exiting login");
-        return accessToken;
+        return userLoginDTO;
     }
 
     /**

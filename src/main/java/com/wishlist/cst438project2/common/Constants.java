@@ -49,8 +49,6 @@ public class Constants {
     /** KEYS */
     public static final String KEY_USERNAME = "{username}";
     public static final String KEY_ITEM_NAME = "{name}";
-    public static final String KEY_USER_ID = "USER_";
-    public static final String KEY_ITEM_ID = "ITEM_";
 
     /** SECRETS */
     public static final String KEY_SECRET_TOKEN = "wi$#|i$t";

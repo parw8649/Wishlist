@@ -8,5 +8,5 @@ public interface WishlistService {
 
     Wishlist addItemsWishlist(AddItemsWishlistDTO addItemsWishlistDTO);
 
-    WishlistResponseDTO getWishlistByUser(String userId);
+    WishlistResponseDTO getWishlistByUser(Long userId);
 }

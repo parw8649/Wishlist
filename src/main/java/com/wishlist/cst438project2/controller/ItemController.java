@@ -1,17 +1,18 @@
 package com.wishlist.cst438project2.controller;
 
-import com.wishlist.cst438project2.document.Item;
+import com.wishlist.cst438project2.common.Constants;
+import com.wishlist.cst438project2.common.TokenManager;
 import com.wishlist.cst438project2.dto.ItemDTO;
+import com.wishlist.cst438project2.dto.UserTokenDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
-import com.wishlist.cst438project2.integration.FirebaseIntegration;
+import com.wishlist.cst438project2.exception.UnauthorizedException;
 import com.wishlist.cst438project2.service.ItemService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
-import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
 /**
  * API endpoints for handling item entities in database
@@ -31,14 +32,23 @@ public class ItemController {
     @Autowired
     private ItemService itemService;
 
+    @Autowired
+    private TokenManager tokenManager;
+
     /**
      * POST request to create an item in the database.
      * returns item creation timestamp
      */
     @PostMapping
-    public String createItem(@RequestBody ItemDTO itemDTO) {
+    public String createItem(@RequestHeader String accessToken, @RequestBody ItemDTO itemDTO) {
         log.info("ItemController: Starting createItem");
         try {
+
+            UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
+
+            if(Objects.isNull(userTokenDTO))
+                throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
+
             if (Objects.isNull(itemDTO) || (itemDTO.getName().isBlank() || Objects.isNull(itemDTO.getUserId()))) {
                 throw new BadRequestException();
             } else {
@@ -61,9 +71,15 @@ public class ItemController {
      * returns List<ItemDTO> collection
      */
     @GetMapping
-    public List<ItemDTO> getAllItems() {
+    public List<ItemDTO> getAllItems(@RequestHeader String accessToken) {
         log.info("ItemController: Starting getAllItems");
         try {
+
+            UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
+
+            if(Objects.isNull(userTokenDTO))
+                throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
+
             List<ItemDTO> collection = itemService.getAllItems();
             log.info("ItemController: Exiting successful getAllItems");
             return collection;
@@ -77,11 +93,17 @@ public class ItemController {
      * DELETE request to remove the item associated with a given user ID and item name
      * returns timestamp of successful deletion
      */
-    @RequestMapping(method = RequestMethod.DELETE, params = {"item_name", "userId"})
-    public String removeItem(@RequestParam String item_name, @RequestParam int userId) {
+    @RequestMapping(method = RequestMethod.DELETE, params = {"item_name", "userId"}, headers = "accessToken")
+    public String removeItem(@RequestHeader String accessToken, @RequestParam String item_name, @RequestParam int userId) {
         log.info("ItemController: Starting removeItem");
         log.info(String.format("ItemController: removeItem:\n    name: %s\n    userId: %s", item_name, userId));
         // TODO: add item delete confirmation message --> I think that's front end
+
+        UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
+
+        if(Objects.isNull(userTokenDTO))
+            throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
+
         String timestamp = itemService.removeItem(item_name, userId);
         return timestamp;
     }
@@ -91,9 +113,15 @@ public class ItemController {
      * returns timestamp of successful update
      */
     @PatchMapping
-    public String updateItem(@RequestParam String item_name, @RequestBody ItemDTO updatedItemDTO) {
+    public String updateItem(@RequestHeader String accessToken, @RequestParam String item_name, @RequestBody ItemDTO updatedItemDTO) {
         log.info("ItemController: Starting updateItem");
         log.info(String.format("ItemController: updateItem:\n    name: %s\n    userId: %s", item_name, updatedItemDTO.getUserId()));
+
+        UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
+
+        if(Objects.isNull(userTokenDTO))
+            throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
+
         String timestamp = itemService.updateItem(item_name, updatedItemDTO);
         return timestamp;
     }
@@ -102,11 +130,17 @@ public class ItemController {
      * GET request to retrieve a list of items given a user's id as list identifier
      * returns list of items
      */
-    @RequestMapping(method = RequestMethod.GET, params = "list")
+    @RequestMapping(method = RequestMethod.GET, params = "list", headers = "accessToken")
     // https://stackoverflow.com/a/43546809
-    public List<ItemDTO> getUserItems(@RequestParam("list") int userId) {
+    public List<ItemDTO> getUserItems(@RequestHeader String accessToken, @RequestParam("list") int userId) {
         log.info("ItemController: Starting getUserItems");
         log.info(String.format("ItemController: getUserItems:\n     userId: %s", userId));
+
+        UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
+
+        if(Objects.isNull(userTokenDTO))
+            throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
+
         List<ItemDTO> userItems = itemService.getUserItems(userId);
         return userItems;
     }
@@ -115,10 +149,16 @@ public class ItemController {
      * GET request to retrieve list of items matching given keywords
      * returns list of keyword relevant items
      */
-    @RequestMapping(method = RequestMethod.GET, params = "search")
-    public List<ItemDTO> getSearchAllItems(@RequestParam("search") List<String> keywords) {
+    @RequestMapping(method = RequestMethod.GET, params = "search", headers = "accessToken")
+    public List<ItemDTO> getSearchAllItems(@RequestHeader String accessToken, @RequestParam("search") List<String> keywords) {
         log.info("ItemController: Starting getSearchItems");
         log.info(String.format("ItemController: getSearchItems:\n     keywords: %s", keywords));
+
+        UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
+
+        if(Objects.isNull(userTokenDTO))
+            throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
+
         // TODO: add functionality to ItemService, ItemServiceImpl, and FirebaseIntegration
         List<ItemDTO> userItems = itemService.getSearchAllItems(keywords);
         return userItems;
@@ -130,10 +170,16 @@ public class ItemController {
      */
     // TODO: remove mapping! I think this is ONLY supposed to be a helper for the delete user account request mapping.
     // TODO: removeItemsByUser mapping is for testing purposed only!
-    @RequestMapping(method = RequestMethod.DELETE, params = "userId")
-    public String removeItemsByUser(@RequestParam int userId) {
+    @RequestMapping(method = RequestMethod.DELETE, params = "userId", headers = "accessToken")
+    public String removeItemsByUser(@RequestHeader String accessToken, @RequestParam int userId) {
         log.info("ItemController: Starting removeItemsByUser");
         log.info(String.format("ItemController: removeItemsByUser:\n    userId: %s", userId));
+
+        UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
+
+        if(Objects.isNull(userTokenDTO))
+            throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
+
         String timestamp = itemService.removeItemsByUser(userId);
         log.info("ItemController: Exiting removeItemsByUser");
         return timestamp;
