@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Item {
+    private Long itemId;
     private String name;
     private String link;
     private String description;

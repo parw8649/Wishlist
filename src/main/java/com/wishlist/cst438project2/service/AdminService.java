@@ -16,4 +16,6 @@ public interface AdminService {
     String createItem(ItemDTO itemDTO);
 
     String removeItem(String itemName, int userId);
+
+    UserDTO updateUser(UserDTO userDTO);
 }
