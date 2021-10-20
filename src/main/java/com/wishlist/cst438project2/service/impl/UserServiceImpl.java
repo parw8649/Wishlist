@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
         if(Objects.isNull(dbUserDTO)) {
             user = modelMapper.map(signUpDTO, User.class);
             // barbara added next line
-            user.setUserId(firebaseIntegration.getAllUsers().size() + 1);
+            user.setUserId(firebaseIntegration.getAllUsers().size() + 1L);
         } else
             throw new BadRequestException(Constants.ERROR_USER_ALREADY_EXISTS.replace(Constants.KEY_USERNAME, signUpDTO.getUsername()));
 

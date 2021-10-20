@@ -8,15 +8,20 @@ import com.wishlist.cst438project2.dto.ItemDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
 import com.wishlist.cst438project2.integration.FirebaseIntegration;
 import com.wishlist.cst438project2.service.ItemService;
+import java.util.List;
+import java.util.Objects;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-
+/**
+ * Service method implementations to be used with API endpoints in ItemController.java.
+ *
+ * @author Barbara Kondo
+ * @version %I% %G%
+ */
 @Service
 @Slf4j
 public class ItemServiceImpl implements ItemService {
@@ -36,7 +41,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public String createItem(ItemDTO itemDTO, String username) {
         log.info("ItemServiceImpl: starting createItem");
-        int userId = firebaseIntegration.getUserId(username);
+        long userId = firebaseIntegration.getUserId(username);
 
         // check for existence of item by name and userId
         Item item = fetchItem(itemDTO.getName(), userId);
@@ -47,10 +52,7 @@ public class ItemServiceImpl implements ItemService {
             // If item does not exist, add the item
             item = modelMapper.map(itemDTO, Item.class);
             item.setUserId(userId);
-            log.info("\n    name: " + item.getName() + "\n" + "    link: " + item.getLink() + "\n"
-                    + "    description: " + item.getDescription() + "\n" + "    imgUrl: "
-                    + item.getImgUrl() + "\n" + "    userId: " + item.getUserId() + "\n"
-                    + "    priority: " + item.getPriority());
+            item.logItem();
         }
 
         /*
@@ -72,48 +74,53 @@ public class ItemServiceImpl implements ItemService {
     @SneakyThrows
     @Override
     public List<ItemDTO> getAllItems() {
-//        log.info("ItemServiceImpl: starting getAllItems");
+        log.info("ItemServiceImpl: starting getAllItems");
         List<ItemDTO> collection = firebaseIntegration.getAllItems();
 
-//        log.info("ItemServiceImpl: exiting getAllItems");
+        log.info("ItemServiceImpl: exiting getAllItems");
         return collection;
     }
 
     /**
-     * remove the item associated with a given user ID and item name
+     * remove the item associated with a given user and item name
      * returns timestamp of deletion
      */
     @SneakyThrows
     @Override
-    public String removeItem(String name, int userId) {
-//        log.info("ItemServiceImpl: Starting removeItem");
-        // TODO: add item delete confirmation message --> front end??
+    public String removeItem(String name, String username) {
+        log.info("ItemServiceImpl: Starting removeItem");
+        long userId = firebaseIntegration.getUserId(username);
         String docId = firebaseIntegration.getItemDocId(name, userId);
+
         String timestamp = firebaseIntegration.removeItem(docId);
+        log.info("ItemServiceImpl: exiting removeItem");
         return timestamp;
     }
 
     /**
-     * update the item associated with a given user ID and item name
+     * update the item associated with a userId matching the updatedItemDTO and old item name
      * returns timestamp of successful update
      */
     @SneakyThrows
     @Override
     public String updateItem(String name, ItemDTO updatedItemDTO) {
-//        log.info("ItemServiceImpl: Starting updateItem");
+        log.info("ItemServiceImpl: Starting updateItem");
         String docId = firebaseIntegration.getItemDocId(name, updatedItemDTO.getUserId());
+
         String timestamp = firebaseIntegration.updateItem(docId, updatedItemDTO);
+        log.info("ItemServiceImpl: Exiting updateItem");
         return timestamp;
     }
 
     /**
-     * returns a list of items given a user's id
+     * returns a list of items associated with a given username
      */
     @SneakyThrows
     @Override
-    public List<ItemDTO> getUserItems(int userId) {
-//        log.info("ItemServiceImpl: Starting updateItem");
-        List<ItemDTO> userItems = firebaseIntegration.getUserItems(userId);
+    public List<ItemDTO> getUserItems(String username) {
+        log.info("ItemServiceImpl: Starting updateItem");
+        List<ItemDTO> userItems = firebaseIntegration.getUserItems(username);
+        log.info("ItemServiceImpl: Exiting updateItem");
         return userItems;
     }
 
@@ -125,24 +132,28 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDTO> getSearchAllItems(List<String> keywords) {
         log.info("ItemServiceImpl: Starting getSearchItems");
         List<ItemDTO> searchItems = firebaseIntegration.getSearchAllItems(keywords);
+        log.info("ItemServiceImpl: Exiting getSearchItems");
         return searchItems;
     }
 
     /**
-     * remove every item associated with a given userId
+     * remove every item associated with a given user
      * returns timestamp of successful deletion
      */
     @SneakyThrows
     @Override
-    public String removeItemsByUser(int userId) {
-        String timestamp = firebaseIntegration.removeItemsByUser(userId);
+    public String removeItemsByUser(String username) {
+        log.info("ItemServiceImpl: Starting removeItemsByUser");
+        String timestamp = firebaseIntegration.removeItemsByUser(username);
+        log.info("ItemServiceImpl: Exiting removeItemsByUser");
         return timestamp;
     }
 
     /**
+     * utility method
      * returns the item found in database by given name
      */
-    private Item fetchItem(String name, int userId) {
+    private Item fetchItem(String name, long userId) {
         ItemDTO dbItemDTO = firebaseIntegration.getItem(name, userId);
 
         if(Objects.isNull(dbItemDTO)) {

@@ -1,9 +1,8 @@
 package com.wishlist.cst438project2.controller;
 
-import com.wishlist.cst438project2.document.Item;
-import com.wishlist.cst438project2.dto.CreateItemDTO;
 import com.wishlist.cst438project2.common.Constants;
 import com.wishlist.cst438project2.common.TokenManager;
+import com.wishlist.cst438project2.dto.CreateItemDTO;
 import com.wishlist.cst438project2.dto.ItemDTO;
 import com.wishlist.cst438project2.dto.UserTokenDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
@@ -12,7 +11,6 @@ import com.wishlist.cst438project2.service.ItemService;
 import java.util.List;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +36,7 @@ public class ItemController {
     private TokenManager tokenManager;
 
     /**
-     * POST request to create an item in the database.
+     * POST request to create an item in the database. CreateItemDTO contains ItemDTO and String username
      * returns item creation timestamp
      */
     @PostMapping
@@ -52,10 +50,7 @@ public class ItemController {
             if (Objects.isNull(createItemDTO.getItemDTO()) || (createItemDTO.getItemDTO().getName().isBlank())) {
                 throw new BadRequestException();
             } else {
-                log.info("\n    name: " + createItemDTO.getItemDTO().getName() + "\n" + "    link: " + createItemDTO.getItemDTO().getLink() + "\n"
-                        + "    description: " + createItemDTO.getItemDTO().getDescription() + "\n" + "    imgUrl: "
-                        + createItemDTO.getItemDTO().getImgUrl() + "\n" + "    priority: " + createItemDTO.getItemDTO().getPriority() + "\n"
-                        + "    username: " + createItemDTO.getUsername());
+                createItemDTO.logCreateItemDTO();
                 String timestamp = itemService.createItem(createItemDTO.getItemDTO(), createItemDTO.getUsername());
                 log.info("ItemController: exiting successful createItem");
                 return timestamp;
@@ -68,6 +63,8 @@ public class ItemController {
 
     /**
      * GET request to retrieve all items from item collection
+     * <p>
+     * NOTE: all fields of an item are returned, userId should be kept as a hidden html value
      * returns List<ItemDTO> collection
      */
     @GetMapping
@@ -89,37 +86,38 @@ public class ItemController {
     }
 
     /**
-     * DELETE request to remove the item associated with a given user ID and item name
+     * DELETE request to remove the item associated with a given user and item name
      * returns timestamp of successful deletion
      */
-    @RequestMapping(method = RequestMethod.DELETE, params = {"item_name", "userId"}, headers = "accessToken")
-    public String removeItem(@RequestHeader String accessToken, @RequestParam String item_name, @RequestParam int userId) {
-        // TODO: adjust from removeItem onward to take String username --> ItemServiceImpl: convert username to userId via firebaseIntegration.getUserId(username)
+    @RequestMapping(method = RequestMethod.DELETE, params = {"item_name", "username"}, headers = "accessToken")
+    public String removeItem(@RequestHeader String accessToken, @RequestParam String item_name, @RequestParam String username) {
         log.info("ItemController: Starting removeItem");
-        log.info(String.format("ItemController: removeItem:\n    name: %s\n    userId: %s", item_name, userId));
+        log.info(String.format("ItemController: removeItem:\n    name: %s\n    username: %s", item_name, username));
 
         UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
         if(Objects.isNull(userTokenDTO))
             throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
 
-        String timestamp = itemService.removeItem(item_name, userId);
+        String timestamp = itemService.removeItem(item_name, username);
         return timestamp;
     }
 
     /**
-     * PATCH request to update information of given name and userId
+     * PATCH request to update information of given item's old name and updatedItemDTO
+     * <p>
+     * NOTE: itemDTO fields that weren't changed should also be included in updatedItemDTO
      * returns timestamp of successful update
      */
     @PatchMapping
-    public String updateItem(@RequestHeader String accessToken, @RequestParam String item_name, @RequestBody ItemDTO updatedItemDTO) {
+    public String updateItem(@RequestHeader String accessToken, @RequestParam(name = "item_name") String old_item_name, @RequestBody ItemDTO updatedItemDTO) {
         log.info("ItemController: Starting updateItem");
-        log.info(String.format("ItemController: updateItem:\n    name: %s\n    userId: %s", item_name, updatedItemDTO.getUserId()));
+        log.info(String.format("ItemController: updateItem:\n    old name: %s\n    userId: %s", old_item_name, updatedItemDTO.getUserId()));
 
         UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
         if(Objects.isNull(userTokenDTO))
             throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
 
-        String timestamp = itemService.updateItem(item_name, updatedItemDTO);
+        String timestamp = itemService.updateItem(old_item_name, updatedItemDTO);
         return timestamp;
     }
 
@@ -129,15 +127,15 @@ public class ItemController {
      */
     @RequestMapping(method = RequestMethod.GET, params = "list", headers = "accessToken")
     // https://stackoverflow.com/a/43546809
-    public List<ItemDTO> getUserItems(@RequestHeader String accessToken, @RequestParam("list") int userId) {
+    public List<ItemDTO> getUserItems(@RequestHeader String accessToken, @RequestParam("list") String username) {
         log.info("ItemController: Starting getUserItems");
-        log.info(String.format("ItemController: getUserItems:\n     userId: %s", userId));
+        log.info(String.format("ItemController: getUserItems:\n     username: %s", username));
 
         UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
         if(Objects.isNull(userTokenDTO))
             throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
 
-        List<ItemDTO> userItems = itemService.getUserItems(userId);
+        List<ItemDTO> userItems = itemService.getUserItems(username);
         return userItems;
     }
 
@@ -154,7 +152,6 @@ public class ItemController {
         if(Objects.isNull(userTokenDTO))
             throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
 
-        // TODO: add functionality to ItemService, ItemServiceImpl, and FirebaseIntegration
         List<ItemDTO> userItems = itemService.getSearchAllItems(keywords);
         return userItems;
     }
@@ -165,16 +162,16 @@ public class ItemController {
      */
     // TODO: remove mapping! I think this is ONLY supposed to be a helper for the delete user account request mapping.
     // TODO: removeItemsByUser mapping is for testing purposed only!
-    @RequestMapping(method = RequestMethod.DELETE, params = "userId", headers = "accessToken")
-    public String removeItemsByUser(@RequestHeader String accessToken, @RequestParam int userId) {
+    @RequestMapping(method = RequestMethod.DELETE, params = "username", headers = "accessToken")
+    public String removeItemsByUser(@RequestHeader String accessToken, @RequestParam String username) {
         log.info("ItemController: Starting removeItemsByUser");
-        log.info(String.format("ItemController: removeItemsByUser:\n    userId: %s", userId));
+        log.info(String.format("ItemController: removeItemsByUser:\n    username: %s", username));
 
         UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
         if(Objects.isNull(userTokenDTO))
             throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
 
-        String timestamp = itemService.removeItemsByUser(userId);
+        String timestamp = itemService.removeItemsByUser(username);
         log.info("ItemController: Exiting removeItemsByUser");
         return timestamp;
     }
