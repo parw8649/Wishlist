@@ -4,6 +4,7 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import com.wishlist.cst438project2.common.Constants;
+import com.wishlist.cst438project2.document.AccessToken;
 import com.wishlist.cst438project2.document.Item;
 import com.wishlist.cst438project2.document.User;
 import com.wishlist.cst438project2.document.Wishlist;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 @Component
 @Slf4j
@@ -314,14 +314,41 @@ public class FirebaseIntegration {
         return found;
     }
 
+    @SneakyThrows
+    public String removeItemsByUser(int userId) {
+        log.info("FirebaseIntegration: Starting removeItemsByUser");
+        String timestamp = "";
+
+        try {
+            List<ItemDTO> userItems = getUserItems(userId);
+            int removed = 0;
+            log.info("FirebaseIntegration: removeItemsByUser\n    userItems size: {}", userItems.size());
+            for (int i = 0; i < userItems.size(); i++) {
+                String docId = getItemDocId(userItems.get(i).getName(),userId);
+                if (i == userItems.size() - 1) {
+                    timestamp = removeItem(docId);
+                } else {
+                    removeItem(docId);
+                }
+                removed++;
+            }
+            log.info("FirebaseIntegration: removeItemsByUser\n    # items removed: {}", removed);
+        } catch (Exception ex) {
+            log.error(ex.getMessage(),ex);
+            throw ex;
+        }
+
+        log.info("FirebaseIntegration: Exiting removeItemsByUser");
+        return timestamp;
+    }
 
 
     @SneakyThrows
-    public Wishlist getUserWishlist(String userId) {
+    public Wishlist getUserWishlist(Long userId) {
 
         log.info("FirebaseIntegration: Starting getUserWishlist for User: {}", userId);
 
-        DocumentReference documentReference = dbFirestore.collection(Constants.DOCUMENT_USER_WISHLIST).document(userId);
+        DocumentReference documentReference = dbFirestore.collection(Constants.DOCUMENT_USER_WISHLIST).document(String.valueOf(userId));
 
         ApiFuture<DocumentSnapshot> snapshotApiFuture = documentReference.get();
 
@@ -336,7 +363,102 @@ public class FirebaseIntegration {
 
             log.info("FirebaseIntegration: Exiting getUserWishlist");
             return wishlist;
-            
+
+        } catch(Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    @SneakyThrows
+    public void saveAccessToken(AccessToken accessToken) {
+
+        log.info("FirebaseIntegration: Starting saveAccessToken");
+
+        try {
+            ApiFuture<WriteResult> collectionApiFuture = dbFirestore.collection(Constants.DOCUMENT_ACCESS_TOKEN).document(accessToken.getToken()).set(accessToken);
+
+            String responseTimestamp = collectionApiFuture.get().getUpdateTime().toString();
+
+            log.info("ResponseTimestamp: {}", responseTimestamp);
+
+            log.info("FirebaseIntegration: Exiting saveAccessToken");
+
+        } catch(Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    @SneakyThrows
+    public AccessToken fetchAccessToken(String token) {
+
+        log.info("FirebaseIntegration: Starting fetchAccessToken");
+
+        try {
+            DocumentReference documentReference = dbFirestore.collection(Constants.DOCUMENT_ACCESS_TOKEN).document(token);
+
+            ApiFuture<DocumentSnapshot> snapshotApiFuture = documentReference.get();
+
+            DocumentSnapshot documentSnapshot = snapshotApiFuture.get();
+
+            AccessToken accessToken = null;
+            if (documentSnapshot.exists()) {
+                accessToken = documentSnapshot.toObject(AccessToken.class);
+            }
+
+            log.info("FirebaseIntegration: Exiting fetchAccessToken");
+            return accessToken;
+
+        } catch(Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    @SneakyThrows
+    public void deleteAccessToken(String accessToken) {
+
+        log.info("FirebaseIntegration: Starting deleteAccessToken");
+
+        try {
+
+            ApiFuture<WriteResult> collectionApiFuture = dbFirestore.collection(Constants.DOCUMENT_ACCESS_TOKEN).document(accessToken).delete();
+
+            String responseTimestamp = collectionApiFuture.get().getUpdateTime().toString();
+
+            log.info(Constants.USER_ACCESS_TOKEN_DELETED + " {}" , responseTimestamp);
+
+            log.info("FirebaseIntegration: Exiting deleteAccessToken");
+
+        } catch(Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    @SneakyThrows
+    public ItemDTO fetchItemByItemId(Long itemId) {
+
+        log.info("FirebaseIntegration: Starting fetchItemByItemId");
+
+        DocumentReference documentReference = dbFirestore.collection(Constants.DOCUMENT_ITEM).document(String.valueOf(itemId));
+
+        ApiFuture<DocumentSnapshot> snapshotApiFuture = documentReference.get();
+
+        try {
+
+            DocumentSnapshot documentSnapshot = snapshotApiFuture.get();
+
+            Item item = null;
+            if (documentSnapshot.exists()) {
+                item = documentSnapshot.toObject(Item.class);
+            }
+
+            log.info("FirebaseIntegration: Exiting fetchItemByItemId");
+
+            return item == null ? null : modelMapper.map(item, ItemDTO.class);
+
         } catch(Exception ex) {
             log.error(ex.getMessage(), ex);
             throw ex;

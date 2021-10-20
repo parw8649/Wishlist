@@ -16,4 +16,9 @@ public class IndexController {
     public String showLanding() {
         return "landing_page.html";
     }
+
+    @RequestMapping(path = "/login")
+    public String showLoginPage() {
+        return "login_page.html";
+    }
 }

@@ -3,6 +3,7 @@ package com.wishlist.cst438project2.service.impl;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.WriteResult;
 import com.wishlist.cst438project2.common.Constants;
+import com.wishlist.cst438project2.common.TokenManager;
 import com.wishlist.cst438project2.common.Utils;
 import com.wishlist.cst438project2.document.User;
 import com.wishlist.cst438project2.dto.*;
@@ -14,7 +15,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -28,6 +28,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private FirebaseIntegration firebaseIntegration;
+
+    @Autowired
+    private TokenManager tokenManager;
 
     @SneakyThrows
     @Override
@@ -66,6 +69,10 @@ public class UserServiceImpl implements UserService {
 
         User user = fetchUser(userDTO.getUsername());
 
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setEmailId(userDTO.getEmailId());
+
         ApiFuture<WriteResult> collectionApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_USER).document(user.getUsername()).set(user);
 
         String responseTimestamp = collectionApiFuture.get().getUpdateTime().toString();
@@ -81,13 +88,13 @@ public class UserServiceImpl implements UserService {
 
     @SneakyThrows
     @Override
-    public String changePassword(ChangePasswordDTO changePasswordDTO) {
+    public String changePassword(String username, ChangePasswordDTO changePasswordDTO) {
 
         log.info("UserServiceImpl: Starting changePassword");
 
-        User user = fetchUser(changePasswordDTO.getUsername());
+        User user = fetchUser(username);
 
-        user.setPassword(Utils.encodePassword(changePasswordDTO.getPassword()));
+        user.setPassword(Utils.encodePassword(changePasswordDTO.getNewPassword()));
 
         ApiFuture<WriteResult> collectionApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_USER).document(user.getUsername()).set(user);
 
@@ -103,20 +110,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String login(SignInDTO signInDTO) {
+    public UserLoginDTO login(SignInDTO signInDTO) {
 
         log.info("UserServiceImpl: Starting login");
 
         User user = fetchUser(signInDTO.getUsername());
 
-        String msg = HttpStatus.UNAUTHORIZED.toString();
+        String accessToken = null;
 
         if(Utils.checkPassword(signInDTO.getPassword(), user.getPassword())) {
-            msg = Constants.USER_LOGIN_SUCCESSFUL;
+            log.info(Constants.USER_LOGIN_SUCCESSFUL);
+            accessToken = tokenManager.generateToken(user);
         }
 
+        UserLoginDTO userLoginDTO = null;
+        if(Objects.nonNull(accessToken) && !accessToken.isEmpty())
+            userLoginDTO = new UserLoginDTO(user.getUserId(), accessToken);
+
         log.info("UserServiceImpl: Exiting login");
-        return msg;
+        return userLoginDTO;
     }
 
     @Override
@@ -139,6 +151,16 @@ public class UserServiceImpl implements UserService {
         }
 
         log.info("UserServiceImpl: Exiting deleteUser");
+    }
+
+    @Override
+    public void logout(String accessToken) {
+
+        log.info("UserServiceImpl: Starting logout");
+
+        firebaseIntegration.deleteAccessToken(accessToken);
+
+        log.info("UserServiceImpl: Exiting logout");
     }
 
     //Private Methods

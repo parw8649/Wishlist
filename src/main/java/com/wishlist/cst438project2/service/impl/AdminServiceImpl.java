@@ -3,21 +3,20 @@ package com.wishlist.cst438project2.service.impl;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.WriteResult;
 import com.wishlist.cst438project2.common.Constants;
+import com.wishlist.cst438project2.common.TokenManager;
 import com.wishlist.cst438project2.common.Utils;
 import com.wishlist.cst438project2.document.Item;
 import com.wishlist.cst438project2.document.User;
-import com.wishlist.cst438project2.dto.ItemDTO;
-import com.wishlist.cst438project2.dto.SignInDTO;
-import com.wishlist.cst438project2.dto.SignUpDTO;
-import com.wishlist.cst438project2.dto.UserDTO;
+import com.wishlist.cst438project2.dto.*;
+import com.wishlist.cst438project2.enums.RoleType;
 import com.wishlist.cst438project2.exception.BadRequestException;
+import com.wishlist.cst438project2.exception.UnauthorizedException;
 import com.wishlist.cst438project2.integration.FirebaseIntegration;
 import com.wishlist.cst438project2.service.AdminService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,6 +31,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private TokenManager tokenManager;
 
     @Override
     public List<UserDTO> getAllUsers() {
@@ -86,20 +88,28 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public String login(SignInDTO signInDTO) {
+    public UserLoginDTO login(SignInDTO signInDTO) {
 
         log.info("AdminServiceImpl: Starting login");
 
         User user = fetchUser(signInDTO.getUsername());
 
-        String msg = HttpStatus.UNAUTHORIZED.toString();
+        if(!user.getRole().getValue().equals(RoleType.ADMIN.getValue()))
+            throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
+
+        String accessToken = null;
 
         if(Utils.checkPassword(signInDTO.getPassword(), user.getPassword())) {
-            msg = Constants.USER_LOGIN_SUCCESSFUL;
+            log.info(Constants.USER_LOGIN_SUCCESSFUL);
+            accessToken = tokenManager.generateToken(user);
         }
 
+        UserLoginDTO userLoginDTO = null;
+        if(Objects.nonNull(accessToken) && !accessToken.isEmpty())
+            userLoginDTO = new UserLoginDTO(user.getUserId(), accessToken);
+
         log.info("AdminServiceImpl: Exiting login");
-        return msg;
+        return userLoginDTO;
     }
 
     /**

@@ -1,27 +1,21 @@
 package com.wishlist.cst438project2.service.impl;
 
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.WriteResult;
-import com.google.firebase.cloud.FirestoreClient;
 import com.wishlist.cst438project2.common.Constants;
-import com.wishlist.cst438project2.common.Utils;
 import com.wishlist.cst438project2.document.Item;
 import com.wishlist.cst438project2.dto.ItemDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
-import com.wishlist.cst438project2.exception.ExternalServerException;
 import com.wishlist.cst438project2.integration.FirebaseIntegration;
 import com.wishlist.cst438project2.service.ItemService;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -132,6 +126,17 @@ public class ItemServiceImpl implements ItemService {
         log.info("ItemServiceImpl: Starting getSearchItems");
         List<ItemDTO> searchItems = firebaseIntegration.getSearchAllItems(keywords);
         return searchItems;
+    }
+
+    /**
+     * remove every item associated with a given userId
+     * returns timestamp of successful deletion
+     */
+    @SneakyThrows
+    @Override
+    public String removeItemsByUser(int userId) {
+        String timestamp = firebaseIntegration.removeItemsByUser(userId);
+        return timestamp;
     }
 
     /**
