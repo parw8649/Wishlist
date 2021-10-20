@@ -108,10 +108,10 @@ public class UserController {
             if(Objects.isNull(changePasswordDTO))
                 throw new BadRequestException();
 
-            boolean isValid = Utils.validatePassword(changePasswordDTO.getPassword(), changePasswordDTO.getConfirmPassword());
+            boolean isValid = Utils.validatePassword(changePasswordDTO.getNewPassword(), changePasswordDTO.getConfirmPassword());
 
             if(isValid) {
-                msg = userService.changePassword(changePasswordDTO);
+                msg = userService.changePassword(userTokenDTO.getUsername(), changePasswordDTO);
                 httpStatusCode = HttpStatus.OK.value();
             } else {
                 msg = Constants.ERROR_USER_PASSWORD_MISMATCH;

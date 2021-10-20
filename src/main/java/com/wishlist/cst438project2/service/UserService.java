@@ -7,7 +7,7 @@ public interface UserService {
     String saveUser(SignUpDTO signUpDTO);
     UserDTO updateUser(UserDTO userDTO);
 
-    String changePassword(ChangePasswordDTO changePasswordDTO);
+    String changePassword(String username, ChangePasswordDTO changePasswordDTO);
 
     UserLoginDTO login(SignInDTO signInDTO);
 
