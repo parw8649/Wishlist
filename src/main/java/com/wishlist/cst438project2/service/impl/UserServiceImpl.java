@@ -71,6 +71,9 @@ public class UserServiceImpl implements UserService {
         user.setLastName(userDTO.getLastName());
         user.setEmailId(userDTO.getEmailId());
 
+        if(Objects.nonNull(userDTO.getPassword()))
+            user.setPassword(Utils.encodePassword(userDTO.getPassword()));
+
         ApiFuture<WriteResult> collectionApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_USER).document(user.getUsername()).set(user);
 
         String responseTimestamp = collectionApiFuture.get().getUpdateTime().toString();
@@ -123,7 +126,7 @@ public class UserServiceImpl implements UserService {
 
         UserLoginDTO userLoginDTO = null;
         if(Objects.nonNull(accessToken) && !accessToken.isEmpty())
-            userLoginDTO = new UserLoginDTO(user.getUserId(), accessToken);
+            userLoginDTO = new UserLoginDTO(user.fetchUserDTO(), accessToken);
 
         log.info("UserServiceImpl: Exiting login");
         return userLoginDTO;

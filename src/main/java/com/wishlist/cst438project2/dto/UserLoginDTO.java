@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserLoginDTO {
 
-    private Long userId;
+    private UserDTO userDTO;
     private String accessToken;
 }
