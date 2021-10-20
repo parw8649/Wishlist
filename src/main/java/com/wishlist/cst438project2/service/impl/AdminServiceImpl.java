@@ -10,6 +10,7 @@ import com.wishlist.cst438project2.document.User;
 import com.wishlist.cst438project2.dto.*;
 import com.wishlist.cst438project2.enums.RoleType;
 import com.wishlist.cst438project2.exception.BadRequestException;
+import com.wishlist.cst438project2.exception.ExternalServerException;
 import com.wishlist.cst438project2.exception.UnauthorizedException;
 import com.wishlist.cst438project2.integration.FirebaseIntegration;
 import com.wishlist.cst438project2.service.AdminService;
@@ -106,7 +107,7 @@ public class AdminServiceImpl implements AdminService {
 
         UserLoginDTO userLoginDTO = null;
         if(Objects.nonNull(accessToken) && !accessToken.isEmpty())
-            userLoginDTO = new UserLoginDTO(user.getUserId(), accessToken);
+            userLoginDTO = new UserLoginDTO(user.fetchUserDTO(), accessToken);
 
         log.info("AdminServiceImpl: Exiting login");
         return userLoginDTO;
@@ -120,7 +121,7 @@ public class AdminServiceImpl implements AdminService {
     @SneakyThrows
     @Override
     public String createItem(ItemDTO itemDTO) {
-        log.info("ItemServiceImpl: starting createItem");
+        log.info("AdminServiceImpl: starting createItem");
 
         Item item = fetchItem(itemDTO.getName(), itemDTO.getUserId());
         if (Objects.nonNull(item)) {
@@ -136,8 +137,8 @@ public class AdminServiceImpl implements AdminService {
         ApiFuture<WriteResult> collectionsApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_ITEM).document().set(item);
         String timestamp = collectionsApiFuture.get().getUpdateTime().toString();
 
-        log.info("ItemServiceImpl: createItem: timestamp: {}", timestamp);
-        log.info("ItemServiceImpl: exiting createItem");
+        log.info("AdminServiceImpl: createItem: timestamp: {}", timestamp);
+        log.info("AdminServiceImpl: exiting createItem");
         return timestamp;
     }
 
@@ -147,9 +148,35 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public String removeItem(String name, int userId) {
-        log.info("ItemServiceImpl: Starting removeItem");
+        log.info("AdminServiceImpl: Starting removeItem");
         String docId = firebaseIntegration.getItemDocId(name, userId);
         return  firebaseIntegration.removeItem(docId);
+    }
+
+    @SneakyThrows
+    @Override
+    public UserDTO updateUser(UserDTO userDTO) {
+
+        log.info("AdminServiceImpl: Starting updateUser");
+
+        User user = fetchUser(userDTO.getUsername());
+
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setEmailId(userDTO.getEmailId());
+        user.setRole(RoleType.valueOf(userDTO.getRole()));
+
+        ApiFuture<WriteResult> collectionApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_USER).document(user.getUsername()).set(user);
+
+        String responseTimestamp = collectionApiFuture.get().getUpdateTime().toString();
+
+        if(responseTimestamp.isEmpty()) {
+            throw new ExternalServerException(Constants.ERROR_UNABLE_TO_UPDATE_USER);
+        }
+
+        log.info("AdminServiceImpl: Exiting updateUser");
+
+        return user.fetchUserDTO();
     }
 
     //Private Methods

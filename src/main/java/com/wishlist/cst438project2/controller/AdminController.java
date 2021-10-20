@@ -119,6 +119,7 @@ public class AdminController {
 
         ResponseDTO<UserLoginDTO> responseDTO = new ResponseDTO<>();
         UserLoginDTO userLoginDTO = null;
+        String message = HttpStatus.UNAUTHORIZED.toString();
         int httpStatusCode;
         try {
 
@@ -130,18 +131,17 @@ public class AdminController {
                 throw new UnauthorizedException();
 
             httpStatusCode = HttpStatus.OK.value();
-            responseDTO.setMessage(Constants.USER_LOGIN_SUCCESSFUL);
+            message = Constants.USER_LOGIN_SUCCESSFUL;
             log.info("AdminController: Exiting login");
 
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
             httpStatusCode = HttpStatus.UNAUTHORIZED.value();
-            responseDTO.setMessage(HttpStatus.UNAUTHORIZED.toString());
         }
 
         responseDTO.setStatus(httpStatusCode);
         responseDTO.setData(userLoginDTO);
-
+        responseDTO.setMessage(message);
         return responseDTO;
     }
 
@@ -186,5 +186,37 @@ public class AdminController {
         log.info("ItemController: Starting removeItem");
         log.info("ItemController: removeItem:\n    name: {}\n    userId: {}", itemName, userId);
         return adminService.removeItem(itemName, userId);
+    }
+
+    /**
+     * This API is used for updating user information in database
+     * @param userDTO, whose details is to be updated
+     * @return user creation timestamp
+     */
+    @PutMapping("/updateUser")
+    public UserDTO updateUser(@RequestHeader String accessToken, @RequestBody UserDTO userDTO) {
+
+        log.info("UserController: Starting updateUser");
+
+        try {
+
+            UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
+
+            if(Objects.isNull(userTokenDTO) || !userTokenDTO.getRole().equals(RoleType.ADMIN.getValue()))
+                throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
+
+            if(Objects.isNull(userDTO))
+                throw new BadRequestException();
+
+            userDTO = adminService.updateUser(userDTO);
+
+            log.info("UserController: Exiting updateUser");
+
+            return userDTO;
+
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
     }
 }
