@@ -13,6 +13,7 @@ public class Constants {
     public static final String FIELD_USERNAME = "username";
     public static final String FIELD_USER_ID = "userId";
     public static final String FIELD_ITEM_NAME = "name";
+    public static final String FIELD_ITEM_ID = "itemId";
     public static final String FIELD_ITEM_LINK = "link";
     public static final String FIELD_ITEM_DESCRIPTION = "description";
     public static final String FIELD_ITEM_IMG_URL = "imgUrl";

@@ -3,6 +3,7 @@ package com.wishlist.cst438project2.service.impl;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.WriteResult;
 import com.wishlist.cst438project2.common.Constants;
+import com.wishlist.cst438project2.common.Utils;
 import com.wishlist.cst438project2.document.Item;
 import com.wishlist.cst438project2.dto.ItemDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
@@ -45,6 +46,7 @@ public class ItemServiceImpl implements ItemService {
         } else {
             // If item does not exist, add the item
             item = modelMapper.map(itemDTO, Item.class);
+            item.setItemId(Utils.generateId()); //This is needed for user wishlist.
             log.info("\n    name: " + item.getName() + "\n" + "    link: " + item.getLink() + "\n"
                     + "    description: " + item.getDescription() + "\n" + "    imgUrl: "
                     + item.getImgUrl() + "\n" + "    userId: " + item.getUserId() + "\n"
