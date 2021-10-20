@@ -8,8 +8,8 @@ import java.util.List;
 @Data
 public class AddItemsWishlistDTO {
 
-    private String userId;
+    private Long userId;
 
     @NotNull
-    private List<String> itemIds;
+    private List<Long> itemIds;
 }

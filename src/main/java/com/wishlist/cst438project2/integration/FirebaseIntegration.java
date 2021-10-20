@@ -334,11 +334,11 @@ public class FirebaseIntegration {
 
 
     @SneakyThrows
-    public Wishlist getUserWishlist(String userId) {
+    public Wishlist getUserWishlist(Long userId) {
 
         log.info("FirebaseIntegration: Starting getUserWishlist for User: {}", userId);
 
-        DocumentReference documentReference = dbFirestore.collection(Constants.DOCUMENT_USER_WISHLIST).document(userId);
+        DocumentReference documentReference = dbFirestore.collection(Constants.DOCUMENT_USER_WISHLIST).document(String.valueOf(userId));
 
         ApiFuture<DocumentSnapshot> snapshotApiFuture = documentReference.get();
 
@@ -428,11 +428,11 @@ public class FirebaseIntegration {
     }
 
     @SneakyThrows
-    public ItemDTO fetchItemByItemId(String itemId) {
+    public ItemDTO fetchItemByItemId(Long itemId) {
 
         log.info("FirebaseIntegration: Starting fetchItemByItemId");
 
-        DocumentReference documentReference = dbFirestore.collection(Constants.DOCUMENT_ITEM).document(itemId);
+        DocumentReference documentReference = dbFirestore.collection(Constants.DOCUMENT_ITEM).document(String.valueOf(itemId));
 
         ApiFuture<DocumentSnapshot> snapshotApiFuture = documentReference.get();
 

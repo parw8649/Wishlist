@@ -9,10 +9,10 @@ import java.util.List;
 @NoArgsConstructor
 public class Wishlist {
 
-    private String userId;
-    private List<String> itemIds;
+    private Long userId;
+    private List<Long> itemIds;
 
-    public Wishlist(String userId, List<String> itemIds) {
+    public Wishlist(Long userId, List<Long> itemIds) {
         this.userId = userId;
         this.itemIds = itemIds;
     }

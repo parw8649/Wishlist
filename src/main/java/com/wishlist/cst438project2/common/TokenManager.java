@@ -100,8 +100,9 @@ public class TokenManager {
         userTokenDTO.setUserId(user.getUserId());
         userTokenDTO.setEmailId(user.getEmailId());
         userTokenDTO.setUsername(user.getUsername());
+        userTokenDTO.setRole(user.getRole().getValue());
 
-        JwtBuilder builder = Jwts.builder().claim("user", userTokenDTO).setId(userTokenDTO.getUserId()).setIssuedAt(now);
+        JwtBuilder builder = Jwts.builder().claim("user", userTokenDTO).setId(userTokenDTO.getUsername()).setIssuedAt(now);
 
         return builder.signWith(signatureAlgorithm, signingKey).compact();
     }

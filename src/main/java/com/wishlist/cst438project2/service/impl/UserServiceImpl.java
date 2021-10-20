@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String login(SignInDTO signInDTO) {
+    public UserLoginDTO login(SignInDTO signInDTO) {
 
         log.info("UserServiceImpl: Starting login");
 
@@ -121,8 +121,12 @@ public class UserServiceImpl implements UserService {
             accessToken = tokenManager.generateToken(user);
         }
 
+        UserLoginDTO userLoginDTO = null;
+        if(Objects.nonNull(accessToken) && !accessToken.isEmpty())
+            userLoginDTO = new UserLoginDTO(user.getUserId(), accessToken);
+
         log.info("UserServiceImpl: Exiting login");
-        return accessToken;
+        return userLoginDTO;
     }
 
     @Override

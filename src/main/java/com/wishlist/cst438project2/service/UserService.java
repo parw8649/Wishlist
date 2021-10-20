@@ -9,7 +9,7 @@ public interface UserService {
 
     String changePassword(ChangePasswordDTO changePasswordDTO);
 
-    String login(SignInDTO signInDTO);
+    UserLoginDTO login(SignInDTO signInDTO);
 
     void deleteUser(DeleteUserDTO deleteUserDTO);
 

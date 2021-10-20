@@ -8,18 +8,20 @@ import lombok.NoArgsConstructor;
 public class UserDTO {
 
     private String id;
-    private String userId;
+    private Long userId;
     private String firstName;
     private String lastName;
     private String emailId;
     private String username;
     private String password;
+    private String role;
 
-    public UserDTO(String userId, String firstName, String lastName, String emailId, String username) {
+    public UserDTO(Long userId, String firstName, String lastName, String emailId, String username, String role) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailId = emailId;
         this.username = username;
+        this.role = role;
     }
 }

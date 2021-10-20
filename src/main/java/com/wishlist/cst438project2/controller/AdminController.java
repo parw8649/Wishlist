@@ -3,11 +3,13 @@ package com.wishlist.cst438project2.controller;
 import com.wishlist.cst438project2.common.Constants;
 import com.wishlist.cst438project2.common.TokenManager;
 import com.wishlist.cst438project2.dto.*;
+import com.wishlist.cst438project2.enums.RoleType;
 import com.wishlist.cst438project2.exception.BadRequestException;
 import com.wishlist.cst438project2.exception.UnauthorizedException;
 import com.wishlist.cst438project2.service.AdminService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -56,7 +58,7 @@ public class AdminController {
         try{
             UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
 
-            if(Objects.isNull(userTokenDTO))
+            if(Objects.isNull(userTokenDTO) || !userTokenDTO.getRole().equals(RoleType.ADMIN.getValue()))
                 throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
 
             if(Objects.isNull(username) || username.isEmpty())
@@ -87,7 +89,7 @@ public class AdminController {
         try {
             UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
 
-            if(Objects.isNull(userTokenDTO))
+            if(Objects.isNull(userTokenDTO) || !userTokenDTO.getRole().equals(RoleType.ADMIN.getValue()))
                 throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
 
             if (Objects.isNull(signUpDTO))
@@ -106,27 +108,35 @@ public class AdminController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody SignInDTO signInDTO) {
+    public ResponseDTO<UserLoginDTO> login(@RequestBody SignInDTO signInDTO) {
 
         log.info("AdminController: Starting login");
 
+        ResponseDTO<UserLoginDTO> responseDTO = new ResponseDTO<>();
+        UserLoginDTO userLoginDTO = null;
+        int httpStatusCode;
         try {
 
             if (Objects.isNull(signInDTO))
                 throw new BadRequestException();
 
-            String accessToken = adminService.login(signInDTO);
-            if(Objects.isNull(accessToken))
+            userLoginDTO = adminService.login(signInDTO);
+            if(Objects.isNull(userLoginDTO))
                 throw new UnauthorizedException();
 
+            httpStatusCode = HttpStatus.OK.value();
             log.info("AdminController: Exiting login");
-
-            return accessToken;
 
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
-            throw ex;
+            httpStatusCode = HttpStatus.UNAUTHORIZED.value();
         }
+
+        responseDTO.setStatus(httpStatusCode);
+        responseDTO.setData(userLoginDTO);
+        responseDTO.setMessage(Constants.USER_LOGIN_SUCCESSFUL);
+
+        return responseDTO;
     }
 
     /**
@@ -139,7 +149,7 @@ public class AdminController {
         try {
             UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
 
-            if(Objects.isNull(userTokenDTO))
+            if(Objects.isNull(userTokenDTO) || !userTokenDTO.getRole().equals(RoleType.ADMIN.getValue()))
                 throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
 
             if (Objects.isNull(itemDTO) || (itemDTO.getName().isBlank() || Objects.isNull(itemDTO.getUserId()))) {
@@ -164,7 +174,7 @@ public class AdminController {
 
         UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
 
-        if(Objects.isNull(userTokenDTO))
+        if(Objects.isNull(userTokenDTO) || !userTokenDTO.getRole().equals(RoleType.ADMIN.getValue()))
             throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
 
         log.info("ItemController: Starting removeItem");
