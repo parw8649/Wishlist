@@ -28,11 +28,16 @@ public class AdminController {
     private TokenManager tokenManager;
 
     @GetMapping("/users")
-    public List<UserDTO> getAllUsers() {
+    public List<UserDTO> getAllUsers(@RequestHeader String accessToken) {
 
         log.info("AdminController: Starting getAllUsers");
 
         try {
+
+            UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
+
+            if(Objects.isNull(userTokenDTO) || !userTokenDTO.getRole().equals(RoleType.ADMIN.getValue()))
+                throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
 
             List<UserDTO> userDTOList = adminService.getAllUsers();
 
@@ -125,16 +130,17 @@ public class AdminController {
                 throw new UnauthorizedException();
 
             httpStatusCode = HttpStatus.OK.value();
+            responseDTO.setMessage(Constants.USER_LOGIN_SUCCESSFUL);
             log.info("AdminController: Exiting login");
 
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
             httpStatusCode = HttpStatus.UNAUTHORIZED.value();
+            responseDTO.setMessage(HttpStatus.UNAUTHORIZED.toString());
         }
 
         responseDTO.setStatus(httpStatusCode);
         responseDTO.setData(userLoginDTO);
-        responseDTO.setMessage(Constants.USER_LOGIN_SUCCESSFUL);
 
         return responseDTO;
     }
