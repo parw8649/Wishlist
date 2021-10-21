@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/v1/user")
 @Slf4j
