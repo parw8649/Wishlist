@@ -11,14 +11,13 @@ import com.wishlist.cst438project2.document.Wishlist;
 import com.wishlist.cst438project2.dto.ItemDTO;
 import com.wishlist.cst438project2.dto.UserDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 @Slf4j
@@ -110,13 +109,23 @@ public class FirebaseIntegration {
     }
 
     /**
+     * helper method for item endpoints
+     * returns int userId for a given String username
+     */
+    @SneakyThrows
+    public long getUserId(String username) {
+        UserDTO user = getUser(username);
+        return user.getUserId();
+    }
+
+    /**
      * returns the db item that matches given item name and userId or null if not found
      * <p>
      * NOTE: some items may have the same name but be connected to different users
      * @param name item name to be matched against Item db
      */
     @SneakyThrows
-    public ItemDTO getItem(String name, int userId) {
+    public ItemDTO getItem(String name, long userId) {
         log.info("FirebaseIntegration: Starting getItem");
         CollectionReference collectionReference = dbFirestore.collection(Constants.DOCUMENT_ITEM);
         Query query = collectionReference.whereEqualTo(Constants.FIELD_ITEM_NAME, name).whereEqualTo(Constants.FIELD_USER_ID, userId);
@@ -147,8 +156,8 @@ public class FirebaseIntegration {
      * @param userId
      */
     @SneakyThrows
-    public String getItemDocId(String name, int userId) {
-        log.info("FirebaseIntegration: Starting getItemdocId");
+    public String getItemDocId(String name, long userId) {
+        log.info("FirebaseIntegration: Starting getItemDocId");
         CollectionReference collectionReference = dbFirestore.collection(Constants.DOCUMENT_ITEM);
         Query query = collectionReference.whereEqualTo(Constants.FIELD_ITEM_NAME, name).whereEqualTo(Constants.FIELD_USER_ID, userId);
         ApiFuture<QuerySnapshot> snapshotApiFuture = query.get();
@@ -161,8 +170,8 @@ public class FirebaseIntegration {
                 throw new BadRequestException(Constants.ERROR_ITEM_NOT_FOUND);
             }
 
-            log.info(String.format("FirebaseIntegration: getItemdocId: %s", querySnapshot.getDocuments().get(0).getId()));
-            log.info("FirebaseIntegration: Exiting getItemdocId");
+            log.info(String.format("FirebaseIntegration: getItemDocId: %s", querySnapshot.getDocuments().get(0).getId()));
+            log.info("FirebaseIntegration: Exiting getItemDocId");
             return querySnapshot.getDocuments().get(0).getId();
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
@@ -240,8 +249,9 @@ public class FirebaseIntegration {
      * returns list of items
      */
     @SneakyThrows
-    public List<ItemDTO> getUserItems(int userId) {
+    public List<ItemDTO> getUserItems(String username) {
         log.info("FirebaseIntegration: Starting getUserItems");
+        long userId = getUserId(username);
         List<ItemDTO> userItems = new ArrayList<>();
 
         CollectionReference collectionReference = dbFirestore.collection(Constants.DOCUMENT_ITEM);
@@ -280,7 +290,7 @@ public class FirebaseIntegration {
         return searchItems;
     }
     /**
-     * ulitity function to search for a list of keywords in a given item
+     * utility function to search for a list of keywords in a given item
      * @param keywords refers to list of Strings to look for in an item's name or description
      * returns true if one or more keywords are present, false in none are present
      */
@@ -305,16 +315,17 @@ public class FirebaseIntegration {
     }
 
     @SneakyThrows
-    public String removeItemsByUser(int userId) {
+    public String removeItemsByUser(String username) {
         log.info("FirebaseIntegration: Starting removeItemsByUser");
+        long userId = getUserId(username);
         String timestamp = "";
 
         try {
-            List<ItemDTO> userItems = getUserItems(userId);
+            List<ItemDTO> userItems = getUserItems(username);
             int removed = 0;
             log.info("FirebaseIntegration: removeItemsByUser\n    userItems size: {}", userItems.size());
             for (int i = 0; i < userItems.size(); i++) {
-                String docId = getItemDocId(userItems.get(i).getName(),userId);
+                String docId = getItemDocId(userItems.get(i).getName(), userId);
                 if (i == userItems.size() - 1) {
                     timestamp = removeItem(docId);
                 } else {

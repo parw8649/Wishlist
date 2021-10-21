@@ -194,7 +194,7 @@ public class AdminServiceImpl implements AdminService {
     /**
      * returns the item found in database by given name
      */
-    private Item fetchItem(String name, int userId) {
+    private Item fetchItem(String name, long userId) {
         ItemDTO dbItemDTO = firebaseIntegration.getItem(name, userId);
 
         if(Objects.isNull(dbItemDTO)) {
