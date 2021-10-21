@@ -43,6 +43,8 @@ public class UserServiceImpl implements UserService {
         User user;
         if(Objects.isNull(dbUserDTO)) {
             user = modelMapper.map(signUpDTO, User.class);
+            // barbara added next line
+            user.setUserId(firebaseIntegration.getAllUsers().size() + 1L);
         } else
             throw new BadRequestException(Constants.ERROR_USER_ALREADY_EXISTS.replace(Constants.KEY_USERNAME, signUpDTO.getUsername()));
 
@@ -71,6 +73,9 @@ public class UserServiceImpl implements UserService {
         user.setLastName(userDTO.getLastName());
         user.setEmailId(userDTO.getEmailId());
 
+        if(Objects.nonNull(userDTO.getPassword()))
+            user.setPassword(Utils.encodePassword(userDTO.getPassword()));
+
         ApiFuture<WriteResult> collectionApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_USER).document(user.getUsername()).set(user);
 
         String responseTimestamp = collectionApiFuture.get().getUpdateTime().toString();
@@ -86,13 +91,13 @@ public class UserServiceImpl implements UserService {
 
     @SneakyThrows
     @Override
-    public String changePassword(ChangePasswordDTO changePasswordDTO) {
+    public String changePassword(String username, ChangePasswordDTO changePasswordDTO) {
 
         log.info("UserServiceImpl: Starting changePassword");
 
-        User user = fetchUser(changePasswordDTO.getUsername());
+        User user = fetchUser(username);
 
-        user.setPassword(Utils.encodePassword(changePasswordDTO.getPassword()));
+        user.setPassword(Utils.encodePassword(changePasswordDTO.getNewPassword()));
 
         ApiFuture<WriteResult> collectionApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_USER).document(user.getUsername()).set(user);
 
@@ -108,7 +113,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String login(SignInDTO signInDTO) {
+    public UserLoginDTO login(SignInDTO signInDTO) {
 
         log.info("UserServiceImpl: Starting login");
 
@@ -121,8 +126,12 @@ public class UserServiceImpl implements UserService {
             accessToken = tokenManager.generateToken(user);
         }
 
+        UserLoginDTO userLoginDTO = null;
+        if(Objects.nonNull(accessToken) && !accessToken.isEmpty())
+            userLoginDTO = new UserLoginDTO(user.fetchUserDTO(), accessToken);
+
         log.info("UserServiceImpl: Exiting login");
-        return accessToken;
+        return userLoginDTO;
     }
 
     @Override

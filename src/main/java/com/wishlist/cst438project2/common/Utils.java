@@ -21,11 +21,7 @@ public class Utils {
         return password.equals(confirmPassword);
     }
 
-    public static String generateId(String name) {
-        return name + getEpochFromDate(new Date());
-    }
-
-    private static Long getEpochFromDate(Date date) {
-        return date.getTime();
+    public static Long generateId() {
+        return new Date().getTime();
     }
 }

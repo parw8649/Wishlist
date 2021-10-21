@@ -9,10 +9,12 @@ import com.wishlist.cst438project2.exception.UnauthorizedException;
 import com.wishlist.cst438project2.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/v1/user")
 @Slf4j
@@ -26,7 +28,7 @@ public class UserController {
 
     /**
      * This API is used for user registration
-     * @param signUpDTO
+     * @param signUpDTO contains params reuired for user sign up process
      * @return user creation timestamp
      */
     @PostMapping("/save")
@@ -85,17 +87,21 @@ public class UserController {
 
     /**
      * This API is used to change user's password
-     * @param changePasswordDTO
+     * @param changePasswordDTO contains params reuired for changing user password
      * @return message if the password was changed successfully or returns error message
      */
     @PutMapping("/changePassword")
-    public String changePassword(@RequestHeader String accessToken, @RequestBody ChangePasswordDTO changePasswordDTO) {
+    public ResponseDTO<Long> changePassword(@RequestHeader String accessToken, @RequestBody ChangePasswordDTO changePasswordDTO) {
 
         log.info("UserController: Starting changePassword");
 
+        ResponseDTO<Long> responseDTO = new ResponseDTO<>();
+        String msg;
+        UserTokenDTO userTokenDTO;
+        int httpStatusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
         try {
 
-            UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
+            userTokenDTO = tokenManager.getUser(accessToken);
 
             if(Objects.isNull(userTokenDTO))
                 throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
@@ -103,46 +109,67 @@ public class UserController {
             if(Objects.isNull(changePasswordDTO))
                 throw new BadRequestException();
 
-            boolean isValid = Utils.validatePassword(changePasswordDTO.getPassword(), changePasswordDTO.getConfirmPassword());
+            boolean isValid = Utils.validatePassword(changePasswordDTO.getNewPassword(), changePasswordDTO.getConfirmPassword());
 
-            String msg = "";
             if(isValid) {
-                msg = userService.changePassword(changePasswordDTO);
+                msg = userService.changePassword(userTokenDTO.getUsername(), changePasswordDTO);
+                httpStatusCode = HttpStatus.OK.value();
             } else {
                 msg = Constants.ERROR_USER_PASSWORD_MISMATCH;
             }
-            log.info("UserController: Exiting changePassword");
 
-            return msg;
+            responseDTO.setStatus(httpStatusCode);
 
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
+
+            if(ex instanceof UnauthorizedException)
+                httpStatusCode = HttpStatus.UNAUTHORIZED.value();
+            else if (ex instanceof BadRequestException)
+                httpStatusCode = HttpStatus.BAD_REQUEST.value();
+
+            responseDTO.setStatus(httpStatusCode);
             throw ex;
         }
+
+        log.info("UserController: Exiting changePassword");
+
+        responseDTO.setData(userTokenDTO.getUserId());
+        responseDTO.setMessage(msg);
+        return responseDTO;
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody SignInDTO signInDTO) {
+    public ResponseDTO<UserLoginDTO> login(@RequestBody SignInDTO signInDTO) {
 
         log.info("UserController: Starting login");
 
+        ResponseDTO<UserLoginDTO> responseDTO = new ResponseDTO<>();
+        UserLoginDTO userLoginDTO = null;
+        String message = HttpStatus.UNAUTHORIZED.toString();
+        int httpStatusCode;
         try {
 
             if (Objects.isNull(signInDTO))
                 throw new BadRequestException();
 
-            String accessToken = userService.login(signInDTO);
-            if(Objects.isNull(accessToken))
+            userLoginDTO = userService.login(signInDTO);
+            if(Objects.isNull(userLoginDTO))
                 throw new UnauthorizedException();
 
+            httpStatusCode = HttpStatus.OK.value();
+            message = Constants.USER_LOGIN_SUCCESSFUL;
             log.info("UserController: Exiting login");
-
-            return accessToken;
 
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
-            throw new UnauthorizedException();
+            httpStatusCode = HttpStatus.UNAUTHORIZED.value();
         }
+
+        responseDTO.setStatus(httpStatusCode);
+        responseDTO.setData(userLoginDTO);
+        responseDTO.setMessage(message);
+        return responseDTO;
     }
 
     @DeleteMapping("/deleteUser")

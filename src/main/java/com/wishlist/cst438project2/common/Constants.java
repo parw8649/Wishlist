@@ -13,6 +13,7 @@ public class Constants {
     public static final String FIELD_USERNAME = "username";
     public static final String FIELD_USER_ID = "userId";
     public static final String FIELD_ITEM_NAME = "name";
+    public static final String FIELD_ITEM_ID = "itemId";
     public static final String FIELD_ITEM_LINK = "link";
     public static final String FIELD_ITEM_DESCRIPTION = "description";
     public static final String FIELD_ITEM_IMG_URL = "imgUrl";
@@ -49,8 +50,6 @@ public class Constants {
     /** KEYS */
     public static final String KEY_USERNAME = "{username}";
     public static final String KEY_ITEM_NAME = "{name}";
-    public static final String KEY_USER_ID = "USER_";
-    public static final String KEY_ITEM_ID = "ITEM_";
 
     /** SECRETS */
     public static final String KEY_SECRET_TOKEN = "wi$#|i$t";
