@@ -91,6 +91,12 @@ public class ItemControllerTest {
     @Test
     public void getAllItems_Success() {
         String token = getAccessToken();
+        List<ItemDTO> userItemsResponse = itemController.getUserItems(token, USERNAME);
+        if (userItemsResponse.size() > 0) {
+            String clearUserItemsResponse = itemController.removeItemsByUser(token, USERNAME);
+            assertEquals(clearUserItemsResponse.substring(0, 5), "2021-");
+        }
+
         List<ItemDTO> allItemsResponse = itemController.getAllItems(token);
         assert(allItemsResponse.size() > 0);
     }
@@ -99,12 +105,24 @@ public class ItemControllerTest {
     public void getUserItems_Success() {
         String token = getAccessToken();
         List<ItemDTO> userItemsResponse = itemController.getUserItems(token, USERNAME);
+        if (userItemsResponse.size() > 0) {
+            String clearUserItemsResponse = itemController.removeItemsByUser(token, USERNAME);
+            assertEquals(clearUserItemsResponse.substring(0, 5), "2021-");
+        }
+
+        userItemsResponse = itemController.getUserItems(token, USERNAME);
         assert(userItemsResponse.size() == 0);
     }
 
     @Test
     public void createItem_Success() {
         String token = getAccessToken();
+        List<ItemDTO> userItemsResponse = itemController.getUserItems(token, USERNAME);
+        if (userItemsResponse.size() > 0) {
+            String clearUserItemsResponse = itemController.removeItemsByUser(token, USERNAME);
+            assertEquals(clearUserItemsResponse.substring(0, 5), "2021-");
+        }
+
         ItemDTO itemDTO = new ItemDTO();
         itemDTO.setName(INITIAL_ITEM_NAME);
 
@@ -117,7 +135,7 @@ public class ItemControllerTest {
         System.out.println(createResponse);
         assertEquals(createResponse.substring(0,5), "2021-");
 
-        List<ItemDTO> userItemsResponse = itemController.getUserItems(token, USERNAME);
+        userItemsResponse = itemController.getUserItems(token, USERNAME);
         assert(userItemsResponse.size() == 1);
 
         String removeResponse = itemController.removeItem(token, itemDTO.getName(), USERNAME);
@@ -130,8 +148,13 @@ public class ItemControllerTest {
     @Test
     public void updateItem_Success() {
         String token = getAccessToken();
-        addItemToDb(token, INITIAL_ITEM_NAME);
         List<ItemDTO> userItemsResponse = itemController.getUserItems(token, USERNAME);
+        if (userItemsResponse.size() > 0) {
+            String clearUserItemsResponse = itemController.removeItemsByUser(token, USERNAME);
+            assertEquals(clearUserItemsResponse.substring(0, 5), "2021-");
+        }
+        addItemToDb(token, INITIAL_ITEM_NAME);
+        userItemsResponse = itemController.getUserItems(token, USERNAME);
         assert(userItemsResponse.size() == 1);
 
         ItemDTO updatedItemDTO = new ItemDTO();
@@ -155,8 +178,13 @@ public class ItemControllerTest {
     @Test
     public void removeItem_Success() {
         String token = getAccessToken();
-        addItemToDb(token, INITIAL_ITEM_NAME);
         List<ItemDTO> userItemsResponse = itemController.getUserItems(token, USERNAME);
+        if (userItemsResponse.size() > 0) {
+            String clearUserItemsResponse = itemController.removeItemsByUser(token, USERNAME);
+            assertEquals(clearUserItemsResponse.substring(0, 5), "2021-");
+        }
+        addItemToDb(token, INITIAL_ITEM_NAME);
+        userItemsResponse = itemController.getUserItems(token, USERNAME);
         assert(userItemsResponse.size() == 1);
 
         ItemDTO itemDTO = new ItemDTO();
@@ -166,6 +194,21 @@ public class ItemControllerTest {
         String removeResponse = itemController.removeItem(token, INITIAL_ITEM_NAME, USERNAME);
         System.out.println(removeResponse);
         assertEquals(removeResponse.substring(0,5), "2021-");
+
+        userItemsResponse = itemController.getUserItems(token, USERNAME);
+        assert(userItemsResponse.size() == 0);
+    }
+
+    @Test
+    public void removeAllItemsByUser_Success() {
+        String token = getAccessToken();
+        addItemToDb(token, "item 1");
+        addItemToDb(token, "item 2");
+        addItemToDb(token, "item 3");
+        List<ItemDTO> userItemsResponse = itemController.getUserItems(token, USERNAME);
+        assert(userItemsResponse.size() >= 3);
+
+        String removeAllResponse = itemController.removeItemsByUser(token, USERNAME);
 
         userItemsResponse = itemController.getUserItems(token, USERNAME);
         assert(userItemsResponse.size() == 0);
