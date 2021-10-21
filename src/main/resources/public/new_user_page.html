@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+    <title>Create Account</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.7/dist/handlebars.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="card" style="width: 500px; margin: auto; margin-top: 10px; text-align: left; padding: 10px">
+        <h1 class="card-title"> Create New User </h1>
+        <h5 class="card-subtitle mb-2 text-muted">Password must be at least 6 characters long and contain 1 or more special characters (!,$,&,_,etc.)</h5>
+        <div style="margin-left: 20px">
+            <div style="margin-block: 15px">
+                <p style="font-size: 150%">First Name:</p>
+                <input id="first" type="text" placeholder="Enter your first name" value="" style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
+            </div>
+            <div style="margin-block: 15px">
+                <p style="font-size: 150%">Last Name:</p>
+                <input id="last" type="text" placeholder="Enter your last name" value="" style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
+            </div>
+            <div style="margin-block: 15px">
+                <p style="font-size: 150%">Email:</p>
+                <input id="email" type="text" placeholder="Enter your email" value="" style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
+            </div>
+            <!-- no duplicate usernames -->
+            <div style="margin-block: 15px">
+                <p style="font-size: 150%">Username:</p>
+                <input id="user" type="text" placeholder="Enter a username" value="" style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
+            </div>
+            <!-- simple password rules:
+                minimum length >=6 characters,
+                alphanumeric,
+                at least one special character -->
+            <div style="margin-block: 15px">
+                <p style="font-size: 150%">Password:</p>
+                <input id="pass" type="text" placeholder="Enter a password" value="" style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
+            </div>
+            <div style="margin-block: 15px">
+                <p style="font-size: 150%">Verify Password:</p>
+                <input id="v_pass" type="password" placeholder="Verify password" value="" style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
+                <span id="message"></span>
+            </div>
+            <!-- On click, insert new user and direct to /login_page -->
+            <button id="submit" style="border-radius: 5px; background-color: blue; color: white"><b> Create Account </b></button>
+        </div>
+    </div>
+
+    <script>
+        /* Functions:
+         * - take in user inputted values
+         * - on submit, send data through UserController.java
+         * - - on failure, show warning pop-up
+         * - - on success, redirect to /wishlist/login_page.html
+         */
+        $("#submit").on("click", addUser);
+        $("#v_pass").on("change", verify);
+
+        function addUser() {
+            let firstname = $("#first").val();
+            let lastname = $("#last").val();
+            let email = $("#email").val();
+            let username = $("#user").val();
+            let password = $("#pass").val();
+            let password_verif = $("#v_pass").val();
+
+            //alert(firstname + " " + lastname + " " + email + " " + username + " " + password + " " + password_verif);
+
+            
+        }
+
+        function verify() {
+            let password = $("#pass").val();
+            let password_verif = $("#v_pass").val();
+
+            if(password_verif.localeCompare(password)) {
+                $('#v_pass').css('background-color', '#ff5252');
+                $('#message').text("Does not match");
+            } else {
+                $('#v_pass').css('background-color', '#92f781');
+                $('#message').text("Match");
+            }
+        }
+
+        
+    </script>
+</body>
+</html>
