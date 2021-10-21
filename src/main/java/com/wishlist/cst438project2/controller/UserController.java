@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/v1/user")
 @Slf4j
@@ -27,7 +28,7 @@ public class UserController {
 
     /**
      * This API is used for user registration
-     * @param signUpDTO
+     * @param signUpDTO contains params reuired for user sign up process
      * @return user creation timestamp
      */
     @PostMapping("/save")
@@ -86,7 +87,7 @@ public class UserController {
 
     /**
      * This API is used to change user's password
-     * @param changePasswordDTO
+     * @param changePasswordDTO contains params reuired for changing user password
      * @return message if the password was changed successfully or returns error message
      */
     @PutMapping("/changePassword")
@@ -95,7 +96,7 @@ public class UserController {
         log.info("UserController: Starting changePassword");
 
         ResponseDTO<Long> responseDTO = new ResponseDTO<>();
-        String msg = "";
+        String msg;
         UserTokenDTO userTokenDTO;
         int httpStatusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
         try {
@@ -145,6 +146,7 @@ public class UserController {
 
         ResponseDTO<UserLoginDTO> responseDTO = new ResponseDTO<>();
         UserLoginDTO userLoginDTO = null;
+        String message = HttpStatus.UNAUTHORIZED.toString();
         int httpStatusCode;
         try {
 
@@ -156,6 +158,7 @@ public class UserController {
                 throw new UnauthorizedException();
 
             httpStatusCode = HttpStatus.OK.value();
+            message = Constants.USER_LOGIN_SUCCESSFUL;
             log.info("UserController: Exiting login");
 
         } catch (Exception ex) {
@@ -165,8 +168,7 @@ public class UserController {
 
         responseDTO.setStatus(httpStatusCode);
         responseDTO.setData(userLoginDTO);
-        responseDTO.setMessage(Constants.USER_LOGIN_SUCCESSFUL);
-
+        responseDTO.setMessage(message);
         return responseDTO;
     }
 

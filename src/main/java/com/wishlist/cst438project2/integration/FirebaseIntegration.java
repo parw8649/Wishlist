@@ -443,18 +443,17 @@ public class FirebaseIntegration {
 
         log.info("FirebaseIntegration: Starting fetchItemByItemId");
 
-        DocumentReference documentReference = dbFirestore.collection(Constants.DOCUMENT_ITEM).document(String.valueOf(itemId));
-
-        ApiFuture<DocumentSnapshot> snapshotApiFuture = documentReference.get();
+        CollectionReference collectionReference = dbFirestore.collection(Constants.DOCUMENT_ITEM);
+        Query query = collectionReference.whereEqualTo(Constants.FIELD_ITEM_ID, itemId);
+        ApiFuture<QuerySnapshot> snapshotApiFuture = query.get();
 
         try {
 
-            DocumentSnapshot documentSnapshot = snapshotApiFuture.get();
+            QuerySnapshot querySnapshot = snapshotApiFuture.get();
 
             Item item = null;
-            if (documentSnapshot.exists()) {
-                item = documentSnapshot.toObject(Item.class);
-            }
+            if (!querySnapshot.isEmpty())
+                item = querySnapshot.getDocuments().get(0).toObject(Item.class);
 
             log.info("FirebaseIntegration: Exiting fetchItemByItemId");
 
