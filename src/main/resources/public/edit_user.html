@@ -32,9 +32,9 @@
                     <input id="user" type="text" value={{this.username}} style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
                 </div>
                 <!--simple password rules:
-    minimum length >=6 characters,
-    alphanumeric,
-    at least one special character-->
+                    minimum length >=6 characters,
+                    alphanumeric,
+                    at least one special character-->
                 <div style="margin-block: 15px">
                     <p style="font-size: 150%">Password:</p>
                     <input id="pass" type="text" value={{this.password}} style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
@@ -64,18 +64,21 @@
          * - on submit, update user information through UserController.java
          * - - on failure, show warning pop-up
          * - - on success, redirect to /wishlist/wishlist_view_page.html
+         * - on delete, delete user account from database
+         * - - on confirmation, redirect to /wishlist/landing_page.html
+         * - - on cancel, do nothing
          */
 
-         let data = {
+        let data = {
             "users": [
-                 {
+                {
                     "firstname": "Kathryn",
                     "lastname": "Grose",
-                    "email": "kgrose@csumb.edu",
+                    "email": "kgrose@email.com",
                     "username": "kgrose",
-                    "password": "password"
+                    "password": "123456!"
                 },
-                 {
+                {
                     "firstname": "AdminF",
                     "lastname": "AdminL",
                     "email": "admin@csumb.edu",
@@ -84,11 +87,13 @@
                 },
             ]
         };
+
         var template = Handlebars.compile(document.querySelector("#login_template").innerHTML);
-        var filled = template(data.users[1]);
+        var filled = template(data.users[0]);
         document.querySelector("#info").innerHTML = filled;
 
         $("#submit").on("click", updateUser);
+        $("#delete").on("click", deleteUser);
 
         function updateUser() {
             let firstname = $("#first").val();
@@ -100,7 +105,28 @@
 
             alert(firstname + " " + lastname + " " + email + " " + username + " " + password + " " + password_verif);
         }
-        
+
+        function deleteUser() {
+            let execute = confirm("Are you sure you want to delete your account?");
+            if(execute) {
+                alert("executing");
+                let username = $("#user").val();
+                let password = $("#pass").val();
+
+                let request = `{"username": "${username}","password": "${password}"}`;
+
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.open("GET", "http://127.0.0.1:8080/wishlist/v1/user/deleteUser", false);
+                xmlhttp.setRequestHeader("Content-Type", "application/json");
+                //xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
+
+                xmlhttp.send(request);
+                window.location.replace("/wishlist/landing_page.html");
+            } else {
+                alert("not executing");
+                return;
+            }
+        }
     </script>
 
 </body>
