@@ -18,8 +18,6 @@ Firbase is integrated using Springboot at the backend to add a persisitence laye
 
 
 
-
-
 **Entity Relationship Diagrams**
 ![Entity Relationship Diagram](https://github.com/parw8649/CST438-Project2/blob/develop/wk09_project02groupC_ERDs.png)
 
@@ -33,8 +31,6 @@ Firbase is integrated using Springboot at the backend to add a persisitence laye
 **Dependencies Used:**
 
 
-
-        implementation 'org.springframework.boot:spring-boot-starter-web'
 
 	https://mvnrepository.com/artifact/com.google.firebase/firebase-admin
 	implementation group: 'com.google.firebase', name: 'firebase-admin', version: '7.1.1'
