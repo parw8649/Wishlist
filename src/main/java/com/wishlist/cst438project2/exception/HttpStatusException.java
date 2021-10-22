@@ -4,6 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
+/**
+ * Http status exception
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
 @Getter
 @Setter
 public class HttpStatusException extends RuntimeException {
