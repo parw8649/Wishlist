@@ -8,6 +8,12 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+/**
+ * Data Transfer Object for Sign up endpoint in UserController.java
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
