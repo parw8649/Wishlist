@@ -3,19 +3,19 @@ package com.wishlist.cst438project2.service.impl;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.WriteResult;
 import com.wishlist.cst438project2.common.Constants;
-import com.wishlist.cst438project2.common.Utils;
 import com.wishlist.cst438project2.document.Item;
 import com.wishlist.cst438project2.dto.ItemDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
 import com.wishlist.cst438project2.integration.FirebaseIntegration;
 import com.wishlist.cst438project2.service.ItemService;
-import java.util.List;
-import java.util.Objects;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Service method implementations to be used with API endpoints in ItemController.java.
@@ -52,6 +52,7 @@ public class ItemServiceImpl implements ItemService {
         } else {
             // If item does not exist, add the item
             item = modelMapper.map(itemDTO, Item.class);
+            item.setItemId(firebaseIntegration.getAllItems().size() + 1L);
             item.setUserId(userId);
             item.logItem();
         }
@@ -158,7 +159,6 @@ public class ItemServiceImpl implements ItemService {
         ItemDTO dbItemDTO = firebaseIntegration.getItem(name, userId);
 
         if(Objects.isNull(dbItemDTO)) {
-//            throw new BadRequestException(Constants.ERROR_ITEM_DOES_NOT_EXISTS.replace(Constants.KEY_ITEM_NAME, name));
             Item item = null;
             return item;
         }

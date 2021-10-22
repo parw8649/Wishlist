@@ -1,3 +1,6 @@
+document.querySelector("#login").addEventListener('click', login);
+
+
 //AJAX call - GET
 function getAllUsers() {
   var xhttp = new XMLHttpRequest();
@@ -16,8 +19,8 @@ function getAllUsers() {
 
 function login() {
 
-  let username = $("#username").val();
-  let password = $("#password").val();
+  let username = $("#user").val();
+  let password = $("#pass").val();
 
   let request = `{"username": "testuser3","password": "userpass3"}`;
 
@@ -34,7 +37,7 @@ function login() {
   console.log(xmlhttp.responseText);
 }
 
-document.querySelector("#btnLogin").addEventListener('click', login);
+
 
 //User Login API call
 /*
@@ -54,10 +57,10 @@ async function login() {
   console.log(myJson);
 }*/
 
-function login() {
+function loginExample() {
 
-    let username = $("#username").val();
-    let password = $("#password").val();
+    let username = $("#user").val();
+    let password = $("#pass").val();
 
     let request = `{"username": "testuser3","password": "userpass3"}`;
 

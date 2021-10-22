@@ -14,8 +14,7 @@ public class User {
     @DocumentId
     private String id;
 
-    //Added to generate unique id required for user
-    private Long userId = Utils.generateId();
+    private Long userId;
     private String firstName;
     private String lastName;
     private String emailId;
