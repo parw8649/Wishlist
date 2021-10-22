@@ -8,8 +8,10 @@ Title :- Wishlist
 - [Kathryn Grose](https://github.com/katgrose)
 - [Barbara Kondo](https://github.com/bkondo)
 
-This project includes a backend and a frontend. The backend basically involves creation of the API calls and they are fetched by the front end. For the tech stack Springboot is used on the backend and for the frontend javascript is used. The project creates an API to allow users to create and edit a web-based wishlist where they can add items by entering the image URLs as per their choice. 
+This project includes a backend and a frontend. The backend basically involves creation of the API calls and they are fetched by the front end. For the tech stack Springboot is used on the backend and for the frontend javascript is used. The project creates an API to allow users to create and edit a web-based wishlist where they can add items by entering the image URLs as per their choice. Username are kept unique and the password requirement is to have atleast 6 characters, alphanumeric and include atleast one special character. 
+
 The project includes the following API's for the user: Createan account, Login, Log out, Delete account, List all items, show specific list, add, update and remove items. As an Admin all the user functionalities are possible and additionally all users can be viewed, new users can be created, updated or deleted. 
+
 Firbase is integrated using Springboot to add a persisitence layer. The Firebase database is used to maintain the persistence and record of the user's information, specifically the user and product details. 
 
 **Entity Relationship Diagrams**
