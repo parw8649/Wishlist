@@ -19,6 +19,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * Firebase Integration with Springboot and setup
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
+
 @Component
 @Slf4j
 public class FirebaseIntegration {
