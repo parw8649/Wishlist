@@ -18,6 +18,8 @@ Firbase is integrated using Springboot at the backend to add a persisitence laye
 
 
 
+
+
 **Entity Relationship Diagrams**
 ![Entity Relationship Diagram](https://github.com/parw8649/CST438-Project2/blob/develop/wk09_project02groupC_ERDs.png)
 
@@ -29,16 +31,36 @@ Firbase is integrated using Springboot at the backend to add a persisitence laye
 ![wishlist page mockups](https://github.com/parw8649/CST438-Project2/blob/bKondo-patch-1/wk05_project02groupC_wishlist_page_mockups.png)
 
 **Dependencies Used:**
-  implementation 'org.springframework.boot:spring-boot-starter-web'
+
+
+
+        implementation 'org.springframework.boot:spring-boot-starter-web'
 
 	https://mvnrepository.com/artifact/com.google.firebase/firebase-admin
 	implementation group: 'com.google.firebase', name: 'firebase-admin', version: '7.1.1'
 
 	Lombok
 	compileOnly 'org.projectlombok:lombok'
-  
-  JWT
+
+	Lombok Annotation
+	annotationProcessor 'org.projectlombok:lombok'
+
+	https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.5.4'
+
+	https://mvnrepository.com/artifact/javax.validation/validation-api
+	implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+
+	https://mvnrepository.com/artifact/org.modelmapper/modelmapper
+	implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.4.0'
+
+	JWT
 	implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.0'
+
+	https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
+	implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
   
 
 **Libraries Used:**
