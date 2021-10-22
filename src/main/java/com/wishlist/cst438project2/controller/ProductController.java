@@ -12,6 +12,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Objects;
 
+/**
+ * API endpoints for testing service
+ *
+ * references:
+ *     - https://spring.io/projects/spring-boot
+ *     - https://stackoverflow.com/questions/29479814/spring-mvc-or-spring-boot
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
+
 @RestController
 @RequestMapping("/v1/product")
 @Slf4j

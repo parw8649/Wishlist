@@ -14,6 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
+/**
+ * Wishlist implementation
+ *
+ * references:
+ *     - https://spring.io/projects/spring-boot
+ *     - https://stackoverflow.com/questions/29479814/spring-mvc-or-spring-boot
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
 
 @RestController
 @Slf4j
