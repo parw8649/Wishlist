@@ -5,6 +5,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+/**
+ * class utils
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
+
 @Component
 public class Utils {
 
