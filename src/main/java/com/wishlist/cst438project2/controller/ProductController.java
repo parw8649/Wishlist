@@ -17,7 +17,6 @@ import java.util.Objects;
  *
  * references:
  *     - https://spring.io/projects/spring-boot
- *     - https://stackoverflow.com/questions/29479814/spring-mvc-or-spring-boot
  * @author Chaitanya Parwatkar
  * @version %I% %G%
  */

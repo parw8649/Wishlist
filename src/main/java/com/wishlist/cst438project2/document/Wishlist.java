@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * Wishlist details
+ * wishlist
  * @author Chaitanya Parwatkar
  * @version %I% %G%
  */
