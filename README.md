@@ -8,7 +8,7 @@ Title :- Wishlist
 - [Kathryn Grose](https://github.com/katgrose)
 - [Barbara Kondo](https://github.com/bkondo)
 
-This project creates an API to allow users to create and edit a web-based wishlist.
+This project includes a backend and a frontend. The backend basically involves creation of the API calls and they are fetched by the front end. For the tech stack Springboot is used on the backend and for the frontend javascript is used. The project creates an API to allow users to create and edit a web-based wishlist where they can add items using the URLs as per their choice. 
 
 **Entity Relationship Diagrams**
 ![Entity Relationship Diagram](https://github.com/parw8649/CST438-Project2/blob/develop/wk09_project02groupC_ERDs.png)
