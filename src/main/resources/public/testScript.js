@@ -14,6 +14,26 @@ function getAllUsers() {
   xhttp.send();
 }
 
+function login() {
+
+  let username = $("#username").val();
+  let password = $("#password").val();
+
+  let request = `{"username": "testuser3","password": "userpass3"}`;
+
+  console.log(request);
+
+  var xmlhttp = new XMLHttpRequest();
+  xmlhttp.open("POST", "http://127.0.0.1:8080/wishlist/v1/user/login", false);
+  xmlhttp.setRequestHeader("Content-Type", "application/json");
+  //xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
+  xmlhttp.send(request);
+  res = JSON.parse(xmlhttp.responseText)
+  alert(res.data.accessToken);
+  alert(xmlhttp.response);
+  console.log(xmlhttp.responseText);
+}
+
 document.querySelector("#btnLogin").addEventListener('click', login);
 
 //User Login API call
@@ -48,6 +68,8 @@ function login() {
     xmlhttp.setRequestHeader("Content-Type", "application/json");
     //xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
     xmlhttp.send(request);
-    alert(xmlhttp.responseText);
+    res = JSON.parse(xmlhttp.responseText)
+    alert(res.data.accessToken);
+    alert(xmlhttp.response);
     console.log(xmlhttp.responseText);
 }
