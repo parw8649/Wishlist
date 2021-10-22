@@ -45,13 +45,13 @@ function login() {
     xmlhttp.open("POST", "http://127.0.0.1:8080/wishlist/v1/user/login", false);
     xmlhttp.setRequestHeader("Content-Type", "application/json");
     //xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
-    xmlhttp.send(request);
-    res = JSON.parse(xmlhttp.responseText)
-    let accessToken = res.data.accessToken;
-    let success = res.status;
-    if(success == 200) {
+    try {
+        xmlhttp.send(request);
+        res = JSON.parse(xmlhttp.responseText)
+        let accessToken = res.data.accessToken;
+        // put accessToken in cookie to access across scripts?
         window.location.replace("/wishlist/wishlist_view_page.html");
-    } else {
+    } catch (BadRequestException) {
         $("#error").text("Invalid username or password");
     }
 }
