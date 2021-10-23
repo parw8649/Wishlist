@@ -66,7 +66,7 @@ public class AdminControllerTest {
     }
 
     @Test
-    @Order(1)
+    @Order(2)
     void adminCreateUser_Success() {
 
         UserDTO userDTO = firebaseIntegration.getUser(USERNAME);
@@ -81,6 +81,24 @@ public class AdminControllerTest {
         assertThat(responseTimestamp, notNullValue());
     }
 
+    @Test
+    @Order(3)
+    void updateUserWithoutPasswordChange_Success() {
+
+        String newFirstName = "unitTest";
+        String newLastName = "user";
+        String newEmail = "unittestuser@gmail.com";
+
+        String adminAccessToken = getAccessToken(ADMIN_USERNAME, ADMIN_PASSWORD);
+
+        UserDTO updateUserRequest = new UserDTO(newFirstName, newLastName, newEmail, USERNAME, null);
+        UserDTO updateUserResponse = adminController.updateUser(adminAccessToken, updateUserRequest);
+
+        assertThat(updateUserResponse, notNullValue());
+        assertEquals(newFirstName, updateUserResponse.getFirstName());
+        assertEquals(newLastName, updateUserResponse.getLastName());
+        assertEquals(newEmail, updateUserResponse.getEmailId());
+    }
 
     //Private Methods
     private String getAccessToken(String username, String password) {
