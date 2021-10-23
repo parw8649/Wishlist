@@ -65,6 +65,23 @@ public class AdminControllerTest {
         assertThat(token, notNullValue());
     }
 
+    @Test
+    @Order(1)
+    void adminCreateUser_Success() {
+
+        UserDTO userDTO = firebaseIntegration.getUser(USERNAME);
+        if(Objects.nonNull(userDTO)) {
+            firebaseIntegration.deleteUser(USERNAME);
+        }
+
+        String adminAccessToken = getAccessToken(ADMIN_USERNAME, ADMIN_PASSWORD);
+
+        SignUpDTO signUpDTO = new SignUpDTO(FIRSTNAME, LASTNAME, EMAIL, USERNAME, PASSWORD);
+        String responseTimestamp = adminController.createUser(adminAccessToken, signUpDTO);
+        assertThat(responseTimestamp, notNullValue());
+    }
+
+
     //Private Methods
     private String getAccessToken(String username, String password) {
         SignInDTO credentials = new SignInDTO();
