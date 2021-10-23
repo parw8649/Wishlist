@@ -138,6 +138,21 @@ public class AdminControllerTest {
         assertEquals(Constants.USER_LOGOUT_SUCCESSFUL, response);
     }
 
+    @Test
+    @Order(6)
+    void deleteUserAccount_Success() {
+
+        String adminAccessToken = getAccessToken(ADMIN_USERNAME, ADMIN_PASSWORD);
+
+        String response = adminController.deleteUser(adminAccessToken, USERNAME);
+
+        assertEquals(Constants.USER_DELETED + " " + USERNAME, response);
+
+        UserDTO userDTO = firebaseIntegration.getUser(USERNAME);
+
+        assertTrue(Objects.isNull(userDTO));
+    }
+
     //Private Methods
     private String getAccessToken(String username, String password) {
         SignInDTO credentials = new SignInDTO();
