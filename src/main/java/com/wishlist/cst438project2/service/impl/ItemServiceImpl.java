@@ -52,8 +52,7 @@ public class ItemServiceImpl implements ItemService {
         } else {
             // If item does not exist, add the item
             item = modelMapper.map(itemDTO, Item.class);
-            // did i add itemId at some point??? That shouldn't be in ItemDTO.
-//            item.setItemId(firebaseIntegration.getAllItems().size() + 1L);
+            item.setItemId(firebaseIntegration.getAllItems().size() + 1L); // for admin functionalities
             item.setUserId(userId);
             item.logItem();
         }
