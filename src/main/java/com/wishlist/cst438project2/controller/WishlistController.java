@@ -14,7 +14,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
+/**
+ * Wishlist Controller is used for adding user items into the wishlist,
+ * and fetching wishlist data specific to user
+ *
+ * references:
+ *     - https://spring.io/projects/spring-boot
+ *     - https://stackoverflow.com/questions/29479814/spring-mvc-or-spring-boot
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
 
+@CrossOrigin
 @RestController
 @Slf4j
 public class WishlistController {

@@ -10,6 +10,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+/**
+ * Application configurations
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
+
 @Configuration
 @EnableWebSecurity
 public class ApplicationConfig extends WebSecurityConfigurerAdapter {

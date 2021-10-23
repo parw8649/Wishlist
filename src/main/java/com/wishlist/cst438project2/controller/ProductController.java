@@ -12,6 +12,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Objects;
 
+/**
+ * API endpoints for testing service
+ *
+ * references:
+ *     - https://spring.io/projects/spring-boot
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
+
 @RestController
 @RequestMapping("/v1/product")
 @Slf4j
