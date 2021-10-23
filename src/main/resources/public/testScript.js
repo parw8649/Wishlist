@@ -33,10 +33,11 @@ function login() {
 
         let accessToken = res.data.accessToken;
         // put accessToken in cookie to access across scripts?
+        document.cookie = "cookiename=usercookie; path=/";
         document.cookie = "username=" + username + "; path=/";
-        document.cookie = "firstName=" + res.data.firstName + "; path=/";
-        document.cookie = "lastName=" + res.data.lastName + "; path=/";
-        document.cookie = "emailId=" + res.data.emailId + "; path=/";
+        document.cookie = "firstName=" + res.data.userDTO.firstName + "; path=/";
+        document.cookie = "lastName=" + res.data.userDTO.lastName + "; path=/";
+        document.cookie = "emailId=" + res.data.userDTO.emailId + "; path=/";
         document.cookie = "password=" + password + "; path=/";
         document.cookie = "accessToken=" + accessToken + "; path=/";
 

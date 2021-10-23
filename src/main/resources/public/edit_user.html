@@ -127,8 +127,6 @@
             let lastname = $("#last").val();
             let email = $("#email").val();
             let username = $("#user").val();
-            let password = $("#pass").val();
-            let password_verif = $("#vpass").val();
 
             let request = `{"firstName": "${firstname}", "lastName": "${lastname}", "emailId": "${email}", "username": "${username}"}`;
 
@@ -138,6 +136,11 @@
             xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
 
             xmlhttp.send(request);
+
+            document.cookie = "username=" + username + "; path=/";
+            document.cookie = "firstName=" + firstname + "; path=/";
+            document.cookie = "lastName=" + lastname + "; path=/";
+            document.cookie = "emailId=" + email + "; path=/";
 
             window.location.replace("/wishlist/wishlist_view_page.html");
         }
@@ -151,15 +154,14 @@
                 alert(request);
 
                 var xmlhttp = new XMLHttpRequest();
-                xmlhttp.open("GET", "http://127.0.0.1:8080/wishlist/v1/user/deleteUser", false);
+                xmlhttp.open("DELETE", "http://127.0.0.1:8080/wishlist/v1/user/deleteUser", false);
                 xmlhttp.setRequestHeader("Content-Type", "application/json");
                 xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
 
                 xmlhttp.send(request);
 
                 alert(xmlhttp.responseText);
-                window.location.replace("/wishlist/landing_page.html");
-                return;
+                window.location.replace("/wishlist/");
             } else {
                 alert("not executing");
                 return;

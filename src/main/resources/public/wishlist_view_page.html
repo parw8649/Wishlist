@@ -53,7 +53,7 @@
 			// if (data.error == "There is nothing here"){
 			// 	alert("Name not recognized")
 			// }
-			let data = { 
+			let data = {
 				"list": [
 					{
 						"name": "Playstation 5",
@@ -93,8 +93,16 @@
 		// }
 		fill_template();
 
+		let cookies = document.cookie.split("; ");
+		var accessToken = "";
+		for (c in cookies) {
+			if (cookies[c].startsWith("accessToken")) {
+				let token = cookies[c].split("=")
+				accessToken = token[1];
+			}
+		}
+
 		function logout() {
-			alert("inside logout");
 			var xmlhttp = new XMLHttpRequest();
 			xmlhttp.open("POST", "http://127.0.0.1:8080/wishlist/v1/user/logout", false);
 			xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
@@ -102,8 +110,7 @@
 
 			xmlhttp.send(null);
 
-			alert(xmlhttp.responseText);
-			window.location.replace("/wishlist/landing_page.html");
+			window.location.replace("/wishlist/");
 		}
 	</script>
 </body>

@@ -65,6 +65,10 @@
             let username = $("#user").val();
             let password = $("#pass").val();
 
+            if(!verify()) {
+                return;
+            }
+
             let request = `{"firstName": "${firstname}",
                             "lastName": "${lastname}",
                             "emailId": "${email}",
@@ -87,9 +91,11 @@
             if(password_verif.localeCompare(password)) {
                 $('#v_pass').css('background-color', '#ff5252');
                 $('#message').text("Does not match");
+                return false;
             } else {
                 $('#v_pass').css('background-color', '#92f781');
                 $('#message').text("Match");
+                return true;
             }
         }
     </script>
