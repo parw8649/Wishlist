@@ -115,6 +115,16 @@ public class UserControllerTest {
     }
 
     @Test
+    void userLogout_Success() {
+
+        String accessToken = getAccessToken();
+
+        String response = userController.logout(accessToken);
+
+        assertEquals(Constants.USER_LOGOUT_SUCCESSFUL, response);
+    }
+
+    @Test
     void deleteMyAccount_Success() {
 
         String accessToken = getAccessToken();
@@ -123,7 +133,7 @@ public class UserControllerTest {
         DeleteUserDTO deleteUserDTO = new DeleteUserDTO(USERNAME, updatedPassword);
         String response = userController.deleteUser(accessToken, deleteUserDTO);
 
-        assertEquals(response, Constants.USER_DELETED + " " + USERNAME);
+        assertEquals(Constants.USER_DELETED + " " + USERNAME, response);
 
         UserDTO userDTO = firebaseIntegration.getUser(USERNAME);
 
