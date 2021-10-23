@@ -67,3 +67,23 @@ async function fill_template() {
 		// 	return data;
 		// }
 fill_template();
+
+let cookies = document.cookie.split("; ");
+var accessToken = "";
+for (c in cookies) {
+	if (cookies[c].startsWith("accessToken")) {
+		let token = cookies[c].split("=")
+		accessToken = token[1];
+	}
+}
+
+function logout() {
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("POST", "http://127.0.0.1:8080/wishlist/v1/user/logout", false);
+	xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
+	xmlhttp.setRequestHeader("Content-Type", "application/json");
+
+	xmlhttp.send(null);
+
+	window.location.replace("/wishlist/");
+}
