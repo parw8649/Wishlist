@@ -14,6 +14,7 @@ import com.wishlist.cst438project2.exception.ExternalServerException;
 import com.wishlist.cst438project2.exception.UnauthorizedException;
 import com.wishlist.cst438project2.integration.FirebaseIntegration;
 import com.wishlist.cst438project2.service.AdminService;
+import com.wishlist.cst438project2.service.ItemService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -35,6 +36,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private TokenManager tokenManager;
+
+    @Autowired
+    private ItemService itemService;
 
     @Override
     public List<UserDTO> getAllUsers() {
@@ -72,6 +76,7 @@ public class AdminServiceImpl implements AdminService {
         User user;
         if(Objects.isNull(dbUserDTO)) {
             user = modelMapper.map(signUpDTO, User.class);
+            user.setUserId(firebaseIntegration.getAllUsers().size() + 1L);
         } else
             throw new BadRequestException(Constants.ERROR_USER_ALREADY_EXISTS.replace(Constants.KEY_USERNAME, signUpDTO.getUsername()));
 
@@ -95,18 +100,18 @@ public class AdminServiceImpl implements AdminService {
 
         User user = fetchUser(signInDTO.getUsername());
 
-        if(!user.getRole().getValue().equals(RoleType.ADMIN.getValue()))
+        if (!user.getRole().getValue().equals(RoleType.ADMIN.getValue()))
             throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
 
         String accessToken = null;
 
-        if(Utils.checkPassword(signInDTO.getPassword(), user.getPassword())) {
+        if (Utils.checkPassword(signInDTO.getPassword(), user.getPassword())) {
             log.info(Constants.USER_LOGIN_SUCCESSFUL);
             accessToken = tokenManager.generateToken(user);
         }
 
         UserLoginDTO userLoginDTO = null;
-        if(Objects.nonNull(accessToken) && !accessToken.isEmpty())
+        if (Objects.nonNull(accessToken) && !accessToken.isEmpty())
             userLoginDTO = new UserLoginDTO(user.fetchUserDTO(), accessToken);
 
         log.info("AdminServiceImpl: Exiting login");
@@ -135,7 +140,12 @@ public class AdminServiceImpl implements AdminService {
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setEmailId(userDTO.getEmailId());
-        user.setRole(RoleType.valueOf(userDTO.getRole()));
+
+        if(Objects.nonNull(userDTO.getRole()))
+            user.setRole(RoleType.valueOf(userDTO.getRole()));
+
+        if(Objects.nonNull(userDTO.getPassword()))
+            user.setPassword(Utils.encodePassword(userDTO.getPassword()));
 
         ApiFuture<WriteResult> collectionApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_USER).document(user.getUsername()).set(user);
 

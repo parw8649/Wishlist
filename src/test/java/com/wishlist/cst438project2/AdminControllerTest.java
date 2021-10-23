@@ -50,7 +50,6 @@ public class AdminControllerTest {
     //Admin details
     final String ADMIN_USERNAME = "adminuser1";
     final String ADMIN_PASSWORD = "adminuserpass1";
-    final String ADMIN_ACCESS_TOKEN = getAccessToken(ADMIN_USERNAME, ADMIN_PASSWORD);
 
     //User details
     final String USERNAME = "test-user22";
@@ -61,9 +60,7 @@ public class AdminControllerTest {
     String PASSWORD = "user-pass22";
 
     //Item details
-    final String INITIAL_ITEM_NAME = "test name";
-
-    final String UPDATE_ITEM_NAME = "updated name";
+    final String INITIAL_ITEM_NAME = "test item name";
 
     @Test
     @Order(1)
@@ -77,6 +74,8 @@ public class AdminControllerTest {
         String token = response.getData().getAccessToken();
 
         assertThat(token, notNullValue());
+
+        userController.logout(token);
     }
 
     @Test
@@ -88,9 +87,12 @@ public class AdminControllerTest {
             firebaseIntegration.deleteUser(USERNAME);
         }
 
+        String adminAccessToken = getAdminAccessToken();
         SignUpDTO signUpDTO = new SignUpDTO(FIRSTNAME, LASTNAME, EMAIL, USERNAME, PASSWORD);
-        String responseTimestamp = adminController.createUser(ADMIN_ACCESS_TOKEN, signUpDTO);
+        String responseTimestamp = adminController.createUser(adminAccessToken, signUpDTO);
         assertThat(responseTimestamp, notNullValue());
+
+        userController.logout(adminAccessToken);
     }
 
     @Test
@@ -101,13 +103,16 @@ public class AdminControllerTest {
         String newLastName = "user";
         String newEmail = "unittestuser@gmail.com";
 
+        String adminAccessToken = getAdminAccessToken();
         UserDTO updateUserRequest = new UserDTO(newFirstName, newLastName, newEmail, USERNAME, null);
-        UserDTO updateUserResponse = adminController.updateUser(ADMIN_ACCESS_TOKEN, updateUserRequest);
+        UserDTO updateUserResponse = adminController.updateUser(adminAccessToken, updateUserRequest);
 
         assertThat(updateUserResponse, notNullValue());
         assertEquals(newFirstName, updateUserResponse.getFirstName());
         assertEquals(newLastName, updateUserResponse.getLastName());
         assertEquals(newEmail, updateUserResponse.getEmailId());
+
+        userController.logout(adminAccessToken);
     }
 
     @Test
@@ -118,8 +123,9 @@ public class AdminControllerTest {
         String newLastName = "user";
         String newEmail = "unittestuser@gmail.com";
 
+        String adminAccessToken = getAdminAccessToken();
         UserDTO updateUserRequest = new UserDTO(newFirstName, newLastName, newEmail, USERNAME, NEW_PASSWORD);
-        UserDTO updateUserResponse = adminController.updateUser(ADMIN_ACCESS_TOKEN, updateUserRequest);
+        UserDTO updateUserResponse = adminController.updateUser(adminAccessToken, updateUserRequest);
 
         assertThat(updateUserResponse, notNullValue());
         assertEquals(newFirstName, updateUserResponse.getFirstName());
@@ -127,13 +133,14 @@ public class AdminControllerTest {
         assertEquals(newEmail, updateUserResponse.getEmailId());
 
         //Checking user login with new password
-        String userAccessToken = getAccessToken(USERNAME, NEW_PASSWORD);
+        String userAccessToken = getUserAccessToken(USERNAME, NEW_PASSWORD);
 
         UserTokenDTO userTokenDTO = tokenManager.getUser(userAccessToken);
         assertThat(updateUserResponse, notNullValue());
         assertEquals(updateUserResponse.getUserId(), userTokenDTO.getUserId());
         assertEquals(updateUserResponse.getRole(), userTokenDTO.getRole());
 
+        userController.logout(adminAccessToken);
         userController.logout(userAccessToken);
     }
 
@@ -141,64 +148,56 @@ public class AdminControllerTest {
     @Order(5)
     void adminCreateItem_Success() {
 
-        String userAccessToken = getAccessToken(USERNAME, PASSWORD);
+        String userAccessToken = getUserAccessToken(USERNAME, NEW_PASSWORD);
 
-        List<ItemDTO> userItemsResponse = itemController.getUserItems(userAccessToken, USERNAME);
+        /*List<ItemDTO> userItemsResponse = itemController.getUserItems(userAccessToken, USERNAME);
         if (userItemsResponse.size() > 0) {
             String clearUserItemsResponse = itemController.removeItemsByUser(userAccessToken, USERNAME);
             assertEquals(clearUserItemsResponse.substring(0, 5), "2021-");
-        }
+        }*/
 
         ItemDTO itemDTO = new ItemDTO();
         itemDTO.setName(INITIAL_ITEM_NAME);
 
-        String createResponse = adminController.createItem(ADMIN_ACCESS_TOKEN, itemDTO);
+        String adminAccessToken = getAdminAccessToken();
+        String createResponse = adminController.createItem(adminAccessToken, itemDTO, USERNAME);
         assertEquals(createResponse.substring(0,5), "2021-");
 
-        userItemsResponse = itemController.getUserItems(userAccessToken, USERNAME);
+        List<ItemDTO> userItemsResponse = itemController.getUserItems(userAccessToken, USERNAME);
         assert(userItemsResponse.size() == 1);
 
-        String removeResponse = itemController.removeItem(userAccessToken, itemDTO.getName(), USERNAME);
-        assertEquals(removeResponse.substring(0,5), "2021-");
-
-        userItemsResponse = itemController.getUserItems(userAccessToken, USERNAME);
-        assert(userItemsResponse.size() == 0);
+        userController.logout(adminAccessToken);
+        userController.logout(userAccessToken);
     }
 
     @Test
     @Order(6)
     void adminRemoveItem_Success() {
 
-        String userAccessToken = getAccessToken(USERNAME, PASSWORD);
+        String userAccessToken = getUserAccessToken(USERNAME, NEW_PASSWORD);
 
         List<ItemDTO> userItemsResponse = itemController.getUserItems(userAccessToken, USERNAME);
-        if (userItemsResponse.size() > 0) {
-            String clearUserItemsResponse = itemController.removeItemsByUser(userAccessToken, USERNAME);
-            assertEquals(clearUserItemsResponse.substring(0, 5), "2021-");
-        }
-
-        ItemDTO itemDTO = new ItemDTO();
-        itemDTO.setName(INITIAL_ITEM_NAME);
-        String createResponse = adminController.createItem(ADMIN_ACCESS_TOKEN, itemDTO);
-
-        userItemsResponse = itemController.getUserItems(userAccessToken, USERNAME);
         assert(userItemsResponse.size() == 1);
 
         Long userId = firebaseIntegration.getUserId(USERNAME);
 
-        String removeResponse = adminController.removeItem(userAccessToken, INITIAL_ITEM_NAME, userId);
+        String adminAccessToken = getAdminAccessToken();
+        String removeResponse = adminController.removeItem(adminAccessToken, INITIAL_ITEM_NAME, userId);
         System.out.println(removeResponse);
         assertEquals(removeResponse.substring(0,5), "2021-");
 
         userItemsResponse = itemController.getUserItems(userAccessToken, USERNAME);
         assert(userItemsResponse.size() == 0);
+
+        userController.logout(adminAccessToken);
+        userController.logout(userAccessToken);
     }
 
     @Test
     @Order(7)
     void adminLogout_Success() {
 
-        String response = userController.logout(ADMIN_ACCESS_TOKEN);
+        String response = userController.logout(getAdminAccessToken());
 
         assertEquals(Constants.USER_LOGOUT_SUCCESSFUL, response);
     }
@@ -207,7 +206,7 @@ public class AdminControllerTest {
     @Order(8)
     void deleteUserAccount_Success() {
 
-        String adminAccessToken = getAccessToken(ADMIN_USERNAME, ADMIN_PASSWORD);
+        String adminAccessToken = getAdminAccessToken();
 
         String response = adminController.deleteUser(adminAccessToken, USERNAME);
 
@@ -216,15 +215,27 @@ public class AdminControllerTest {
         UserDTO userDTO = firebaseIntegration.getUser(USERNAME);
 
         assertTrue(Objects.isNull(userDTO));
+
+        userController.logout(adminAccessToken);
     }
 
     //Private Methods
-    private String getAccessToken(String username, String password) {
+    private String getAdminAccessToken() {
+        SignInDTO credentials = new SignInDTO();
+        credentials.setUsername(ADMIN_USERNAME);
+        credentials.setPassword(ADMIN_PASSWORD);
+
+        ResponseDTO<UserLoginDTO> response = adminController.login(credentials);
+        assertThat(response.getData().getAccessToken(), notNullValue());
+        return response.getData().getAccessToken();
+    }
+
+    private String getUserAccessToken(String username, String password) {
         SignInDTO credentials = new SignInDTO();
         credentials.setUsername(username);
         credentials.setPassword(password);
 
-        ResponseDTO<UserLoginDTO> response = adminController.login(credentials);
+        ResponseDTO<UserLoginDTO> response = userController.login(credentials);
         assertThat(response.getData().getAccessToken(), notNullValue());
         return response.getData().getAccessToken();
     }

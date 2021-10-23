@@ -163,7 +163,7 @@ public class AdminController {
      * returns item creation timestamp
      */
     @PostMapping("/createItem")
-    public String createItem(@RequestHeader String accessToken, @RequestBody ItemDTO itemDTO) {
+    public String createItem(@RequestHeader String accessToken, @RequestBody ItemDTO itemDTO, @RequestParam String username) {
         log.info("ItemController: Starting createItem");
         try {
             UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
@@ -174,7 +174,7 @@ public class AdminController {
             if (Objects.isNull(itemDTO) || (itemDTO.getName().isBlank() || Objects.isNull(itemDTO.getUserId()))) {
                 throw new BadRequestException();
             } else {
-                String timestamp = itemService.createItem(itemDTO, userTokenDTO.getUsername());
+                String timestamp = itemService.createItem(itemDTO, username);
                 log.info("ItemController: exiting successful createItem");
                 return timestamp;
             }
