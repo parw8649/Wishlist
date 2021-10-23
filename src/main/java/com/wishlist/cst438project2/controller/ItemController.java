@@ -81,6 +81,25 @@ public class ItemController {
     }
 
     /**
+     * GET request to retrieve ItemDTO for a specific item
+     * returns ItemDTO
+     */
+    @RequestMapping(method= RequestMethod.GET, params = {"item_name", "username"}, headers = "accessToken")
+    public ItemDTO getSpecificItem2(@RequestParam String item_name, @RequestParam String username, @RequestHeader String accessToken) {
+        try {
+            UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
+            if(Objects.isNull(userTokenDTO))
+                throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
+
+            ItemDTO itemDTO = itemService.getSpecificItem2(item_name, username);
+            return itemDTO;
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    /**
      * GET request to retrieve all items from item collection
      * <p>
      * NOTE: all fields of an item are returned, userId should be kept as a hidden html value
