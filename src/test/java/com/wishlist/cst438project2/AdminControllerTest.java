@@ -100,6 +100,33 @@ public class AdminControllerTest {
         assertEquals(newEmail, updateUserResponse.getEmailId());
     }
 
+    @Test
+    @Order(4)
+    void updateUserWithPasswordChange_Success() {
+
+        String newFirstName = "unitTest";
+        String newLastName = "user";
+        String newEmail = "unittestuser@gmail.com";
+
+        String adminAccessToken = getAccessToken(ADMIN_USERNAME, ADMIN_PASSWORD);
+
+        UserDTO updateUserRequest = new UserDTO(newFirstName, newLastName, newEmail, USERNAME, NEW_PASSWORD);
+        UserDTO updateUserResponse = adminController.updateUser(adminAccessToken, updateUserRequest);
+
+        assertThat(updateUserResponse, notNullValue());
+        assertEquals(newFirstName, updateUserResponse.getFirstName());
+        assertEquals(newLastName, updateUserResponse.getLastName());
+        assertEquals(newEmail, updateUserResponse.getEmailId());
+
+        //Checking user login with new password
+        String userAccessToken = getAccessToken(USERNAME, NEW_PASSWORD);
+
+        UserTokenDTO userTokenDTO = tokenManager.getUser(userAccessToken);
+        assertThat(updateUserResponse, notNullValue());
+        assertEquals(updateUserResponse.getUserId(), userTokenDTO.getUserId());
+        assertEquals(updateUserResponse.getRole(), userTokenDTO.getRole());
+    }
+
     //Private Methods
     private String getAccessToken(String username, String password) {
         SignInDTO credentials = new SignInDTO();
