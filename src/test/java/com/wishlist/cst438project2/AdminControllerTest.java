@@ -2,20 +2,25 @@ package com.wishlist.cst438project2;
 
 import com.wishlist.cst438project2.common.Constants;
 import com.wishlist.cst438project2.common.TokenManager;
-import com.wishlist.cst438project2.common.Utils;
 import com.wishlist.cst438project2.controller.AdminController;
+import com.wishlist.cst438project2.controller.ItemController;
 import com.wishlist.cst438project2.controller.UserController;
 import com.wishlist.cst438project2.dto.*;
 import com.wishlist.cst438project2.integration.FirebaseIntegration;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
 import java.util.Objects;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test cases for user functionalities
@@ -37,11 +42,15 @@ public class AdminControllerTest {
     private AdminController adminController;
 
     @Autowired
+    private ItemController itemController;
+
+    @Autowired
     FirebaseIntegration firebaseIntegration;
 
     //Admin details
     final String ADMIN_USERNAME = "adminuser1";
     final String ADMIN_PASSWORD = "adminuserpass1";
+    final String ADMIN_ACCESS_TOKEN = getAccessToken(ADMIN_USERNAME, ADMIN_PASSWORD);
 
     //User details
     final String USERNAME = "test-user22";
@@ -50,6 +59,11 @@ public class AdminControllerTest {
     final String EMAIL = "testuser22@gmail.com";
     final String NEW_PASSWORD = "user-pass32";
     String PASSWORD = "user-pass22";
+
+    //Item details
+    final String INITIAL_ITEM_NAME = "test name";
+
+    final String UPDATE_ITEM_NAME = "updated name";
 
     @Test
     @Order(1)
@@ -74,10 +88,8 @@ public class AdminControllerTest {
             firebaseIntegration.deleteUser(USERNAME);
         }
 
-        String adminAccessToken = getAccessToken(ADMIN_USERNAME, ADMIN_PASSWORD);
-
         SignUpDTO signUpDTO = new SignUpDTO(FIRSTNAME, LASTNAME, EMAIL, USERNAME, PASSWORD);
-        String responseTimestamp = adminController.createUser(adminAccessToken, signUpDTO);
+        String responseTimestamp = adminController.createUser(ADMIN_ACCESS_TOKEN, signUpDTO);
         assertThat(responseTimestamp, notNullValue());
     }
 
@@ -89,10 +101,8 @@ public class AdminControllerTest {
         String newLastName = "user";
         String newEmail = "unittestuser@gmail.com";
 
-        String adminAccessToken = getAccessToken(ADMIN_USERNAME, ADMIN_PASSWORD);
-
         UserDTO updateUserRequest = new UserDTO(newFirstName, newLastName, newEmail, USERNAME, null);
-        UserDTO updateUserResponse = adminController.updateUser(adminAccessToken, updateUserRequest);
+        UserDTO updateUserResponse = adminController.updateUser(ADMIN_ACCESS_TOKEN, updateUserRequest);
 
         assertThat(updateUserResponse, notNullValue());
         assertEquals(newFirstName, updateUserResponse.getFirstName());
@@ -108,10 +118,8 @@ public class AdminControllerTest {
         String newLastName = "user";
         String newEmail = "unittestuser@gmail.com";
 
-        String adminAccessToken = getAccessToken(ADMIN_USERNAME, ADMIN_PASSWORD);
-
         UserDTO updateUserRequest = new UserDTO(newFirstName, newLastName, newEmail, USERNAME, NEW_PASSWORD);
-        UserDTO updateUserResponse = adminController.updateUser(adminAccessToken, updateUserRequest);
+        UserDTO updateUserResponse = adminController.updateUser(ADMIN_ACCESS_TOKEN, updateUserRequest);
 
         assertThat(updateUserResponse, notNullValue());
         assertEquals(newFirstName, updateUserResponse.getFirstName());
@@ -125,15 +133,43 @@ public class AdminControllerTest {
         assertThat(updateUserResponse, notNullValue());
         assertEquals(updateUserResponse.getUserId(), userTokenDTO.getUserId());
         assertEquals(updateUserResponse.getRole(), userTokenDTO.getRole());
+
+        userController.logout(userAccessToken);
+    }
+
+    @Test
+    @Order(7)
+    void adminCreateItem_Success() {
+
+        String userAccessToken = getAccessToken(USERNAME, PASSWORD);
+
+        List<ItemDTO> userItemsResponse = itemController.getUserItems(userAccessToken, USERNAME);
+        if (userItemsResponse.size() > 0) {
+            String clearUserItemsResponse = itemController.removeItemsByUser(userAccessToken, USERNAME);
+            assertEquals(clearUserItemsResponse.substring(0, 5), "2021-");
+        }
+
+        ItemDTO itemDTO = new ItemDTO();
+        itemDTO.setName(INITIAL_ITEM_NAME);
+
+        String createResponse = adminController.createItem(ADMIN_ACCESS_TOKEN, itemDTO);
+        assertEquals(createResponse.substring(0,5), "2021-");
+
+        userItemsResponse = itemController.getUserItems(userAccessToken, USERNAME);
+        assert(userItemsResponse.size() == 1);
+
+        String removeResponse = itemController.removeItem(userAccessToken, itemDTO.getName(), USERNAME);
+        assertEquals(removeResponse.substring(0,5), "2021-");
+
+        userItemsResponse = itemController.getUserItems(userAccessToken, USERNAME);
+        assert(userItemsResponse.size() == 0);
     }
 
     @Test
     @Order(5)
     void adminLogout_Success() {
 
-        String adminAccessToken = getAccessToken(ADMIN_USERNAME, ADMIN_PASSWORD);
-
-        String response = userController.logout(adminAccessToken);
+        String response = userController.logout(ADMIN_ACCESS_TOKEN);
 
         assertEquals(Constants.USER_LOGOUT_SUCCESSFUL, response);
     }

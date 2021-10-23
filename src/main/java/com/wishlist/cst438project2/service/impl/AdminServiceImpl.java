@@ -114,35 +114,6 @@ public class AdminServiceImpl implements AdminService {
     }
 
     /**
-     * database record creation route for item.
-     * <p>
-     * returns timestamp of successful record creation.
-     */
-    @SneakyThrows
-    @Override
-    public String createItem(ItemDTO itemDTO) {
-        log.info("AdminServiceImpl: starting createItem");
-
-        Item item = fetchItem(itemDTO.getName(), itemDTO.getUserId());
-        if (Objects.nonNull(item)) {
-            throw new BadRequestException(Constants.ERROR_ITEM_ALREADY_EXISTS.replace(Constants.KEY_ITEM_NAME, itemDTO.getName()));
-        } else {
-            item = modelMapper.map(itemDTO, Item.class);
-            log.info("\n    name: " + item.getName() + "\n" + "    link: " + item.getLink() + "\n"
-                    + "    description: " + item.getDescription() + "\n" + "    imgUrl: "
-                    + item.getImgUrl() + "\n" + "    userId: " + item.getUserId() + "\n"
-                    + "    priority: " + item.getPriority());
-        }
-
-        ApiFuture<WriteResult> collectionsApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_ITEM).document().set(item);
-        String timestamp = collectionsApiFuture.get().getUpdateTime().toString();
-
-        log.info("AdminServiceImpl: createItem: timestamp: {}", timestamp);
-        log.info("AdminServiceImpl: exiting createItem");
-        return timestamp;
-    }
-
-    /**
      * remove the item associated with a given user ID and item name
      * returns timestamp of deletion
      */
