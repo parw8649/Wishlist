@@ -15,7 +15,7 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 public class ItemDTO {
 
-    private Long itemId;
+    private Long itemId; // for admin functionalities
 
     @NotEmpty(message = "Item must have a name.")
     private String name;
@@ -41,7 +41,8 @@ public class ItemDTO {
      * @param description
      * @param imgUrl is the given URL for where a picture of the item is available
      */
-    public ItemDTO(String name, String link, String description, String imgUrl, long userId, String priority) {
+    public ItemDTO(Long itemId, String name, String link, String description, String imgUrl, long userId, String priority) {
+        this.itemId = itemId;
         this.name = name;
         this.link = link;
         this.description = description;
