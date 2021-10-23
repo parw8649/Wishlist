@@ -1,6 +1,7 @@
 package com.wishlist.cst438project2;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wishlist.cst438project2.common.Constants;
 import com.wishlist.cst438project2.common.Utils;
 import com.wishlist.cst438project2.controller.UserController;
 import com.wishlist.cst438project2.dto.*;
@@ -96,7 +97,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void changePassword_success() {
+    void changePassword_Success() {
 
         String accessToken = getAccessToken();
         String newPassword = "user-pass32";
@@ -111,5 +112,21 @@ public class UserControllerTest {
 
         assertFalse(Utils.checkPassword(PASSWORD, userDTO.getPassword()));
         assertTrue(Utils.checkPassword(newPassword, userDTO.getPassword()));
+    }
+
+    @Test
+    void deleteMyAccount_Success() {
+
+        String accessToken = getAccessToken();
+        String updatedPassword = "user-pass32";
+
+        DeleteUserDTO deleteUserDTO = new DeleteUserDTO(USERNAME, updatedPassword);
+        String response = userController.deleteUser(accessToken, deleteUserDTO);
+
+        assertEquals(response, Constants.USER_DELETED + " " + USERNAME);
+
+        UserDTO userDTO = firebaseIntegration.getUser(USERNAME);
+
+        assertTrue(Objects.isNull(userDTO));
     }
 }
