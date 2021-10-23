@@ -1,28 +1,28 @@
 package com.wishlist.cst438project2.service.impl;
 
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.WriteResult;
-import com.google.firebase.cloud.FirestoreClient;
 import com.wishlist.cst438project2.common.Constants;
-import com.wishlist.cst438project2.common.Utils;
 import com.wishlist.cst438project2.document.Item;
 import com.wishlist.cst438project2.dto.ItemDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
-import com.wishlist.cst438project2.exception.ExternalServerException;
 import com.wishlist.cst438project2.integration.FirebaseIntegration;
 import com.wishlist.cst438project2.service.ItemService;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * Service method implementations to be used with API endpoints in ItemController.java.
+ *
+ * @author Barbara Kondo
+ * @version %I% %G%
+ */
 @Service
 @Slf4j
 public class ItemServiceImpl implements ItemService {
@@ -40,21 +40,21 @@ public class ItemServiceImpl implements ItemService {
      */
     @SneakyThrows
     @Override
-    public String createItem(ItemDTO itemDTO) {
+    public String createItem(ItemDTO itemDTO, String username) {
         log.info("ItemServiceImpl: starting createItem");
+        long userId = firebaseIntegration.getUserId(username);
 
         // check for existence of item by name and userId
-        Item item = fetchItem(itemDTO.getName(), itemDTO.getUserId());
+        Item item = fetchItem(itemDTO.getName(), userId);
         // if item exists, don't add an identical item? throw err
         if (Objects.nonNull(item)) {
             throw new BadRequestException(Constants.ERROR_ITEM_ALREADY_EXISTS.replace(Constants.KEY_ITEM_NAME, itemDTO.getName()));
         } else {
             // If item does not exist, add the item
             item = modelMapper.map(itemDTO, Item.class);
-            log.info("\n    name: " + item.getName() + "\n" + "    link: " + item.getLink() + "\n"
-                    + "    description: " + item.getDescription() + "\n" + "    imgUrl: "
-                    + item.getImgUrl() + "\n" + "    userId: " + item.getUserId() + "\n"
-                    + "    priority: " + item.getPriority());
+            item.setItemId(firebaseIntegration.getAllItems().size() + 1L);
+            item.setUserId(userId);
+            item.logItem();
         }
 
         /*
@@ -84,25 +84,81 @@ public class ItemServiceImpl implements ItemService {
     }
 
     /**
-     * remove the item associated with a given user ID and item name
+     * remove the item associated with a given user and item name
      * returns timestamp of deletion
      */
-    public String removeItem(String name, int userId) {
+    @SneakyThrows
+    @Override
+    public String removeItem(String name, String username) {
         log.info("ItemServiceImpl: Starting removeItem");
-        // TODO: add item delete confirmation message
+        long userId = firebaseIntegration.getUserId(username);
         String docId = firebaseIntegration.getItemDocId(name, userId);
+
         String timestamp = firebaseIntegration.removeItem(docId);
+        log.info("ItemServiceImpl: exiting removeItem");
         return timestamp;
     }
 
     /**
+     * update the item associated with a userId matching the updatedItemDTO and old item name
+     * returns timestamp of successful update
+     */
+    @SneakyThrows
+    @Override
+    public String updateItem(String name, ItemDTO updatedItemDTO) {
+        log.info("ItemServiceImpl: Starting updateItem");
+        String docId = firebaseIntegration.getItemDocId(name, updatedItemDTO.getUserId());
+
+        String timestamp = firebaseIntegration.updateItem(docId, updatedItemDTO);
+        log.info("ItemServiceImpl: Exiting updateItem");
+        return timestamp;
+    }
+
+    /**
+     * returns a list of items associated with a given username
+     */
+    @SneakyThrows
+    @Override
+    public List<ItemDTO> getUserItems(String username) {
+        log.info("ItemServiceImpl: Starting updateItem");
+        List<ItemDTO> userItems = firebaseIntegration.getUserItems(username);
+        log.info("ItemServiceImpl: Exiting updateItem");
+        return userItems;
+    }
+
+    /**
+     * returns a list of items based on search keywords
+     */
+    @SneakyThrows
+    @Override
+    public List<ItemDTO> getSearchAllItems(List<String> keywords) {
+        log.info("ItemServiceImpl: Starting getSearchItems");
+        List<ItemDTO> searchItems = firebaseIntegration.getSearchAllItems(keywords);
+        log.info("ItemServiceImpl: Exiting getSearchItems");
+        return searchItems;
+    }
+
+    /**
+     * remove every item associated with a given user
+     * returns timestamp of successful deletion
+     */
+    @SneakyThrows
+    @Override
+    public String removeItemsByUser(String username) {
+        log.info("ItemServiceImpl: Starting removeItemsByUser");
+        String timestamp = firebaseIntegration.removeItemsByUser(username);
+        log.info("ItemServiceImpl: Exiting removeItemsByUser");
+        return timestamp;
+    }
+
+    /**
+     * utility method
      * returns the item found in database by given name
      */
-    private Item fetchItem(String name, int userId) {
+    private Item fetchItem(String name, long userId) {
         ItemDTO dbItemDTO = firebaseIntegration.getItem(name, userId);
 
         if(Objects.isNull(dbItemDTO)) {
-//            throw new BadRequestException(Constants.ERROR_ITEM_DOES_NOT_EXISTS.replace(Constants.KEY_ITEM_NAME, name));
             Item item = null;
             return item;
         }

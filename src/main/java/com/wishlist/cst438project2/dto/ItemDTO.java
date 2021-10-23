@@ -4,8 +4,12 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
+/**
+ * Data Transfer Object for Item objects
+ * @author Barbara Kondo
+ * @version %I% %G%
+ */
 @Data
 @NoArgsConstructor
 public class ItemDTO {
@@ -21,7 +25,7 @@ public class ItemDTO {
 //    @Pattern(regexp = "((http|https)://)((www|cdn).)+[a-zA-Z0-9@:%._+~#?&//=]{2,256}.[a-z]{2,6}/([-a-zA-Z0-9@:%._+~#?&//=]*)", message = "Please enter a valid URL")
     private String imgUrl;
 
-    private int userId;
+    private long userId;
 
     @Pattern(regexp = "(low|med|high)", message = "valid priority levels: low, med, high")
     private String priority;
@@ -33,7 +37,7 @@ public class ItemDTO {
      * @param description
      * @param imgUrl is the given URL for where a picture of the item is available
      */
-    public ItemDTO(String name, String link, String description, String imgUrl, int userId, String priority) {
+    public ItemDTO(String name, String link, String description, String imgUrl, long userId, String priority) {
         this.name = name;
         this.link = link;
         this.description = description;
