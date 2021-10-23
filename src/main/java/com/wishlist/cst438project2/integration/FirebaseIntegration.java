@@ -7,7 +7,7 @@ import com.wishlist.cst438project2.common.Constants;
 import com.wishlist.cst438project2.document.AccessToken;
 import com.wishlist.cst438project2.document.Item;
 import com.wishlist.cst438project2.document.User;
-import com.wishlist.cst438project2.document.Wishlist;
+import com.wishlist.cst438project2.common.extras.Wishlist;
 import com.wishlist.cst438project2.dto.ItemDTO;
 import com.wishlist.cst438project2.dto.UserDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;
@@ -18,6 +18,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+/**
+ * Firebase Integration with Springboot and setup
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
 
 @Component
 @Slf4j
@@ -126,7 +132,7 @@ public class FirebaseIntegration {
      */
     @SneakyThrows
     public ItemDTO getItem(String name, long userId) {
-        log.info("FirebaseIntegration: Starting getItem");
+//        log.info("FirebaseIntegration: Starting getItem");
         CollectionReference collectionReference = dbFirestore.collection(Constants.DOCUMENT_ITEM);
         Query query = collectionReference.whereEqualTo(Constants.FIELD_ITEM_NAME, name).whereEqualTo(Constants.FIELD_USER_ID, userId);
         ApiFuture<QuerySnapshot> snapshotApiFuture = query.get();
@@ -137,12 +143,11 @@ public class FirebaseIntegration {
 
             // if item exists, return the item?
             if (querySnapshot.size() > 0) {
-                log.info("\nFirebaseIntegration: createItem: querySnapshot:");
-                log.info(querySnapshot.toString());
+//                log.info("\nFirebaseIntegration: createItem: querySnapshot: " + querySnapshot);
                 item = querySnapshot.toObjects(Item.class).get(0);
             }
 
-            log.info("FirebaseIntegration: Exiting getItem");
+//            log.info("FirebaseIntegration: Exiting getItem");
             return item == null ? null : item.fetchItemDTO();
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
@@ -157,7 +162,7 @@ public class FirebaseIntegration {
      */
     @SneakyThrows
     public String getItemDocId(String name, long userId) {
-        log.info("FirebaseIntegration: Starting getItemDocId");
+//        log.info("FirebaseIntegration: Starting getItemDocId");
         CollectionReference collectionReference = dbFirestore.collection(Constants.DOCUMENT_ITEM);
         Query query = collectionReference.whereEqualTo(Constants.FIELD_ITEM_NAME, name).whereEqualTo(Constants.FIELD_USER_ID, userId);
         ApiFuture<QuerySnapshot> snapshotApiFuture = query.get();
@@ -170,8 +175,8 @@ public class FirebaseIntegration {
                 throw new BadRequestException(Constants.ERROR_ITEM_NOT_FOUND);
             }
 
-            log.info(String.format("FirebaseIntegration: getItemDocId: %s", querySnapshot.getDocuments().get(0).getId()));
-            log.info("FirebaseIntegration: Exiting getItemDocId");
+//            log.info(String.format("FirebaseIntegration: getItemDocId: %s", querySnapshot.getDocuments().get(0).getId()));
+//            log.info("FirebaseIntegration: Exiting getItemDocId");
             return querySnapshot.getDocuments().get(0).getId();
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
@@ -184,7 +189,7 @@ public class FirebaseIntegration {
      */
     @SneakyThrows
     public List<ItemDTO> getAllItems() {
-        log.info("FirebaseIntegration: Starting getAllItems");
+//        log.info("FirebaseIntegration: Starting getAllItems");
         List<ItemDTO> collection = new ArrayList<>();
 
         try {
@@ -195,7 +200,7 @@ public class FirebaseIntegration {
                 collection.add(snap.toObject(ItemDTO.class));
             }
 
-            log.info("FirebaseIntegration: Exiting getAllItems");
+//            log.info("FirebaseIntegration: Exiting getAllItems");
             return collection;
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
@@ -209,13 +214,13 @@ public class FirebaseIntegration {
      */
     @SneakyThrows
     public String removeItem(String docId) {
-        log.info("FirebaseIntegration: Starting removeItem");
+//        log.info("FirebaseIntegration: Starting removeItem");
         try {
             ApiFuture<WriteResult> writeResult = dbFirestore.collection(Constants.DOCUMENT_ITEM).document(docId).delete();
             String responseTimestamp = writeResult.get().getUpdateTime().toString();
             log.info(Constants.ITEM_REMOVED + " {}" , responseTimestamp);
 
-            log.info("FirebaseIntegration: Exiting removeItem");
+//            log.info("FirebaseIntegration: Exiting removeItem");
             return responseTimestamp;
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
@@ -229,14 +234,14 @@ public class FirebaseIntegration {
      */
     @SneakyThrows
     public String updateItem(String docId, ItemDTO updatedItemDTO) {
-        log.info("FirebaseIntegration: Starting updateItem");
+//        log.info("FirebaseIntegration: Starting updateItem");
         try {
             ApiFuture<WriteResult> writeResult = dbFirestore.collection(Constants.DOCUMENT_ITEM)
                                                             .document(docId).set(updatedItemDTO);
             String responseTimestamp = writeResult.get().getUpdateTime().toString();
             log.info(Constants.ITEM_UPDATED + " {}" , responseTimestamp);
 
-            log.info("FirebaseIntegration: Exiting updateItem");
+//            log.info("FirebaseIntegration: Exiting updateItem");
             return responseTimestamp;
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
@@ -250,7 +255,7 @@ public class FirebaseIntegration {
      */
     @SneakyThrows
     public List<ItemDTO> getUserItems(String username) {
-        log.info("FirebaseIntegration: Starting getUserItems");
+//        log.info("FirebaseIntegration: Starting getUserItems");
         long userId = getUserId(username);
         List<ItemDTO> userItems = new ArrayList<>();
 
@@ -278,7 +283,7 @@ public class FirebaseIntegration {
      */
     @SneakyThrows
     public List<ItemDTO> getSearchAllItems(List<String> keywords) {
-        log.info("FirebaseIntegration: Starting getSearchItems");
+//        log.info("FirebaseIntegration: Starting getSearchItems");
         List<ItemDTO> allItems = getAllItems();
         List<ItemDTO> searchItems = new ArrayList<>();
 
@@ -295,12 +300,12 @@ public class FirebaseIntegration {
      * returns true if one or more keywords are present, false in none are present
      */
     private boolean keywordsPresent(ItemDTO item, List<String> keywords) {
-        log.info("FirebaseIntegration: Starting keywordsPresent");
+//        log.info("FirebaseIntegration: Starting keywordsPresent");
         boolean found = false;
 
         for (String keyword : keywords) {
-            log.info(String.format("\n    keyword: %s\n    item name: %s\n    item description: %s",
-                    keyword, item.getName(), item.getDescription()));
+//            log.info(String.format("\n    keyword: %s\n    item name: %s\n    item description: %s",
+//                    keyword, item.getName(), item.getDescription()));
             if (item.getName().toLowerCase().contains(keyword)) {
                 found = true;
                 break;
@@ -310,13 +315,13 @@ public class FirebaseIntegration {
                 break;
             }
         }
-        log.info("FirebaseIntegration: Exiting keywordsPresent");
+//        log.info("FirebaseIntegration: Exiting keywordsPresent");
         return found;
     }
 
     @SneakyThrows
     public String removeItemsByUser(String username) {
-        log.info("FirebaseIntegration: Starting removeItemsByUser");
+//        log.info("FirebaseIntegration: Starting removeItemsByUser");
         long userId = getUserId(username);
         String timestamp = "";
 
@@ -339,7 +344,7 @@ public class FirebaseIntegration {
             throw ex;
         }
 
-        log.info("FirebaseIntegration: Exiting removeItemsByUser");
+//        log.info("FirebaseIntegration: Exiting removeItemsByUser");
         return timestamp;
     }
 

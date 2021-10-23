@@ -7,6 +7,7 @@ import com.wishlist.cst438project2.enums.RoleType;
 import com.wishlist.cst438project2.exception.BadRequestException;
 import com.wishlist.cst438project2.exception.UnauthorizedException;
 import com.wishlist.cst438project2.service.AdminService;
+import com.wishlist.cst438project2.service.ItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
+/**
+ * API endpoints for handling the Admin functionalities
+ *
+ * references:
+ *     - https://spring.io/projects/spring-boot
+ *     - https://stackoverflow.com/questions/29479814/spring-mvc-or-spring-boot
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
 
 @CrossOrigin
 @RestController
@@ -26,6 +36,9 @@ public class AdminController {
 
     @Autowired
     private TokenManager tokenManager;
+
+    @Autowired
+    private ItemService itemService;
 
     @GetMapping("/users")
     public List<UserDTO> getAllUsers(@RequestHeader String accessToken) {
@@ -104,7 +117,8 @@ public class AdminController {
 
             log.info("AdminController: Exiting createUser");
 
-            return responseTimestamp;
+            return Objects.nonNull(responseTimestamp) && !responseTimestamp.isEmpty()
+                    ? Constants.USER_CREATED : Constants.ERROR_UNABLE_TO_CREATE_USER;
 
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
@@ -150,7 +164,7 @@ public class AdminController {
      * returns item creation timestamp
      */
     @PostMapping("/createItem")
-    public String createItem(@RequestHeader String accessToken, @RequestBody ItemDTO itemDTO) {
+    public String createItem(@RequestHeader String accessToken, @RequestBody ItemDTO itemDTO, @RequestParam String username) {
         log.info("ItemController: Starting createItem");
         try {
             UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
@@ -161,7 +175,7 @@ public class AdminController {
             if (Objects.isNull(itemDTO) || (itemDTO.getName().isBlank() || Objects.isNull(itemDTO.getUserId()))) {
                 throw new BadRequestException();
             } else {
-                String timestamp = adminService.createItem(itemDTO);
+                String timestamp = itemService.createItem(itemDTO, username);
                 log.info("ItemController: exiting successful createItem");
                 return timestamp;
             }
@@ -176,7 +190,7 @@ public class AdminController {
      * returns timestamp of successful deletion
      */
     @DeleteMapping("/removeItems")
-    public String removeItem(@RequestHeader String accessToken, @RequestParam String itemName, @RequestParam int userId) {
+    public String removeItem(@RequestHeader String accessToken, @RequestParam String itemName, @RequestParam Long userId) {
 
         UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
 
@@ -218,5 +232,65 @@ public class AdminController {
             log.error(ex.getMessage(), ex);
             throw ex;
         }
+    }
+
+    /**
+     * This API is used for updating an existing Item information in the database.
+     * @param accessToken Admin's access token.
+     * @param oldItemName Name of the item to be updated.
+     * @param updatedItemDTO Details of the item to be updated.
+     * @return timestamp, when the item was updated.
+     */
+    @PatchMapping("/updateItem")
+    public String updateItem(@RequestHeader String accessToken, @RequestParam(name = "itemName") String oldItemName, @RequestBody ItemDTO updatedItemDTO) {
+        log.info("AdminController: Starting updateItem");
+        log.info(String.format("AdminController: updateItem:\n    old name: %s\n    userId: %s", oldItemName, updatedItemDTO.getUserId()));
+
+        UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
+        if(Objects.isNull(userTokenDTO) || !userTokenDTO.getRole().equals(RoleType.ADMIN.getValue()))
+            throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
+
+        return itemService.updateItem(oldItemName, updatedItemDTO);
+    }
+
+    /**
+     * This API is used for fetching all items from database
+     * @param accessToken Admin's access token
+     * @return List of ItemDTOs
+     */
+    @GetMapping("/getAllItems")
+    public List<ItemDTO> getAllItems(@RequestHeader String accessToken) {
+        log.info("AdminController: Starting getAllItems");
+        try {
+
+            UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
+            if(Objects.isNull(userTokenDTO) || !userTokenDTO.getRole().equals(RoleType.ADMIN.getValue()))
+                throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
+
+            List<ItemDTO> collection = itemService.getAllItems();
+            log.info("AdminController: Exiting successful getAllItems");
+            return collection;
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    /**
+     * This API is used to search a specific item list from given keyword
+     * @param accessToken Admin's access token
+     * @param keywords used to search related items from the database/user's wishlist
+     * @return List of itemDTOs (item details)
+     */
+    @GetMapping("/searchItem")
+    public List<ItemDTO> searchAllItems(@RequestHeader String accessToken, @RequestParam("search") List<String> keywords) {
+        log.info("AdminController: Starting searchAllItems");
+        log.info(String.format("AdminController: searchAllItems:\n     keywords: %s", keywords));
+
+        UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
+        if(Objects.isNull(userTokenDTO))
+            throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
+
+        return itemService.getSearchAllItems(keywords);
     }
 }

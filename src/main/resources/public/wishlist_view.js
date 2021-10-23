@@ -94,3 +94,58 @@ async function fill_template() {
 		// 	return data;
 		// }
 fill_template();
+
+var accessToken = "";
+var adminAccessToken = "";
+
+verify_login();
+
+function verify_login() {
+
+	let cookies = document.cookie.split("; ");
+
+	if(cookies.length == 1) {
+		window.location.replace("/wishlist/login_page.html");
+	} else {
+		for (c in cookies) {
+			if (cookies[c].startsWith("accessToken")) {
+				let token = cookies[c].split("=")
+				accessToken = token[1];
+			}
+			if (cookies[c].startsWith("adminAccessToken")) {
+				let token = cookies[c].split("=")
+				adminAccessToken = token[1];
+			}
+		}
+	}
+}
+
+function verifyAdmin() {
+	if(adminAccessToken == "") {
+		alert("Insufficient permissions");
+	} else {
+		window.location.replace("/wishlist/admin_view_users.html");
+	}
+}
+
+function logout() {
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("POST", "http://127.0.0.1:8080/wishlist/v1/user/logout", false);
+	xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
+	xmlhttp.setRequestHeader("Content-Type", "application/json");
+
+	xmlhttp.send(null);
+
+	const d = new Date();
+	d.setTime(d.getTime());
+
+	document.cookie = "username=; expires=" + d.toUTCString() + "; path=/";
+	document.cookie = "firstName=; expires=" + d.toUTCString() + "; path=/";
+	document.cookie = "lastName=; expires=" + d.toUTCString() + "; path=/";
+	document.cookie = "emailId=; expires=" + d.toUTCString() + "; path=/";
+	document.cookie = "password=; expires=" + d.toUTCString() + "; path=/";
+	document.cookie = "accessToken=; expires=" + d.toUTCString() + "; path=/";
+	document.cookie = "adminAccessToken=; expires=" + d.toUTCString() + "; path=/";
+
+	window.location.replace("/wishlist/");
+}

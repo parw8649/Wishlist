@@ -55,7 +55,8 @@ public class UserController {
 
             log.info("UserController: Exiting saveUser");
 
-            return responseTimestamp;
+            return Objects.nonNull(responseTimestamp) && !responseTimestamp.isEmpty()
+                    ? Constants.USER_CREATED : Constants.ERROR_UNABLE_TO_CREATE_USER;
 
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);

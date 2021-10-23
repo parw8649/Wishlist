@@ -1,20 +1,29 @@
-package com.wishlist.cst438project2.controller;
+package com.wishlist.cst438project2.common.extras;
 
 import com.wishlist.cst438project2.common.Constants;
 import com.wishlist.cst438project2.common.TokenManager;
-import com.wishlist.cst438project2.document.Wishlist;
 import com.wishlist.cst438project2.dto.AddItemsWishlistDTO;
 import com.wishlist.cst438project2.dto.UserTokenDTO;
 import com.wishlist.cst438project2.dto.WishlistResponseDTO;
 import com.wishlist.cst438project2.exception.ExternalServerException;
 import com.wishlist.cst438project2.exception.UnauthorizedException;
-import com.wishlist.cst438project2.service.WishlistService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
+/**
+ * Wishlist Controller is used for adding user items into the wishlist,
+ * and fetching wishlist data specific to user
+ *
+ * references:
+ *     - https://spring.io/projects/spring-boot
+ *     - https://stackoverflow.com/questions/29479814/spring-mvc-or-spring-boot
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
 
+@CrossOrigin
 @RestController
 @Slf4j
 public class WishlistController {

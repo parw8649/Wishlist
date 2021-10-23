@@ -1,10 +1,15 @@
-package com.wishlist.cst438project2.document;
+package com.wishlist.cst438project2.common.extras;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * wishlist
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
 @Data
 @NoArgsConstructor
 public class Wishlist {

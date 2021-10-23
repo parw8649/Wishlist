@@ -1,4 +1,4 @@
-package com.wishlist.cst438project2.document;
+package com.wishlist.cst438project2.common.extras;
 
 import com.google.cloud.firestore.annotation.DocumentId;
 import lombok.Data;
@@ -6,6 +6,11 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+/**
+ * product details
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
 @Data
 @NoArgsConstructor
 public class Product {

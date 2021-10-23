@@ -1,5 +1,11 @@
 package com.wishlist.cst438project2.exception;
 
+/**
+ * Bad request exception
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
+
 import com.wishlist.cst438project2.common.Constants;
 import org.springframework.http.HttpStatus;
 

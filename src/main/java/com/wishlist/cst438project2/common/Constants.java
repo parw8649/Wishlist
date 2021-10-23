@@ -1,5 +1,10 @@
 package com.wishlist.cst438project2.common;
 
+/**
+ * @author Chaitanya Parwatkar, Barbara Kondo
+ * @version %I% %G%
+ */
+
 public class Constants {
 
     /** FIREBASE DOCUMENTS */
@@ -36,6 +41,7 @@ public class Constants {
     public static final String ERROR_INVALID_TOKEN = "Invalid user token";
     public static final String ERROR_UNABLE_TO_ADD_ITEM_TO_WISHLIST = "Unable to add item to wishlist at the moment";
     public static final String ERROR_UNABLE_TO_FETCH_WISHLIST = "Unable to fetch wishlist at the moment";
+    public static final String ERROR_UNABLE_TO_CREATE_USER = "Unable to create user at the moment";
 
     /** SUCCESS MESSAGES */
     public static final String USER_DELETED = "User deleted successfully";
@@ -46,6 +52,7 @@ public class Constants {
     public static final String ITEM_UPDATED = "Item updated successfully: ";
     public static final String USER_LOGOUT_SUCCESSFUL = "User logged-out successfully";
     public static final String USER_ACCESS_TOKEN_DELETED = "User access token deleted!";
+    public static final String USER_CREATED = "User created successfully!";
 
     /** KEYS */
     public static final String KEY_USERNAME = "{username}";

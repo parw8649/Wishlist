@@ -2,6 +2,12 @@ package com.wishlist.cst438project2.service;
 
 import com.wishlist.cst438project2.dto.*;
 
+/**
+ * User service interface
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
+
 public interface UserService {
 
     String saveUser(SignUpDTO signUpDTO);

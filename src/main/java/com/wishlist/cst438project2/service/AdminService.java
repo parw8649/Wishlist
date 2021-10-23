@@ -1,8 +1,17 @@
 package com.wishlist.cst438project2.service;
 
-import com.wishlist.cst438project2.dto.*;
+import com.wishlist.cst438project2.dto.SignInDTO;
+import com.wishlist.cst438project2.dto.SignUpDTO;
+import com.wishlist.cst438project2.dto.UserDTO;
+import com.wishlist.cst438project2.dto.UserLoginDTO;
 
 import java.util.List;
+
+/**
+ * Admin service interface
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
 
 public interface AdminService {
 
@@ -13,9 +22,7 @@ public interface AdminService {
 
     UserLoginDTO login(SignInDTO signInDTO);
 
-    String createItem(ItemDTO itemDTO);
-
-    String removeItem(String itemName, int userId);
+    String removeItem(String itemName, Long userId);
 
     UserDTO updateUser(UserDTO userDTO);
 }

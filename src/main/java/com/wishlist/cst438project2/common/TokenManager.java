@@ -21,6 +21,12 @@ import java.security.Key;
 import java.util.Date;
 import java.util.Objects;
 
+/**
+ * Managing tokens
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
+
 @Component
 @Slf4j
 @DependsOn("firebaseConfig")
