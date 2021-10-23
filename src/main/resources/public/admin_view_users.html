@@ -8,111 +8,136 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body class="p-3 mb-2 bg-light text-dark">
-<nav class="nav justify-content-end">
-    <ul class="nav justify-content-center">
-        <li id="adminBtn" class="nav-item" style="margin-inline:5px;">
-            <input class="btn btn-danger" type="button" onclick="location.href='/wishlist/admin_landing_page.html'" value="Administration" />
-        </li>
-        <li class="nav-item" style="margin-inline:5px">
-            <input class="btn btn-primary" type="button" onclick="location.href='/wishlist/edit_user.html'" value="Edit Profile" />
-        </li>
-        <li class="nav-item">
-            <input class="btn btn-primary" type="button" onclick=logout() value="Sign Out" />
-        </li>
-    </ul>
-</nav>
-<br/>
-<h1 class="text-center"> All Users </h1>
-<br>
-<div id="output"></div>
-
-<script type="text/x-handlebars-template" id="users_template">
-    <br>
-    <div class="card text-dark bg-light mb-3 mx-auto" style="width: 30%; margin-bottom: 10px;">
-        <ul class="card-body" style="list-style-type:none;">
-            <li>Name: {{this.firstName}} {{this.lastName}}</li>
-            <li>{{this.username}}</li>
-            <li>Email: {{this.emailId}}</li>
-            <li>UserId: {{this.userId}}</li>
-            <input class="btn btn-primary" type="button" onclick=deleteUser() value="Delete User" />
-            <input class="btn btn-primary" type="button" onclick=updateUser() value="Update User" />
+    <nav class="nav justify-content-end">
+        <ul class="nav justify-content-center">
+            <li id="adminBtn" class="nav-item" style="margin-inline:5px;">
+                <input class="btn btn-danger" type="button" onclick="location.href='/wishlist/admin_landing_page.html'" value="Administration" />
+            </li>
+            <li class="nav-item" style="margin-inline:5px">
+                <input class="btn btn-primary" type="button" onclick="location.href='/wishlist/edit_user.html'" value="Edit Profile" />
+            </li>
+            <li class="nav-item">
+                <input class="btn btn-primary" type="button" onclick=logout() value="Sign Out" />
+            </li>
         </ul>
-    </div>
-</script>
+    </nav>
+    <div class="text-center">
+        <h1 class="text-center"> All Users </h1>
+        <br>
+        <select id="usernames">
+            <option value="">Select a user</option>
+        </select>
+        <input class="btn btn-primary" type="button" onclick=deleteUser() value="Delete User" />
+        <input class="btn btn-primary" type="button" onclick=updateUser() value="Update User" />
 
-<script>
-    accessToken = "";
-    let cookies = document.cookie.split("; ");
-    if(cookies.length == 1) {
-        window.location.replace("/wishlist/login_page.html");
-    } else {
-        for (c in cookies) {
-            if (cookies[c].startsWith("adminAccessToken")) {
-                let user = cookies[c].split("=")
-                accessToken = user[1];
+    </div>
+
+    <div id="output"></div>
+
+    <script type="text/x-handlebars-template" id="users_template">
+        <br>
+        <div class="card text-dark bg-light mb-3 mx-auto" style="width: 30%; margin-bottom: 10px;">
+            <ul class="card-body" style="list-style-type:none;">
+                <li>Name: {{firstName}} {{lastName}}</li>
+                <li>{{username}}</li>
+                <li>Email: {{emailId}}</li>
+                <li>UserId: {{userId}}</li>
+            </ul>
+        </div>
+    </script>
+
+    <script>
+        var accessToken = "";
+        let cookies = document.cookie.split("; ");
+        if(cookies.length == 1) {
+            window.location.replace("/wishlist/login_page.html");
+        } else {
+            for (c in cookies) {
+                if (cookies[c].startsWith("adminAccessToken")) {
+                    let user = cookies[c].split("=")
+                    accessToken = user[1];
+                }
             }
         }
-    }
 
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("GET", "http://127.0.0.1:8080/wishlist/v1/admin/users", false);
-    xmlhttp.setRequestHeader("Content-Type", "application/json");
-    xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
-
-    xmlhttp.send();
-    res = JSON.parse(xmlhttp.responseText)
-
-    for(let i = 0; i < res.length; i++) {
-        // alert(res[i].username + " " +res[i].firstName + " " +res[i].lastName + " " +res[i].userId + " " +res[i].emailId);
-        let data = {
-            "firstName": `${res[i].firstName}`,
-            "lastName": `${res[i].lastName}`,
-            "username": `${res[i].username}`,
-            "emailId": `${res[i].emailId}`,
-            "userId": `${res[i].userId}`
-        };
-
-        var template = Handlebars.compile(document.querySelector("#users_template").innerHTML);
-        var filled = template(data);
-        document.querySelector("#output").innerHTML += filled;
-    }
-
-    function deleteUser() {
-        let execute = confirm("Are you sure you want to delete your account?");
-        if(execute) {
-            // pull in username from object
-
-        } else {
-            alert("not executing");
-            return;
-        }
-    }
-
-    function logout() {
         var xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("POST", "http://127.0.0.1:8080/wishlist/v1/user/logout", false);
-        xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
+        xmlhttp.open("GET", "http://127.0.0.1:8080/wishlist/v1/admin/users", false);
         xmlhttp.setRequestHeader("Content-Type", "application/json");
+        xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
 
-        xmlhttp.send(null);
+        xmlhttp.send();
+        res = JSON.parse(xmlhttp.responseText)
 
-        const d = new Date();
-        d.setTime(d.getTime());
+        var select = document.getElementById("usernames");
 
-        document.cookie = "username=; expires=" + d.toUTCString() + "; path=/";
-        document.cookie = "firstName=; expires=" + d.toUTCString() + "; path=/";
-        document.cookie = "lastName=; expires=" + d.toUTCString() + "; path=/";
-        document.cookie = "emailId=; expires=" + d.toUTCString() + "; path=/";
-        document.cookie = "password=; expires=" + d.toUTCString() + "; path=/";
-        document.cookie = "accessToken=; expires=" + d.toUTCString() + "; path=/";
-        document.cookie = "adminAccessToken=; expires=" + d.toUTCString() + "; path=/";
+        for(let i = 0; i < res.length; i++) {
+            // alert(res[i].username + " " +res[i].firstName + " " +res[i].lastName + " " +res[i].userId + " " +res[i].emailId);
+            let data = {
+                "firstName": `${res[i].firstName}`,
+                "lastName": `${res[i].lastName}`,
+                "username": `${res[i].username}`,
+                "emailId": `${res[i].emailId}`,
+                "userId": `${res[i].userId}`
+            };
 
-        window.location.replace("/wishlist/");
-    }
+            var template = Handlebars.compile(document.querySelector("#users_template").innerHTML);
+            var filled = template(data);
+            document.querySelector("#output").innerHTML += filled;
 
-    function updateUser() {
+            let opt = new Option(res[i].username, res[i].username);
+            select.add(opt, undefined);
+        }
 
-    }
-</script>
+        // $("#usernames").on("change", deleteUser());
+
+        function deleteUser() {
+            let execute = confirm("Are you sure you want to delete your account?");
+            if(execute) {
+                // pull in username from object
+                let user = $("#usernames :selected").val()
+                alert(user);
+
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.open("DELETE", `http://127.0.0.1:8080/wishlist/v1/admin/deleteUser?username=${user}`, false);
+                xmlhttp.setRequestHeader("Content-Type", "application/json");
+                xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
+                let execute = confirm(`Are you sure you want to delete ${user}?`);
+                if(!execute) return;
+                xmlhttp.send();
+
+                alert(xmlhttp.responseText);
+                location.reload();
+            } else {
+                alert("not executing");
+                return;
+            }
+        }
+
+        function logout() {
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("POST", "http://127.0.0.1:8080/wishlist/v1/user/logout", false);
+            xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
+            xmlhttp.setRequestHeader("Content-Type", "application/json");
+
+            xmlhttp.send(null);
+
+            const d = new Date();
+            d.setTime(d.getTime());
+
+            document.cookie = "username=; expires=" + d.toUTCString() + "; path=/";
+            document.cookie = "firstName=; expires=" + d.toUTCString() + "; path=/";
+            document.cookie = "lastName=; expires=" + d.toUTCString() + "; path=/";
+            document.cookie = "emailId=; expires=" + d.toUTCString() + "; path=/";
+            document.cookie = "password=; expires=" + d.toUTCString() + "; path=/";
+            document.cookie = "accessToken=; expires=" + d.toUTCString() + "; path=/";
+            document.cookie = "adminAccessToken=; expires=" + d.toUTCString() + "; path=/";
+
+            window.location.replace("/wishlist/");
+        }
+
+        function updateUser() {
+
+        }
+    </script>
 </body>
 </html>
