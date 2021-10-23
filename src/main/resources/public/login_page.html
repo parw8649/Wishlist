@@ -16,30 +16,13 @@
                 <input id="user" type="text" placeholder="Username" value="" style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
             </div>
             <div style="margin-block: 5px">
-                <input id="pass" type="text" placeholder="Password" value="" style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
+                <input id="pass" type="password" placeholder="Password" value="" style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
             </div>
+            <p id="error"></p>
             <button style="border-radius: 5px; background-color: blue; color: white" id="login"><b>Login</b></button>
             or <a href="/wishlist/new_user_page.html">Create a new user</a>
         </div>
     </div>
-
-    <!--
-    <script >
-        /* Functions:
-         * - take in username + password
-         * - process login through UserController.java on button click
-         * - - on failure, show error message
-         * - - on success, redirect to wishlist_view_page.html
-         */
-        $("#login").on("click", loginActivity);
-
-        function loginActivity() {
-            let username = $("#user").val();
-            let password = $("#pass").val();
-            // alert(username + " " + password);
-        }
-    </script>
-    -->
     <script src="testScript.js"> </script>
 </body>
 </html>

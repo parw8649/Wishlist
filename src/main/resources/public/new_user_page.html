@@ -65,7 +65,9 @@
             let username = $("#user").val();
             let password = $("#pass").val();
 
-            //alert(firstname + " " + lastname + " " + email + " " + username + " " + password + " " + password_verif);
+            if(!verify()) {
+                return;
+            }
 
             let request = `{"firstName": "${firstname}",
                             "lastName": "${lastname}",
@@ -73,12 +75,9 @@
                             "username": "${username}",
                             "password": "${password}"}`;
 
-            // alert(request);
-
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.open("POST", "http://127.0.0.1:8080/wishlist/v1/user/save", false);
             xmlhttp.setRequestHeader("Content-Type", "application/json");
-            //xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
 
             xmlhttp.send(request);
             window.location.replace("/wishlist/login_page.html");
@@ -92,9 +91,11 @@
             if(password_verif.localeCompare(password)) {
                 $('#v_pass').css('background-color', '#ff5252');
                 $('#message').text("Does not match");
+                return false;
             } else {
                 $('#v_pass').css('background-color', '#92f781');
                 $('#message').text("Match");
+                return true;
             }
         }
     </script>
