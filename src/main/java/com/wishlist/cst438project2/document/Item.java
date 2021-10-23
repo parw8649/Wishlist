@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 @NoArgsConstructor
 public class Item {
-//    private Long itemId;
+    private Long itemId;// for admin functionalities
     private String name;
     private String link;
     private String description;
