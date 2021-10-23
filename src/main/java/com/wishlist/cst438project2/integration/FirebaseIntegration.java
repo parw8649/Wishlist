@@ -7,7 +7,7 @@ import com.wishlist.cst438project2.common.Constants;
 import com.wishlist.cst438project2.document.AccessToken;
 import com.wishlist.cst438project2.document.Item;
 import com.wishlist.cst438project2.document.User;
-import com.wishlist.cst438project2.document.Wishlist;
+import com.wishlist.cst438project2.common.extras.Wishlist;
 import com.wishlist.cst438project2.dto.ItemDTO;
 import com.wishlist.cst438project2.dto.UserDTO;
 import com.wishlist.cst438project2.exception.BadRequestException;

@@ -1,14 +1,12 @@
-package com.wishlist.cst438project2.controller;
+package com.wishlist.cst438project2.common.extras;
 
 import com.wishlist.cst438project2.common.Constants;
 import com.wishlist.cst438project2.common.TokenManager;
-import com.wishlist.cst438project2.document.Wishlist;
 import com.wishlist.cst438project2.dto.AddItemsWishlistDTO;
 import com.wishlist.cst438project2.dto.UserTokenDTO;
 import com.wishlist.cst438project2.dto.WishlistResponseDTO;
 import com.wishlist.cst438project2.exception.ExternalServerException;
 import com.wishlist.cst438project2.exception.UnauthorizedException;
-import com.wishlist.cst438project2.service.WishlistService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

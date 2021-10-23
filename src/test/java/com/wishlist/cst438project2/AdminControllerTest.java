@@ -195,20 +195,23 @@ public class AdminControllerTest {
     }
 
     @Test
+    @Order(7)
     void adminSearchItems_Success() {
 
         String adminAccessToken = getAdminAccessToken();
 
-        String searchKeyword = "shirt, long sleeve";
+        String searchKeyword1 = "update";
+        String searchKeyword2 = "item";
 
-        List<ItemDTO> keywordItemsResponse = adminController.searchAllItems(adminAccessToken, Arrays.asList(searchKeyword));
-        assert(keywordItemsResponse.size() > 0);
+        List<ItemDTO> keywordItemsResponse = adminController.searchAllItems(adminAccessToken, Arrays.asList(searchKeyword1, searchKeyword2));
+
+        assertTrue(keywordItemsResponse.size() > 0);
 
         userController.logout(adminAccessToken);
     }
 
     @Test
-    @Order(7)
+    @Order(8)
     void adminRemoveItem_Success() {
 
         String userAccessToken = getUserAccessToken(USERNAME, NEW_PASSWORD);
@@ -219,7 +222,7 @@ public class AdminControllerTest {
         Long userId = firebaseIntegration.getUserId(USERNAME);
 
         String adminAccessToken = getAdminAccessToken();
-        String removeResponse = adminController.removeItem(adminAccessToken, INITIAL_ITEM_NAME, userId);
+        String removeResponse = adminController.removeItem(adminAccessToken, UPDATE_ITEM_NAME, userId);
         System.out.println(removeResponse);
         assertEquals(removeResponse.substring(0,5), "2021-");
 
@@ -231,7 +234,7 @@ public class AdminControllerTest {
     }
 
     @Test
-    @Order(8)
+    @Order(9)
     void adminLogout_Success() {
 
         String response = userController.logout(getAdminAccessToken());
@@ -240,7 +243,7 @@ public class AdminControllerTest {
     }
 
     @Test
-    @Order(9)
+    @Order(10)
     void deleteUserAccount_Success() {
 
         String adminAccessToken = getAdminAccessToken();

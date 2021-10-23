@@ -1,8 +1,6 @@
-package com.wishlist.cst438project2.controller;
+package com.wishlist.cst438project2.common.extras;
 
-import com.wishlist.cst438project2.document.Product;
 import com.wishlist.cst438project2.exception.BadRequestException;
-import com.wishlist.cst438project2.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

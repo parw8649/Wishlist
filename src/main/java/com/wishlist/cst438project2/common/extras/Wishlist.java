@@ -1,4 +1,4 @@
-package com.wishlist.cst438project2.document;
+package com.wishlist.cst438project2.common.extras;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
