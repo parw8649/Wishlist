@@ -61,6 +61,7 @@ public class AdminControllerTest {
 
     //Item details
     final String INITIAL_ITEM_NAME = "test item name";
+    final String UPDATE_ITEM_NAME = "test updated name";
 
     @Test
     @Order(1)
@@ -166,6 +167,23 @@ public class AdminControllerTest {
 
     @Test
     @Order(6)
+    void adminUpdateItem_Success() {
+
+        String adminAccessToken = getAdminAccessToken();
+
+        ItemDTO updatedItemDTO = new ItemDTO();
+        updatedItemDTO.setName(UPDATE_ITEM_NAME);
+        updatedItemDTO.setUserId(firebaseIntegration.getUserId(USERNAME));
+
+        String updateResponse = itemController.updateItem(adminAccessToken, INITIAL_ITEM_NAME, updatedItemDTO);
+        System.out.println(updateResponse);
+        assertEquals(updateResponse.substring(0,5), "2021-");
+
+        userController.logout(adminAccessToken);
+    }
+
+    @Test
+    @Order(7)
     void adminRemoveItem_Success() {
 
         String userAccessToken = getUserAccessToken(USERNAME, NEW_PASSWORD);
@@ -188,7 +206,7 @@ public class AdminControllerTest {
     }
 
     @Test
-    @Order(7)
+    @Order(8)
     void adminLogout_Success() {
 
         String response = userController.logout(getAdminAccessToken());
