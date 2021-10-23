@@ -3,7 +3,7 @@ package com.wishlist.cst438project2.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 /**
- * Setting up context path
+ * Index Controller is used for wiring up HTML pages with Application Server
  *
  * references:
  *     - https://spring.io/projects/spring-boot
