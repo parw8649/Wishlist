@@ -7,6 +7,7 @@ import com.wishlist.cst438project2.enums.RoleType;
 import com.wishlist.cst438project2.exception.BadRequestException;
 import com.wishlist.cst438project2.exception.UnauthorizedException;
 import com.wishlist.cst438project2.service.AdminService;
+import com.wishlist.cst438project2.service.ItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,9 @@ public class AdminController {
 
     @Autowired
     private TokenManager tokenManager;
+
+    @Autowired
+    private ItemService itemService;
 
     @GetMapping("/users")
     public List<UserDTO> getAllUsers(@RequestHeader String accessToken) {
@@ -159,7 +163,7 @@ public class AdminController {
      * returns item creation timestamp
      */
     @PostMapping("/createItem")
-    public String createItem(@RequestHeader String accessToken, @RequestBody ItemDTO itemDTO) {
+    public String createItem(@RequestHeader String accessToken, @RequestBody ItemDTO itemDTO, @RequestParam String username) {
         log.info("ItemController: Starting createItem");
         try {
             UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
@@ -170,7 +174,7 @@ public class AdminController {
             if (Objects.isNull(itemDTO) || (itemDTO.getName().isBlank() || Objects.isNull(itemDTO.getUserId()))) {
                 throw new BadRequestException();
             } else {
-                String timestamp = adminService.createItem(itemDTO);
+                String timestamp = itemService.createItem(itemDTO, username);
                 log.info("ItemController: exiting successful createItem");
                 return timestamp;
             }
@@ -185,7 +189,7 @@ public class AdminController {
      * returns timestamp of successful deletion
      */
     @DeleteMapping("/removeItems")
-    public String removeItem(@RequestHeader String accessToken, @RequestParam String itemName, @RequestParam int userId) {
+    public String removeItem(@RequestHeader String accessToken, @RequestParam String itemName, @RequestParam Long userId) {
 
         UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
 

@@ -1,6 +1,5 @@
 package com.wishlist.cst438project2;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wishlist.cst438project2.common.Constants;
 import com.wishlist.cst438project2.common.Utils;
 import com.wishlist.cst438project2.controller.UserController;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -31,12 +29,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserControllerTest {
 
     @Autowired
-    ModelMapper modelMapper;
-
-    @Autowired
-    ObjectMapper objMapper;
-
-    @Autowired
     private UserController userController;
 
     @Autowired
@@ -48,16 +40,6 @@ public class UserControllerTest {
     final String EMAIL = "testuser22@gmail.com";
     final String NEW_PASSWORD = "user-pass32";
     String PASSWORD = "user-pass22";
-
-    public String getAccessToken(String password) {
-        SignInDTO credentials = new SignInDTO();
-        credentials.setUsername(USERNAME);
-        credentials.setPassword(password);
-
-        ResponseDTO<UserLoginDTO> response = userController.login(credentials);
-        assertThat(response.getData().getAccessToken(), notNullValue());
-        return response.getData().getAccessToken();
-    }
 
     @Test
     @Order(1)
@@ -119,8 +101,6 @@ public class UserControllerTest {
 
         assertFalse(Utils.checkPassword(PASSWORD, userDTO.getPassword()));
         assertTrue(Utils.checkPassword(NEW_PASSWORD, userDTO.getPassword()));
-
-        this.PASSWORD = NEW_PASSWORD;
     }
 
     @Test
@@ -147,5 +127,16 @@ public class UserControllerTest {
         UserDTO userDTO = firebaseIntegration.getUser(USERNAME);
 
         assertTrue(Objects.isNull(userDTO));
+    }
+
+    //Private Methods
+    private String getAccessToken(String password) {
+        SignInDTO credentials = new SignInDTO();
+        credentials.setUsername(USERNAME);
+        credentials.setPassword(password);
+
+        ResponseDTO<UserLoginDTO> response = userController.login(credentials);
+        assertThat(response.getData().getAccessToken(), notNullValue());
+        return response.getData().getAccessToken();
     }
 }
