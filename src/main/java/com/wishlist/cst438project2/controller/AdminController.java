@@ -117,7 +117,8 @@ public class AdminController {
 
             log.info("AdminController: Exiting createUser");
 
-            return responseTimestamp;
+            return Objects.nonNull(responseTimestamp) && !responseTimestamp.isEmpty()
+                    ? Constants.USER_CREATED : Constants.ERROR_UNABLE_TO_CREATE_USER;
 
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
@@ -231,5 +232,65 @@ public class AdminController {
             log.error(ex.getMessage(), ex);
             throw ex;
         }
+    }
+
+    /**
+     * This API is used for updating an existing Item information in the database.
+     * @param accessToken Admin's access token.
+     * @param oldItemName Name of the item to be updated.
+     * @param updatedItemDTO Details of the item to be updated.
+     * @return timestamp, when the item was updated.
+     */
+    @PatchMapping("/updateItem")
+    public String updateItem(@RequestHeader String accessToken, @RequestParam(name = "itemName") String oldItemName, @RequestBody ItemDTO updatedItemDTO) {
+        log.info("AdminController: Starting updateItem");
+        log.info(String.format("AdminController: updateItem:\n    old name: %s\n    userId: %s", oldItemName, updatedItemDTO.getUserId()));
+
+        UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
+        if(Objects.isNull(userTokenDTO) || !userTokenDTO.getRole().equals(RoleType.ADMIN.getValue()))
+            throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
+
+        return itemService.updateItem(oldItemName, updatedItemDTO);
+    }
+
+    /**
+     * This API is used for fetching all items from database
+     * @param accessToken Admin's access token
+     * @return List of ItemDTOs
+     */
+    @GetMapping("/getAllItems")
+    public List<ItemDTO> getAllItems(@RequestHeader String accessToken) {
+        log.info("AdminController: Starting getAllItems");
+        try {
+
+            UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
+            if(Objects.isNull(userTokenDTO) || !userTokenDTO.getRole().equals(RoleType.ADMIN.getValue()))
+                throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
+
+            List<ItemDTO> collection = itemService.getAllItems();
+            log.info("AdminController: Exiting successful getAllItems");
+            return collection;
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    /**
+     * This API is used to search a specific item list from given keyword
+     * @param accessToken Admin's access token
+     * @param keywords used to search related items from the database/user's wishlist
+     * @return List of itemDTOs (item details)
+     */
+    @GetMapping("/searchItem")
+    public List<ItemDTO> searchAllItems(@RequestHeader String accessToken, @RequestParam("search") List<String> keywords) {
+        log.info("AdminController: Starting searchAllItems");
+        log.info(String.format("AdminController: searchAllItems:\n     keywords: %s", keywords));
+
+        UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
+        if(Objects.isNull(userTokenDTO))
+            throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
+
+        return itemService.getSearchAllItems(keywords);
     }
 }
