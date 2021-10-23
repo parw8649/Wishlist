@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
  * @author Barbara Kondo
  * @version %I% %G%
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/items")
 @Slf4j
