@@ -6,6 +6,11 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+/**
+ * product details
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
 @Data
 @NoArgsConstructor
 public class Product {

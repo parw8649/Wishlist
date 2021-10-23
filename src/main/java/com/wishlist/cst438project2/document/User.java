@@ -7,6 +7,12 @@ import com.wishlist.cst438project2.enums.RoleType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * user details and parameters
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
+
 @Data
 @NoArgsConstructor
 public class User {

@@ -5,6 +5,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * wishlist
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
 @Data
 @NoArgsConstructor
 public class Wishlist {

@@ -11,6 +11,12 @@ import org.springframework.context.annotation.Configuration;
 import javax.annotation.PostConstruct;
 import java.io.FileInputStream;
 
+/**
+ * Firebase configuration with Springboot
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
+
 @Configuration
 @Slf4j
 public class FirebaseConfig {

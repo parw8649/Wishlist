@@ -16,6 +16,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Test cases for user functionalities
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class UserControllerTest {

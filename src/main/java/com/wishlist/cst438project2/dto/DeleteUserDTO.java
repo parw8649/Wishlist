@@ -4,6 +4,12 @@ import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 
+/**
+ * Data Transfer Object for Delete user endpoint in UserController.java
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
+
 @Data
 public class DeleteUserDTO {
 

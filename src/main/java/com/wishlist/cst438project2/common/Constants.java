@@ -1,5 +1,10 @@
 package com.wishlist.cst438project2.common;
 
+/**
+ * @author Chaitanya Parwatkar, Barbara Kondo
+ * @version %I% %G%
+ */
+
 public class Constants {
 
     /** FIREBASE DOCUMENTS */
