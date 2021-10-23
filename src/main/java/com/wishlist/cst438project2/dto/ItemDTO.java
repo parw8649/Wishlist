@@ -15,7 +15,7 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 public class ItemDTO {
 
-    private Long itemId;
+//    private Long itemId; // why was this here?
 
     @NotEmpty(message = "Item must have a name.")
     private String name;
