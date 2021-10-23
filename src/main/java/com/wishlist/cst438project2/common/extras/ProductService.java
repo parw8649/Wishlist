@@ -1,6 +1,6 @@
-package com.wishlist.cst438project2.service;
+package com.wishlist.cst438project2.common.extras;
 
-import com.wishlist.cst438project2.document.Product;
+import com.wishlist.cst438project2.common.extras.Product;
 
 /**
  * Product service interface
