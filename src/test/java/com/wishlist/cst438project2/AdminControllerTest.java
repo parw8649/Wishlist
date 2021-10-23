@@ -184,6 +184,16 @@ public class AdminControllerTest {
 
     @Test
     @Order(7)
+    void getAllItems_Success() {
+
+        String adminAccessToken = getAdminAccessToken();
+
+        List<ItemDTO> allItemsResponse = itemController.getAllItems(adminAccessToken);
+        assert(allItemsResponse.size() > 0);
+    }
+
+    @Test
+    @Order(7)
     void adminRemoveItem_Success() {
 
         String userAccessToken = getUserAccessToken(USERNAME, NEW_PASSWORD);
