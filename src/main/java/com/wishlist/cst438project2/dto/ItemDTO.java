@@ -1,9 +1,10 @@
 package com.wishlist.cst438project2.dto;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 
 /**
  * Data Transfer Object for Item objects
@@ -13,6 +14,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ItemDTO {
+
+    private Long itemId;
+
     @NotEmpty(message = "Item must have a name.")
     private String name;
 
