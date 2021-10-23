@@ -4,6 +4,12 @@ import com.wishlist.cst438project2.dto.*;
 
 import java.util.List;
 
+/**
+ * Admin service interface
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
+
 public interface AdminService {
 
     List<UserDTO> getAllUsers();

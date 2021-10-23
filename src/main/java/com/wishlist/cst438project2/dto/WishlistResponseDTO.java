@@ -6,6 +6,12 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * Data Transfer Object for wishlist in WishlistController.java
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

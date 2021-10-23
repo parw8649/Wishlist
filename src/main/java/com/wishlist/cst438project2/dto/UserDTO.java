@@ -3,6 +3,12 @@ package com.wishlist.cst438project2.dto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Data Transfer Object for user endpoint in UserController.java
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
+
 @Data
 @NoArgsConstructor
 public class UserDTO {

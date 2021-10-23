@@ -14,6 +14,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
+/**
+ * API endpoints for handling the Admin functionalities
+ *
+ * references:
+ *     - https://spring.io/projects/spring-boot
+ *     - https://stackoverflow.com/questions/29479814/spring-mvc-or-spring-boot
+ * @author Chaitanya Parwatkar
+ * @version %I% %G%
+ */
 
 @CrossOrigin
 @RestController
