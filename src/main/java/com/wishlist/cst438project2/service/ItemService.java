@@ -19,6 +19,12 @@ public interface ItemService {
     String createItem(ItemDTO itemDTO, String username);
 
     /**
+     * retrieve a specific document from item collection with a given userId and item name
+     * returns the item
+     */
+    ItemDTO getSpecificItem(String item_name, long userId);
+
+    /**
      * retrieve all documents from item collection
      * returns a list of all created items
      */

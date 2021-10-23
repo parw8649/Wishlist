@@ -22,7 +22,7 @@ public class CreateItemDTO {
     }
 
     public void logCreateItemDTO() {
-        log.debug("\n    name: " + this.getItemDTO().getName() + "\n" + "    link: " + this.getItemDTO().getLink() + "\n"
+        log.info("\n    name: " + this.getItemDTO().getName() + "\n" + "    link: " + this.getItemDTO().getLink() + "\n"
                 + "    description: " + this.getItemDTO().getDescription() + "\n" + "    imgUrl: "
                 + this.getItemDTO().getImgUrl() + "\n" + "    priority: " + this.getItemDTO().getPriority() + "\n"
                 + "    username: " + this.getUsername());

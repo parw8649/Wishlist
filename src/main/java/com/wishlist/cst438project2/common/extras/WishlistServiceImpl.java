@@ -1,14 +1,12 @@
-package com.wishlist.cst438project2.service.impl;
+package com.wishlist.cst438project2.common.extras;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.WriteResult;
 import com.wishlist.cst438project2.common.Constants;
-import com.wishlist.cst438project2.document.Wishlist;
 import com.wishlist.cst438project2.dto.AddItemsWishlistDTO;
 import com.wishlist.cst438project2.dto.ItemDTO;
 import com.wishlist.cst438project2.dto.WishlistResponseDTO;
 import com.wishlist.cst438project2.integration.FirebaseIntegration;
-import com.wishlist.cst438project2.service.WishlistService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

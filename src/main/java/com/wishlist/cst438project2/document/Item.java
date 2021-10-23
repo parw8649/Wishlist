@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 @NoArgsConstructor
 public class Item {
-    private Long itemId;
+//    private Long itemId;
     private String name;
     private String link;
     private String description;
@@ -30,7 +30,7 @@ public class Item {
     }
 
     public void logItem() {
-        log.debug("\n    name: " + this.getName() + "\n" + "    link: " + this.getLink() + "\n"
+        log.info("\n    name: " + this.getName() + "\n" + "    link: " + this.getLink() + "\n"
                 + "    description: " + this.getDescription() + "\n" + "    imgUrl: "
                 + this.getImgUrl() + "\n" + "    userId: " + this.getUserId() + "\n"
                 + "    priority: " + this.getPriority());
