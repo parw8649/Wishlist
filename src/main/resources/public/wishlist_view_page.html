@@ -25,6 +25,11 @@
 	<div class="d-grid gap-2 col-6 mx-auto">
 		<a href="add_item_page.html" class="btn btn-outline-success">Add Item</a>
 	</div>
+	<br>
+	<div class="d-grid gap-2 col-6 mx-auto">
+		<a href="edit_item_page.html" class="btn btn-outline-success">Edit Item</a>
+	</div>
+
 	<script type="text/x-handlebars-template" id="wishlist_template">
 			{{#each this}}
 			<br>
@@ -35,7 +40,8 @@
 				  <h6 class="card-subtitle mb-2 text-muted">Priority: {{this.priority}}</h6>
 				  <p class="card-text">{{this.description}}</p>
 				  <a href="{{this.link}}" class="btn btn-primary">Purchase</a>
-				  <a href="edit_item_page.html" class="btn btn-secondary">Edit Item</a>
+<!--				  <a href="edit_item_page.html" class="btn btn-secondary">Edit Item</a>-->
+					<button type="button" class="btn btn-danger" onclick="delete_item()">Delete</button>
 				</div>
 			</div>
 			{{/each}}
