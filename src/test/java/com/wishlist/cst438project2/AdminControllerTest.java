@@ -14,6 +14,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -175,7 +176,7 @@ public class AdminControllerTest {
         updatedItemDTO.setName(UPDATE_ITEM_NAME);
         updatedItemDTO.setUserId(firebaseIntegration.getUserId(USERNAME));
 
-        String updateResponse = itemController.updateItem(adminAccessToken, INITIAL_ITEM_NAME, updatedItemDTO);
+        String updateResponse = adminController.updateItem(adminAccessToken, INITIAL_ITEM_NAME, updatedItemDTO);
         System.out.println(updateResponse);
         assertEquals(updateResponse.substring(0,5), "2021-");
 
@@ -183,13 +184,27 @@ public class AdminControllerTest {
     }
 
     @Test
-    @Order(7)
     void getAllItems_Success() {
 
         String adminAccessToken = getAdminAccessToken();
 
-        List<ItemDTO> allItemsResponse = itemController.getAllItems(adminAccessToken);
+        List<ItemDTO> allItemsResponse = adminController.getAllItems(adminAccessToken);
         assert(allItemsResponse.size() > 0);
+
+        userController.logout(adminAccessToken);
+    }
+
+    @Test
+    void adminSearchItems_Success() {
+
+        String adminAccessToken = getAdminAccessToken();
+
+        String searchKeyword = "shirt, long sleeve";
+
+        List<ItemDTO> keywordItemsResponse = adminController.searchAllItems(adminAccessToken, Arrays.asList(searchKeyword));
+        assert(keywordItemsResponse.size() > 0);
+
+        userController.logout(adminAccessToken);
     }
 
     @Test
@@ -225,7 +240,7 @@ public class AdminControllerTest {
     }
 
     @Test
-    @Order(8)
+    @Order(9)
     void deleteUserAccount_Success() {
 
         String adminAccessToken = getAdminAccessToken();
