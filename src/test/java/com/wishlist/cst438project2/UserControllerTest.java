@@ -45,6 +45,7 @@ public class UserControllerTest {
     final String FIRSTNAME = "test";
     final String LASTNAME = "user22";
     final String EMAIL = "testuser22@gmail.com";
+    String accessToken;
 
     public String getAccessToken() {
         SignInDTO credentials = new SignInDTO();
@@ -76,13 +77,17 @@ public class UserControllerTest {
         credentials.setPassword(PASSWORD);
 
         ResponseDTO<UserLoginDTO> response = userController.login(credentials);
-        assertThat(response.getData().getAccessToken(), notNullValue());
+
+        String token = response.getData().getAccessToken();
+
+        assertThat(token, notNullValue());
+
+        this.accessToken = token;
     }
 
     @Test
     void updateUser_Success() {
 
-        String accessToken = getAccessToken();
         String newFirstName = "unitTest";
         String newLastName = "user";
         String newEmail = "unittestuser@gmail.com";
@@ -99,7 +104,6 @@ public class UserControllerTest {
     @Test
     void changePassword_Success() {
 
-        String accessToken = getAccessToken();
         String newPassword = "user-pass32";
         String confirmPassword = "user-pass32";
 
@@ -116,8 +120,6 @@ public class UserControllerTest {
 
     @Test
     void userLogout_Success() {
-
-        String accessToken = getAccessToken();
 
         String response = userController.logout(accessToken);
 
