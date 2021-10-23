@@ -16,24 +16,6 @@ function getAllUsers() {
 
 document.querySelector("#login").addEventListener('click', login);
 
-//User Login API call
-/*
-async function login() {
-
-  let request = { "username": username.value,"password": password.value }
-
-  const response = await fetch('http://127.0.0.1:8080/wishlist/v1/user/login', {
-    method: 'POST',
-    body: request, // string or object
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  });
-  const myJson = await response; //extract JSON from the http response
-  // do something with myJson
-  console.log(myJson);
-}*/
-
 function login() {
 
     let username = $("#user").val();
@@ -48,8 +30,16 @@ function login() {
     try {
         xmlhttp.send(request);
         res = JSON.parse(xmlhttp.responseText)
+
         let accessToken = res.data.accessToken;
         // put accessToken in cookie to access across scripts?
+        document.cookie = "username=" + username + "; path=/";
+        document.cookie = "firstName=" + res.data.firstName + "; path=/";
+        document.cookie = "lastName=" + res.data.lastName + "; path=/";
+        document.cookie = "emailId=" + res.data.emailId + "; path=/";
+        document.cookie = "password=" + password + "; path=/";
+        document.cookie = "accessToken=" + accessToken + "; path=/";
+
         window.location.replace("/wishlist/wishlist_view_page.html");
     } catch (BadRequestException) {
         $("#error").text("Invalid username or password");

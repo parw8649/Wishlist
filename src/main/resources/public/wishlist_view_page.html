@@ -11,10 +11,10 @@
 	<nav class="nav justify-content-end">
 		<ul class="nav justify-content-center">
 			<li class="nav-item">
-				<a class="nav-link active" href="/wishlist/edit_user.html">Edit Profile</a>
+				<input class="btn btn-primary" type="button" onclick="location.href='/wishlist/edit_user.html'" value="Edit Profile" />
 			</li>
 			<li class="nav-item">
-				<a class="nav-link" href="/wishlist/landing_page.html">Sign Out</a>
+				<input class="btn btn-primary" type="button" onclick=logout() value="Sign Out" />
 			</li>
 		</ul>
 	</nav>
@@ -92,6 +92,19 @@
 		// 	return data;
 		// }
 		fill_template();
+
+		function logout() {
+			alert("inside logout");
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.open("POST", "http://127.0.0.1:8080/wishlist/v1/user/logout", false);
+			xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
+			xmlhttp.setRequestHeader("Content-Type", "application/json");
+
+			xmlhttp.send(null);
+
+			alert(xmlhttp.responseText);
+			window.location.replace("/wishlist/landing_page.html");
+		}
 	</script>
 </body>
 </html>

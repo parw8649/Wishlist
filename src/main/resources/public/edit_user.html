@@ -69,27 +69,54 @@
          * - - on cancel, do nothing
          */
 
+        let cookies = document.cookie.split("; ");
+        let username = "";
+        let password = "";
+        let firstName = "";
+        let lastName = "";
+        let emailId = "";
+        var accessToken = "";
+        for (c in cookies) {
+            if (cookies[c].startsWith("username")) {
+                let user = cookies[c].split("=")
+                username = user[1];
+            }
+            if (cookies[c].startsWith("password")) {
+                let user = cookies[c].split("=")
+                password = user[1];
+            }
+            if (cookies[c].startsWith("firstName")) {
+                let user = cookies[c].split("=")
+                firstName = user[1];
+            }
+            if (cookies[c].startsWith("lastName")) {
+                let user = cookies[c].split("=")
+                lastName = user[1];
+            }
+            if (cookies[c].startsWith("emailId")) {
+                let user = cookies[c].split("=")
+                emailId = user[1];
+            }
+            if (cookies[c].startsWith("accessToken")) {
+                let token = cookies[c].split("=")
+                accessToken = token[1];
+            }
+        }
+
         let data = {
-            "users": [
+            "user": [
                 {
-                    "firstname": "Kathryn",
-                    "lastname": "Grose",
-                    "email": "kgrose@email.com",
-                    "username": "kgrose",
-                    "password": "123456!"
-                },
-                {
-                    "firstname": "AdminF",
-                    "lastname": "AdminL",
-                    "email": "admin@csumb.edu",
-                    "username": "admin",
-                    "password": "adminpass"
-                },
+                    "firstname": `${firstName}`,
+                    "lastname": `${lastName}`,
+                    "email": `${emailId}`,
+                    "username": `${username}`,
+                    "password": `${password}`
+                }
             ]
         };
 
         var template = Handlebars.compile(document.querySelector("#login_template").innerHTML);
-        var filled = template(data.users[0]);
+        var filled = template(data.user[0]);
         document.querySelector("#info").innerHTML = filled;
 
         $("#submit").on("click", updateUser);
@@ -103,25 +130,36 @@
             let password = $("#pass").val();
             let password_verif = $("#vpass").val();
 
-            alert(firstname + " " + lastname + " " + email + " " + username + " " + password + " " + password_verif);
+            let request = `{"firstName": "${firstname}", "lastName": "${lastname}", "emailId": "${email}", "username": "${username}"}`;
+
+            let xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("PUT", "http://127.0.0.1:8080/wishlist/v1/user/updateUser", false);
+            xmlhttp.setRequestHeader("Content-Type", "application/json");
+            xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
+
+            xmlhttp.send(request);
+
+            window.location.replace("/wishlist/wishlist_view_page.html");
         }
+
 
         function deleteUser() {
             let execute = confirm("Are you sure you want to delete your account?");
             if(execute) {
-                alert("executing");
-                let username = $("#user").val();
-                let password = $("#pass").val();
-
                 let request = `{"username": "${username}","password": "${password}"}`;
+
+                alert(request);
 
                 var xmlhttp = new XMLHttpRequest();
                 xmlhttp.open("GET", "http://127.0.0.1:8080/wishlist/v1/user/deleteUser", false);
                 xmlhttp.setRequestHeader("Content-Type", "application/json");
-                //xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
+                xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
 
                 xmlhttp.send(request);
+
+                alert(xmlhttp.responseText);
                 window.location.replace("/wishlist/landing_page.html");
+                return;
             } else {
                 alert("not executing");
                 return;
