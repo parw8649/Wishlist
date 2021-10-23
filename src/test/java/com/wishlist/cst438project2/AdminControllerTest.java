@@ -150,12 +150,6 @@ public class AdminControllerTest {
 
         String userAccessToken = getUserAccessToken(USERNAME, NEW_PASSWORD);
 
-        /*List<ItemDTO> userItemsResponse = itemController.getUserItems(userAccessToken, USERNAME);
-        if (userItemsResponse.size() > 0) {
-            String clearUserItemsResponse = itemController.removeItemsByUser(userAccessToken, USERNAME);
-            assertEquals(clearUserItemsResponse.substring(0, 5), "2021-");
-        }*/
-
         ItemDTO itemDTO = new ItemDTO();
         itemDTO.setName(INITIAL_ITEM_NAME);
 
