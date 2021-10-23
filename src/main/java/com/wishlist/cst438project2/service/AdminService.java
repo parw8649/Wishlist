@@ -22,7 +22,7 @@ public interface AdminService {
 
     UserLoginDTO login(SignInDTO signInDTO);
 
-    String removeItem(String itemName, int userId);
+    String removeItem(String itemName, Long userId);
 
     UserDTO updateUser(UserDTO userDTO);
 }

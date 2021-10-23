@@ -118,7 +118,7 @@ public class AdminServiceImpl implements AdminService {
      * returns timestamp of deletion
      */
     @Override
-    public String removeItem(String name, int userId) {
+    public String removeItem(String name, Long userId) {
         log.info("AdminServiceImpl: Starting removeItem");
         String docId = firebaseIntegration.getItemDocId(name, userId);
         return  firebaseIntegration.removeItem(docId);

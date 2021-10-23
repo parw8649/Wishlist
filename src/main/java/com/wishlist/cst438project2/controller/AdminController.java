@@ -189,7 +189,7 @@ public class AdminController {
      * returns timestamp of successful deletion
      */
     @DeleteMapping("/removeItems")
-    public String removeItem(@RequestHeader String accessToken, @RequestParam String itemName, @RequestParam int userId) {
+    public String removeItem(@RequestHeader String accessToken, @RequestParam String itemName, @RequestParam Long userId) {
 
         UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
 

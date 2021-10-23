@@ -138,7 +138,7 @@ public class AdminControllerTest {
     }
 
     @Test
-    @Order(7)
+    @Order(5)
     void adminCreateItem_Success() {
 
         String userAccessToken = getAccessToken(USERNAME, PASSWORD);
@@ -166,7 +166,36 @@ public class AdminControllerTest {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
+    void adminRemoveItem_Success() {
+
+        String userAccessToken = getAccessToken(USERNAME, PASSWORD);
+
+        List<ItemDTO> userItemsResponse = itemController.getUserItems(userAccessToken, USERNAME);
+        if (userItemsResponse.size() > 0) {
+            String clearUserItemsResponse = itemController.removeItemsByUser(userAccessToken, USERNAME);
+            assertEquals(clearUserItemsResponse.substring(0, 5), "2021-");
+        }
+
+        ItemDTO itemDTO = new ItemDTO();
+        itemDTO.setName(INITIAL_ITEM_NAME);
+        String createResponse = adminController.createItem(ADMIN_ACCESS_TOKEN, itemDTO);
+
+        userItemsResponse = itemController.getUserItems(userAccessToken, USERNAME);
+        assert(userItemsResponse.size() == 1);
+
+        Long userId = firebaseIntegration.getUserId(USERNAME);
+
+        String removeResponse = adminController.removeItem(userAccessToken, INITIAL_ITEM_NAME, userId);
+        System.out.println(removeResponse);
+        assertEquals(removeResponse.substring(0,5), "2021-");
+
+        userItemsResponse = itemController.getUserItems(userAccessToken, USERNAME);
+        assert(userItemsResponse.size() == 0);
+    }
+
+    @Test
+    @Order(7)
     void adminLogout_Success() {
 
         String response = userController.logout(ADMIN_ACCESS_TOKEN);
@@ -175,7 +204,7 @@ public class AdminControllerTest {
     }
 
     @Test
-    @Order(6)
+    @Order(8)
     void deleteUserAccount_Success() {
 
         String adminAccessToken = getAccessToken(ADMIN_USERNAME, ADMIN_PASSWORD);
