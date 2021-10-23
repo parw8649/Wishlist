@@ -10,7 +10,10 @@
 <body class="p-3 mb-2 bg-light text-dark">
 	<nav class="nav justify-content-end">
 		<ul class="nav justify-content-center">
-			<li class="nav-item">
+			<li id="adminBtn" class="nav-item" style="margin-inline:5px;">
+				<input class="btn btn-danger" type="button" onclick=verifyAdmin() value="Administration" />
+			</li>
+			<li class="nav-item" style="margin-inline:5px">
 				<input class="btn btn-primary" type="button" onclick="location.href='/wishlist/edit_user.html'" value="Edit Profile" />
 			</li>
 			<li class="nav-item">

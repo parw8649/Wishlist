@@ -7,13 +7,19 @@
     <script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.7/dist/handlebars.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
-<body>
+<body class="p-3 mb-2 bg-light text-dark">
+    <nav class="nav justify-content-end">
+        <ul class="nav justify-content-center">
+            <li class="nav-item" style="margin-inline:5px">
+                <input class="btn btn-primary" type="button" onclick="location.href='/wishlist/wishlist_view_page.html'" value="Back to Wishlist" />
+            </li>
+        </ul>
+    </nav>
     <div class="card" style="width: 500px; margin: auto; margin-top: 10px; text-align: left; padding: 10px">
         <h1 class="card-title"> Edit User Info </h1>
-        <h5 class="card-subtitle mb-2 text-muted">Password must be at least 6 characters long and contain 1 or more special characters (!,$,&,_,etc.)</h5>
-
         <script type="text/x-handlebars-template" id="login_template">
             <div style="margin-left: 20px">
+                <h4>General Information</h4>
                 <div style="margin-block: 15px">
                     <p style="font-size: 150%">First Name:</p>
                     <input id="first" type="text" value={{this.firstname}} style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
@@ -31,20 +37,26 @@
                     <p style="font-size: 150%">Username:</p>
                     <input id="user" type="text" value={{this.username}} style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
                 </div>
+                <button id="general_submit" style="border-radius: 5px; background-color: blue; color: white; padding-inline: 20px"><b> Save Changes </b></button>
+                <br /><br />
+                <h4>Sensitive Information</h4>
+                <h5 class="card-subtitle mb-2 text-muted">Password must be at least 6 characters long and contain 1 or more special characters (!,$,&,_,etc.)</h5>
+
                 <!--simple password rules:
                     minimum length >=6 characters,
                     alphanumeric,
                     at least one special character-->
                 <div style="margin-block: 15px">
-                    <p style="font-size: 150%">Password:</p>
-                    <input id="pass" type="text" value={{this.password}} style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
+                    <p style="font-size: 150%">New Password:</p>
+                    <input id="pass" type="text" value="" style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
                 </div>
                 <div style="margin-block: 15px">
                     <p style="font-size: 150%">Verify Password:</p>
                     <input id="vpass" type="password" value="" style="background-color: #def0ff; border-radius: 5px; font-size: 125% " />
                 </div>
+                <p id="message"></p>
                 <!--On click, update user and direct to /login_page-->
-                <button id="submit" style="border-radius: 5px; background-color: blue; color: white; padding-inline: 20px"><b> Save Changes </b></button>
+                <button id="sensitive_submit" style="border-radius: 5px; background-color: blue; color: white; padding-inline: 20px"><b> Save Changes </b></button>
                 <br /><br />
                 <!--On click, show modal dropdown for confirmation. If yes, redirect to /landing_page-->
                 <p class="text-muted">To delete your account and all associated data:</p>
@@ -69,39 +81,48 @@
          * - - on cancel, do nothing
          */
 
-        let cookies = document.cookie.split("; ");
         let username = "";
         let password = "";
         let firstName = "";
         let lastName = "";
         let emailId = "";
         var accessToken = "";
-        for (c in cookies) {
-            if (cookies[c].startsWith("username")) {
-                let user = cookies[c].split("=")
-                username = user[1];
-            }
-            if (cookies[c].startsWith("password")) {
-                let user = cookies[c].split("=")
-                password = user[1];
-            }
-            if (cookies[c].startsWith("firstName")) {
-                let user = cookies[c].split("=")
-                firstName = user[1];
-            }
-            if (cookies[c].startsWith("lastName")) {
-                let user = cookies[c].split("=")
-                lastName = user[1];
-            }
-            if (cookies[c].startsWith("emailId")) {
-                let user = cookies[c].split("=")
-                emailId = user[1];
-            }
-            if (cookies[c].startsWith("accessToken")) {
-                let token = cookies[c].split("=")
-                accessToken = token[1];
+
+        function verify_login() {
+            let cookies = document.cookie.split("; ");
+            if(cookies.length == 1) {
+                window.location.replace("/wishlist/login_page.html");
+            } else {
+                for (c in cookies) {
+                    if (cookies[c].startsWith("username")) {
+                        let user = cookies[c].split("=")
+                        username = user[1];
+                    }
+                    if (cookies[c].startsWith("password")) {
+                        let user = cookies[c].split("=")
+                        password = user[1];
+                    }
+                    if (cookies[c].startsWith("firstName")) {
+                        let user = cookies[c].split("=")
+                        firstName = user[1];
+                    }
+                    if (cookies[c].startsWith("lastName")) {
+                        let user = cookies[c].split("=")
+                        lastName = user[1];
+                    }
+                    if (cookies[c].startsWith("emailId")) {
+                        let user = cookies[c].split("=")
+                        emailId = user[1];
+                    }
+                    if (cookies[c].startsWith("accessToken")) {
+                        let token = cookies[c].split("=")
+                        accessToken = token[1];
+                    }
+                }
             }
         }
+
+        verify_login();
 
         let data = {
             "user": [
@@ -109,8 +130,7 @@
                     "firstname": `${firstName}`,
                     "lastname": `${lastName}`,
                     "email": `${emailId}`,
-                    "username": `${username}`,
-                    "password": `${password}`
+                    "username": `${username}`
                 }
             ]
         };
@@ -119,7 +139,8 @@
         var filled = template(data.user[0]);
         document.querySelector("#info").innerHTML = filled;
 
-        $("#submit").on("click", updateUser);
+        $("#general_submit").on("click", updateUser);
+        $("#sensitive_submit").on("click", updatePassword);
         $("#delete").on("click", deleteUser);
 
         function updateUser() {
@@ -142,6 +163,28 @@
             document.cookie = "lastName=" + lastname + "; path=/";
             document.cookie = "emailId=" + email + "; path=/";
 
+            location.reload();
+        }
+
+        function updatePassword() {
+            if(!verify()) {
+                return;
+            }
+
+            let newpass = $("#pass").val();
+            let newpass_verif = $("#vpass").val();
+
+            let request = `{"newPassword": "${newpass}","confirmPassword": "${newpass_verif}"}`;
+
+            let xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("PUT", "http://127.0.0.1:8080/wishlist/v1/user/changePassword", false);
+            xmlhttp.setRequestHeader("Content-Type", "application/json");
+            xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
+
+            xmlhttp.send(request);
+
+            document.cookie = "password=" + newpass + "; path=/";
+
             window.location.replace("/wishlist/wishlist_view_page.html");
         }
 
@@ -161,10 +204,25 @@
                 xmlhttp.send(request);
 
                 alert(xmlhttp.responseText);
-                window.location.replace("/wishlist/");
+                window.location.replace("/wishlist/login.html");
             } else {
                 alert("not executing");
                 return;
+            }
+        }
+
+        function verify() {
+            let password = $("#pass").val();
+            let password_verif = $("#vpass").val();
+
+            if(password_verif.localeCompare(password)) {
+                $('#vpass').css('background-color', '#ff5252');
+                $('#message').text("Does not match");
+                return false;
+            } else {
+                $('#vpass').css('background-color', '#92f781');
+                $('#message').text("Match");
+                return true;
             }
         }
     </script>
