@@ -1,6 +1,6 @@
-package com.wishlist.cst438project2.service;
+package com.wishlist.cst438project2.common.extras;
 
-import com.wishlist.cst438project2.document.Wishlist;
+import com.wishlist.cst438project2.common.extras.Wishlist;
 import com.wishlist.cst438project2.dto.AddItemsWishlistDTO;
 import com.wishlist.cst438project2.dto.WishlistResponseDTO;
 
