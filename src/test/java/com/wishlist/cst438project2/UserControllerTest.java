@@ -1,6 +1,7 @@
 package com.wishlist.cst438project2;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wishlist.cst438project2.common.Utils;
 import com.wishlist.cst438project2.controller.UserController;
 import com.wishlist.cst438project2.dto.*;
 import com.wishlist.cst438project2.integration.FirebaseIntegration;
@@ -14,7 +15,7 @@ import java.util.Objects;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test cases for user functionalities
@@ -92,5 +93,23 @@ public class UserControllerTest {
         assertEquals(newFirstName, updateUserResponse.getFirstName());
         assertEquals(newLastName, updateUserResponse.getLastName());
         assertEquals(newEmail, updateUserResponse.getEmailId());
+    }
+
+    @Test
+    void changePassword_success() {
+
+        String accessToken = getAccessToken();
+        String newPassword = "user-pass32";
+        String confirmPassword = "user-pass32";
+
+        ChangePasswordDTO changePasswordDTO = new ChangePasswordDTO(newPassword, confirmPassword);
+        ResponseDTO<Long> responseDTO = userController.changePassword(accessToken, changePasswordDTO);
+
+        assertThat(responseDTO.getData(), notNullValue());
+
+        UserDTO userDTO = firebaseIntegration.getUser(USERNAME);
+
+        assertFalse(Utils.checkPassword(PASSWORD, userDTO.getPassword()));
+        assertTrue(Utils.checkPassword(newPassword, userDTO.getPassword()));
     }
 }
