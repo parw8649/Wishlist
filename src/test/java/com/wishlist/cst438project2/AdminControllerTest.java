@@ -127,6 +127,17 @@ public class AdminControllerTest {
         assertEquals(updateUserResponse.getRole(), userTokenDTO.getRole());
     }
 
+    @Test
+    @Order(5)
+    void adminLogout_Success() {
+
+        String adminAccessToken = getAccessToken(ADMIN_USERNAME, ADMIN_PASSWORD);
+
+        String response = userController.logout(adminAccessToken);
+
+        assertEquals(Constants.USER_LOGOUT_SUCCESSFUL, response);
+    }
+
     //Private Methods
     private String getAccessToken(String username, String password) {
         SignInDTO credentials = new SignInDTO();
