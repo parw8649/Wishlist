@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Objects;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,7 +50,12 @@ public class UserControllerTest {
 
     @Test
     void saveUser_Success() {
-        //TODO: DELETE user if it already exists in the database, inorder to run test multiple times
+
+        UserDTO userDTO = firebaseIntegration.getUser(USERNAME);
+        if(Objects.nonNull(userDTO)) {
+            firebaseIntegration.deleteUser(USERNAME);
+        }
+
         SignUpDTO signUpDTO = new SignUpDTO(FIRSTNAME, LASTNAME, EMAIL, USERNAME, PASSWORD);
         String responseTimestamp = userController.saveUser(signUpDTO);
         assertThat(responseTimestamp, notNullValue());
