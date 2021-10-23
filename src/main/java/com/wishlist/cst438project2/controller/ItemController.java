@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
  * @author Barbara Kondo
  * @version %I% %G%
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/items")
 @Slf4j
@@ -41,7 +42,7 @@ public class ItemController {
      */
     @PostMapping
     public String createItem(@RequestHeader String accessToken, @RequestBody CreateItemDTO createItemDTO) {
-        log.info("ItemController: Starting createItem");
+//        log.info("ItemController: Starting createItem");
         try {
             UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
             if(Objects.isNull(userTokenDTO))
@@ -52,9 +53,27 @@ public class ItemController {
             } else {
                 createItemDTO.logCreateItemDTO();
                 String timestamp = itemService.createItem(createItemDTO.getItemDTO(), createItemDTO.getUsername());
-                log.info("ItemController: exiting successful createItem");
+//                log.info("ItemController: exiting successful createItem");
                 return timestamp;
             }
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+    /**
+     * GET request to retrieve ItemDTO for a specific item
+     * returns ItemDTO
+     */
+    @RequestMapping(method= RequestMethod.GET, params = {"item_name", "userId"}, headers = "accessToken")
+    public ItemDTO getSpecificItem(@RequestParam String item_name, @RequestParam long userId, @RequestHeader String accessToken) {
+        try {
+            UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
+            if(Objects.isNull(userTokenDTO))
+                throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
+
+            ItemDTO itemDTO = itemService.getSpecificItem(item_name, userId);
+            return itemDTO;
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
             throw ex;
@@ -69,7 +88,7 @@ public class ItemController {
      */
     @GetMapping
     public List<ItemDTO> getAllItems(@RequestHeader String accessToken) {
-        log.info("ItemController: Starting getAllItems");
+//        log.info("ItemController: Starting getAllItems");
         try {
 
             UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
@@ -91,8 +110,8 @@ public class ItemController {
      */
     @RequestMapping(method = RequestMethod.DELETE, params = {"item_name", "username"}, headers = "accessToken")
     public String removeItem(@RequestHeader String accessToken, @RequestParam String item_name, @RequestParam String username) {
-        log.info("ItemController: Starting removeItem");
-        log.info(String.format("ItemController: removeItem:\n    name: %s\n    username: %s", item_name, username));
+//        log.info("ItemController: Starting removeItem");
+//        log.info(String.format("ItemController: removeItem:\n    name: %s\n    username: %s", item_name, username));
 
         UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
         if(Objects.isNull(userTokenDTO))
@@ -110,8 +129,8 @@ public class ItemController {
      */
     @PatchMapping
     public String updateItem(@RequestHeader String accessToken, @RequestParam(name = "item_name") String old_item_name, @RequestBody ItemDTO updatedItemDTO) {
-        log.info("ItemController: Starting updateItem");
-        log.info(String.format("ItemController: updateItem:\n    old name: %s\n    userId: %s", old_item_name, updatedItemDTO.getUserId()));
+//        log.info("ItemController: Starting updateItem");
+//        log.info(String.format("ItemController: updateItem:\n    old name: %s\n    userId: %s", old_item_name, updatedItemDTO.getUserId()));
 
         UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
         if(Objects.isNull(userTokenDTO))
@@ -128,8 +147,8 @@ public class ItemController {
     @RequestMapping(method = RequestMethod.GET, params = "list", headers = "accessToken")
     // https://stackoverflow.com/a/43546809
     public List<ItemDTO> getUserItems(@RequestHeader String accessToken, @RequestParam("list") String username) {
-        log.info("ItemController: Starting getUserItems");
-        log.info(String.format("ItemController: getUserItems:\n     username: %s", username));
+//        log.info("ItemController: Starting getUserItems");
+//        log.info(String.format("ItemController: getUserItems:\n     username: %s", username));
 
         UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
         if(Objects.isNull(userTokenDTO))
@@ -145,8 +164,8 @@ public class ItemController {
      */
     @RequestMapping(method = RequestMethod.GET, params = "search", headers = "accessToken")
     public List<ItemDTO> getSearchAllItems(@RequestHeader String accessToken, @RequestParam("search") List<String> keywords) {
-        log.info("ItemController: Starting getSearchItems");
-        log.info(String.format("ItemController: getSearchItems:\n     keywords: %s", keywords));
+//        log.info("ItemController: Starting getSearchItems");
+//        log.info(String.format("ItemController: getSearchItems:\n     keywords: %s", keywords));
 
         UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
         if(Objects.isNull(userTokenDTO))
@@ -164,15 +183,15 @@ public class ItemController {
     // TODO: removeItemsByUser mapping is for testing purposed only!
     @RequestMapping(method = RequestMethod.DELETE, params = "username", headers = "accessToken")
     public String removeItemsByUser(@RequestHeader String accessToken, @RequestParam String username) {
-        log.info("ItemController: Starting removeItemsByUser");
-        log.info(String.format("ItemController: removeItemsByUser:\n    username: %s", username));
+//        log.info("ItemController: Starting removeItemsByUser");
+//        log.info(String.format("ItemController: removeItemsByUser:\n    username: %s", username));
 
         UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
         if(Objects.isNull(userTokenDTO))
             throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
 
         String timestamp = itemService.removeItemsByUser(username);
-        log.info("ItemController: Exiting removeItemsByUser");
+//        log.info("ItemController: Exiting removeItemsByUser");
         return timestamp;
     }
 }
