@@ -10,6 +10,31 @@
 	<link href="design_script.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+<nav class="nav justify-content-end">
+	<ul class="nav justify-content-center">
+		<li id="adminBtn" class="nav-item" style="margin-inline:5px;">
+			<input class="btn btn-danger" type="button" onclick=verifyAdmin() value="Administration" />
+		</li>
+		<li class="nav-item" style="margin-inline:5px">
+			<input class="btn btn-primary" type="button" onclick="location.href='/wishlist/edit_user.html'" value="Edit Profile" />
+		</li>
+		<li class="nav-item" style="margin-inline:5px">
+			<input class="btn btn-primary" type="button" onclick="location.href='/wishlist/wishlist_view_page.html'" value="All Items" />
+		</li>
+		<li class="nav-item" style="margin-inline:5px">
+			<input class="btn btn-primary" type="button" onclick="location.href='/wishlist/my_wishlist_page.html'" value="My Wishlist" />
+		</li>
+		<li class="nav-item" style="margin-inline:5px">
+			<input class="btn btn-success" type="button" onclick="location.href='/wishlist/add_item_page.html'" value="Add Items" />
+		</li>
+		<li class="nav-item" style="margin-inline:5px">
+			<input class="btn btn-success" type="button" onclick="location.href='/wishlist/edit_item_page.html'" value="Edit Items" />
+		</li>
+		<li class="nav-item">
+			<input class="btn btn-primary" type="button" onclick=logout() value="Sign Out" />
+		</li>
+	</ul>
+</nav>
 	<div class="card" style="margin: auto;padding-top: 5%;padding-left: 10%;padding-right: 10%;">
 	<h1> Add New Item</h1>
 	  <div class="mb-3">
@@ -18,21 +43,30 @@
 	  </div>
 	  <div class="mb-3">
 		<label for="addItemLink" class="form-label">Link</label>
-		<textarea class="form-control" id="addItemName" rows="3"></textarea>
+		<textarea class="form-control" id="addItemLink" rows="3"></textarea>
 	  </div>
 	  <div class="mb-3">
 		<label for="addItemDescription" class="form-label">Description</label>
-		<textarea class="form-control" id="addItemName" rows="3"></textarea>
+		<textarea class="form-control" id="addItemDescription" rows="3"></textarea>
 	  </div>
 	  <div class="mb-3">
-		<label for="addItemURL" class="form-label">Image URL</label>
-		<textarea class="form-control" id="addItemName" rows="3"></textarea>
+		<label for="addItemImage" class="form-label">Image URL</label>
+		<textarea class="form-control" id="addItemImage" rows="3"></textarea>
 	  </div>
+		<div class="mb-3">
+			<label for="addItemPriority" class="form-label">Priority</label>
+			<textarea class="form-control" id="addItemPriority" rows="3"></textarea>
+		</div>
 	  <div class="d-grid gap-2 col-6 mx-auto">
-		<button type="button" class="btn btn-primary" value="addNewItem">Add</button>
+		<button type="button" class="btn btn-primary" value="addNewItem" onclick="add_item()">Add</button>
 	  </div>
 	  <br>
+	<div class="d-grid gap-2 col-6 mx-auto">
+		<a href="my_wishlist_page.html" class="btn btn-outline-success">See My Wishlist</a>
+	</div>
   </div>
+
+	<script type="text/javascript" src="add_item.js"></script>
 
 </body>
 </html>
