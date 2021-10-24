@@ -30,7 +30,6 @@ async function delete_item(itemName,userId) {
     xhttp.setRequestHeader('AccessToken',accessToken);
     xhttp.send();
 
-    location.reload();
 }
 
 

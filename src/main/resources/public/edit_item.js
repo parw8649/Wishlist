@@ -50,7 +50,7 @@ async function edit_item(index, OGName, itemId){
     xhttp2.setRequestHeader('Content-Type','application/json');
     xhttp2.send(data);
 
-    location.reload();
+    alert("Item has been updated");
 }
 
 
