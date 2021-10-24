@@ -29,10 +29,6 @@ async function edit_item(index, OGName, itemId){
     let itemDescription = document.getElementById(index).elements[2].value;
     let itemImage = document.getElementById(index).elements[3].value;
     let itemPriority = document.getElementById(index).elements[4].value;
-//    console.log("Name:", itemName);
-//    console.log("Link:", itemLink);
-//    console.log("Description:", itemDescription);
-//    console.log("image:", itemImage);
 
     let data = {
             "name":itemName,
@@ -46,14 +42,6 @@ async function edit_item(index, OGName, itemId){
 
     console.log("DATATATAT: ", data);
 
-
-//    let xhttp = new XMLHttpRequest();
-
-    //DELETE ITEM
-//    xhttp.open("PATCH", "http://127.0.0.1:8080/wishlist/items?item_name="+itemName+"&username="+username, true);
-//    xhttp.setRequestHeader('AccessToken',accessToken);
-//    xhttp.send();
-
     //PATCH ITEM WITH NEW VALUES
     let xhttp2 = new XMLHttpRequest();
     data = JSON.stringify(data);
@@ -62,7 +50,7 @@ async function edit_item(index, OGName, itemId){
     xhttp2.setRequestHeader('Content-Type','application/json');
     xhttp2.send(data);
 
-//    location.reload();
+    location.reload();
 }
 
 

@@ -37,13 +37,6 @@
 	</ul>
 </nav>
 <br>
-<!--<form class="form">-->
-
-<!--	<div class="input-group mb-3">-->
-<!--		<input type="text" class="form-control" id ="itemName" placeholder="Item name" aria-label="Item Name" aria-describedby="button-addon2">-->
-<!--		<button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="item_search()">Search</button>-->
-<!--	</div>-->
-<!--</form>-->
 <br>
 
 <script type="text/x-handlebars-template" id="wishlist_template">
@@ -55,27 +48,22 @@
 				<div class="mb-3">
 					<label class="form-label" >Name</label>
 					<input type="text" name="name" value="{{this.name}}" placeholder="{{this.name}}"><br>
-<!--					<textarea class="form-control" rows="3" default="{{this.name}}"placeholder="{{this.name}}"></textarea>-->
 				</div>
 				<div class="mb-3">
 					<label class="form-label" >Link</label>
 					<input type="text" name="link" value="{{this.link}}" placeholder="{{this.link}}"><br>
-<!--					<textarea class="form-control" rows="3" placeholder="{{this.link}}"></textarea>-->
 				</div>
 				<div class="mb-3">
 					<label class="form-label">Description</label>
 					<input type="text" name="description" value="{{this.description}}" placeholder="{{this.description}}"><br>
-<!--					<textarea class="form-control" class="{{@index}}" rows="3" placeholder="{{this.description}}"></textarea>-->
 				</div>
 				<div class="mb-3">
 					<label class="form-label">Image URL</label>
 					<input type="text" name="imageUrl" value="{{this.imgUrl}}" placeholder="{{this.imgUrl}}"><br>
-<!--					<textarea class="form-control" class="{{@index}}" rows="3" placeholder="{{this.imgUrl}}"></textarea>-->
 				</div>
 				<div class="mb-3">
 					<label class="form-label">Priority</label>
 					<input type="text" name="priority" value="{{this.priority}}" placeholder="{{this.priority}}"><br>
-<!--					<textarea class="form-control" class="{{@index}}" rows="3" placeholder="{{this.priority}}"></textarea>-->
 				</div>
 				<div class="d-grid gap-2 col-6 mx-auto">
 					<button type="button" class="btn btn-primary" value="editNewItem" onclick="edit_item({{@index}}, '{{this.name}}', {{this.itemId}})">Edit Item</button>
