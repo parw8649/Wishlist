@@ -23,6 +23,7 @@ function login() {
         document.cookie = "emailId=" + res.data.userDTO.emailId + "; path=/";
         document.cookie = "password=" + password + "; path=/";
         document.cookie = "accessToken=" + accessToken + "; path=/";
+        document.cookie = "userId=" + res.data.userDTO.userId + "; path=/";
 
         try {
             var xmlhttp = new XMLHttpRequest();
