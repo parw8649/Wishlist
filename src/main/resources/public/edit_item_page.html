@@ -51,32 +51,38 @@
 		<div class="card text-dark bg-light mb-3 mx-auto" style="width: 30%; margin-bottom: 10px;">
 			<img class="card-img-top" src="{{this.imgUrl}}" alt="Card image cap">
 			<br>
-			<div class="mb-3">
-				<label for="{{this.name}}" class="form-label" >Name</label>
-				<textarea class="form-control" id="{{this.name}}" rows="3" placeholder="{{this.name}}"></textarea>
-			</div>
-			<div class="mb-3">
-				<label for="{{this.link}}" class="form-label" >Link</label>
-				<textarea class="form-control" id="{{this.link}}" rows="3" placeholder="{{this.link}}"></textarea>
-			</div>
-			<div class="mb-3">
-				<label for="{{this.description}}" class="form-label">Description</label>
-				<textarea class="form-control" id="{{this.description}}" rows="3" placeholder="{{this.description}}"></textarea>
-			</div>
-			<div class="mb-3">
-				<label for="{{this.imgUrl}}" class="form-label">Image URL</label>
-				<textarea class="form-control" id="{{this.imgUrl}}" rows="3" placeholder="{{this.imgUrl}}"></textarea>
-			</div>
-			<div class="mb-3">
-				<label for="{{this.priority}}" class="form-label">Priority</label>
-				<textarea class="form-control" id="{{this.priority}}" rows="3" placeholder="{{this.priority}}"></textarea>
-			</div>
-			<div class="d-grid gap-2 col-6 mx-auto">
-				<button type="button" class="btn btn-primary" value="editNewItem" onclick="edit_item('{{this.name}}','{{this.link}}','{{this.description}}','{{this.imgUrl}}','{{this.priority}}')">Edit Item</button>
-			</div>
+			<form id="{{@index}}">
+				<div class="mb-3">
+					<label class="form-label" >Name</label>
+					<input type="text" name="name" value="{{this.name}}" placeholder="{{this.name}}"><br>
+<!--					<textarea class="form-control" rows="3" default="{{this.name}}"placeholder="{{this.name}}"></textarea>-->
+				</div>
+				<div class="mb-3">
+					<label class="form-label" >Link</label>
+					<input type="text" name="link" value="{{this.link}}" placeholder="{{this.link}}"><br>
+<!--					<textarea class="form-control" rows="3" placeholder="{{this.link}}"></textarea>-->
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Description</label>
+					<input type="text" name="description" value="{{this.description}}" placeholder="{{this.description}}"><br>
+<!--					<textarea class="form-control" class="{{@index}}" rows="3" placeholder="{{this.description}}"></textarea>-->
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Image URL</label>
+					<input type="text" name="imageUrl" value="{{this.imgUrl}}" placeholder="{{this.imgUrl}}"><br>
+<!--					<textarea class="form-control" class="{{@index}}" rows="3" placeholder="{{this.imgUrl}}"></textarea>-->
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Priority</label>
+					<input type="text" name="priority" value="{{this.priority}}" placeholder="{{this.priority}}"><br>
+<!--					<textarea class="form-control" class="{{@index}}" rows="3" placeholder="{{this.priority}}"></textarea>-->
+				</div>
+				<div class="d-grid gap-2 col-6 mx-auto">
+					<button type="button" class="btn btn-primary" value="editNewItem" onclick="edit_item({{@index}}, '{{this.name}}', {{this.itemId}})">Edit Item</button>
+				</div>
+			</form>
 		</div>
 	{{/each}}
-
 </script>
 
 
