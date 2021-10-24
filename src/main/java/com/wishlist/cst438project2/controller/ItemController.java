@@ -63,6 +63,7 @@ public class ItemController {
     }
     /**
      * GET request to retrieve ItemDTO for a specific item
+     * this is used when accessing an item from all items
      * returns ItemDTO
      */
     @RequestMapping(method= RequestMethod.GET, params = {"item_name", "userId"}, headers = "accessToken")
@@ -73,6 +74,26 @@ public class ItemController {
                 throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
 
             ItemDTO itemDTO = itemService.getSpecificItem(item_name, userId);
+            return itemDTO;
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            throw ex;
+        }
+    }
+
+    /**
+     * GET request to retrieve ItemDTO for a specific item
+     * this is used when accessing an item within a user's list
+     * returns ItemDTO
+     */
+    @RequestMapping(method= RequestMethod.GET, params = {"item_name", "username"}, headers = "accessToken")
+    public ItemDTO getSpecificItem2(@RequestParam String item_name, @RequestParam String username, @RequestHeader String accessToken) {
+        try {
+            UserTokenDTO userTokenDTO = tokenManager.getUser(accessToken);
+            if(Objects.isNull(userTokenDTO))
+                throw new UnauthorizedException(Constants.ERROR_INVALID_TOKEN);
+
+            ItemDTO itemDTO = itemService.getSpecificItem2(item_name, username);
             return itemDTO;
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);

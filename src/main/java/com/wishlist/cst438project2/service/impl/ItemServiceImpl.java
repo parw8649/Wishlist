@@ -86,6 +86,20 @@ public class ItemServiceImpl implements ItemService {
     }
 
     /**
+     * retrieve a specific document from item collection with a given username and item name
+     * returns the item
+     */
+    @SneakyThrows
+    @Override
+    public ItemDTO getSpecificItem2(String item_name, String username) {
+        log.info("ItemServiceImpl: starting getSpecificItem2");
+        long userId = firebaseIntegration.getUserId(username);
+        ItemDTO itemDTO = firebaseIntegration.getItem(item_name, userId);
+        log.info("ItemServiceImpl: exiting getSpecificItem2");
+        return  itemDTO;
+    }
+
+    /**
      * retrieve all documents from item collection
      * returns a list of all created items
      */
