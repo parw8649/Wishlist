@@ -21,26 +21,42 @@ for (c in cookies) {
 console.log("Accesstoken: ", accessToken);
 console.log("username: ", username);
 
-async function edit_item(name,link,description,imageUrl,priority){
-
-    let itemName = document.getElementById(name).value;
-    let itemLink = document.getElementById(link).value;
-    let itemDescription = document.getElementById(description).value;
-    let itemImage = document.getElementById(imageUrl).value;
-    let itemPriority = document.getElementById(priority).value;
-    console.log(name);
-    console.log("Name:", itemName);
-    console.log("Link:", itemLink);
-    console.log("Description:", itemDescription);
-    console.log("image:", itemImage);
+async function edit_item(index, OGName, itemId){
 
 
+    let itemName = document.getElementById(index).elements[0].value;
+    let itemLink = document.getElementById(index).elements[1].value;
+    let itemDescription = document.getElementById(index).elements[2].value;
+    let itemImage = document.getElementById(index).elements[3].value;
+    let itemPriority = document.getElementById(index).elements[4].value;
+
+    let data = {
+            "name":itemName,
+            "link":itemLink,
+            "description":itemDescription,
+            "imgUrl":itemImage,
+            "userId":userId,
+            "priority":itemPriority,
+            "itemId":itemId,
+        };
+
+    console.log("DATATATAT: ", data);
+
+    //PATCH ITEM WITH NEW VALUES
+    let xhttp2 = new XMLHttpRequest();
+    data = JSON.stringify(data);
+    xhttp2.open("PATCH", "http://127.0.0.1:8080/wishlist/items?item_name="+OGName, true);
+    xhttp2.setRequestHeader('accessToken',accessToken);
+    xhttp2.setRequestHeader('Content-Type','application/json');
+    xhttp2.send(data);
+
+    location.reload();
 }
 
 
 async function fill_template() {
     var data;
-    var xhttp = new XMLHttpRequest();
+    let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
         console.log(typeof this.responseText);
@@ -52,14 +68,16 @@ async function fill_template() {
         }
     };
 
-    xhttp.open("GET", "http://127.0.0.1:8080/wishlist/items", true);
+
+    xhttp.open("GET", "http://127.0.0.1:8080/wishlist/items" + "?list=" + username, true);
     xhttp.setRequestHeader('AccessToken',accessToken);
+    xhttp.setRequestHeader('list',username);
     xhttp.send();
     }
 fill_template();
 
 function logout() {
-	var xmlhttp = new XMLHttpRequest();
+	let xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("POST", "http://127.0.0.1:8080/wishlist/v1/user/logout", false);
 	xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
 	xmlhttp.setRequestHeader("Content-Type", "application/json");
@@ -79,3 +97,4 @@ function logout() {
 
 	window.location.replace("/wishlist/");
 }
+
