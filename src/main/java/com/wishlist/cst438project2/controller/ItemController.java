@@ -63,6 +63,7 @@ public class ItemController {
     }
     /**
      * GET request to retrieve ItemDTO for a specific item
+     * this is used when accessing an item from all items
      * returns ItemDTO
      */
     @RequestMapping(method= RequestMethod.GET, params = {"item_name", "userId"}, headers = "accessToken")
@@ -82,6 +83,7 @@ public class ItemController {
 
     /**
      * GET request to retrieve ItemDTO for a specific item
+     * this is used when accessing an item within a user's list
      * returns ItemDTO
      */
     @RequestMapping(method= RequestMethod.GET, params = {"item_name", "username"}, headers = "accessToken")
