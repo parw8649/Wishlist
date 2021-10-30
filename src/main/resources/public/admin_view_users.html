@@ -61,7 +61,7 @@
         }
 
         var xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("GET", "http://127.0.0.1:8080/wishlist/v1/admin/users", false);
+        xmlhttp.open("GET", "https://wishlist-app-group-c.herokuapp.com/wishlist/v1/admin/users", false);
         xmlhttp.setRequestHeader("Content-Type", "application/json");
         xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
 
@@ -97,14 +97,14 @@
                 let user = $("#usernames :selected").val()
 
                 var xmlhttp = new XMLHttpRequest();
-                xmlhttp.open("DELETE", `http://127.0.0.1:8080/wishlist/items?username=${user}`, false);
+                xmlhttp.open("DELETE", `https://wishlist-app-group-c.herokuapp.com/wishlist/items?username=${user}`, false);
                 xmlhttp.setRequestHeader("Content-Type", "application/json");
                 xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
 
                 xmlhttp.send();
 
                 var xmlhttp = new XMLHttpRequest();
-                xmlhttp.open("DELETE", `http://127.0.0.1:8080/wishlist/v1/admin/deleteUser?username=${user}`, false);
+                xmlhttp.open("DELETE", `https://wishlist-app-group-c.herokuapp.com/wishlist/v1/admin/deleteUser?username=${user}`, false);
                 xmlhttp.setRequestHeader("Content-Type", "application/json");
                 xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
 
@@ -118,7 +118,7 @@
 
         function logout() {
             var xmlhttp = new XMLHttpRequest();
-            xmlhttp.open("POST", "http://127.0.0.1:8080/wishlist/v1/user/logout", false);
+            xmlhttp.open("POST", "https://wishlist-app-group-c.herokuapp.com/wishlist/v1/user/logout", false);
             xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
             xmlhttp.setRequestHeader("Content-Type", "application/json");
 

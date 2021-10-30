@@ -153,7 +153,7 @@
             let request = `{"firstName": "${firstname}", "lastName": "${lastname}", "emailId": "${email}", "username": "${username}"}`;
 
             let xmlhttp = new XMLHttpRequest();
-            xmlhttp.open("PUT", "http://127.0.0.1:8080/wishlist/v1/user/updateUser", false);
+            xmlhttp.open("PUT", "https://wishlist-app-group-c.herokuapp.com/wishlist/v1/user/updateUser", false);
             xmlhttp.setRequestHeader("Content-Type", "application/json");
             xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
 
@@ -178,7 +178,7 @@
             let request = `{"newPassword": "${newpass}","confirmPassword": "${newpass_verif}"}`;
 
             let xmlhttp = new XMLHttpRequest();
-            xmlhttp.open("PUT", "http://127.0.0.1:8080/wishlist/v1/user/changePassword", false);
+            xmlhttp.open("PUT", "https://wishlist-app-group-c.herokuapp.com/wishlist/v1/user/changePassword", false);
             xmlhttp.setRequestHeader("Content-Type", "application/json");
             xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
 
@@ -198,7 +198,7 @@
                 alert(request);
 
                 var xmlhttp = new XMLHttpRequest();
-                xmlhttp.open("DELETE", "http://127.0.0.1:8080/wishlist/v1/user/deleteUser", false);
+                xmlhttp.open("DELETE", "https://wishlist-app-group-c.herokuapp.com/wishlist/v1/user/deleteUser", false);
                 xmlhttp.setRequestHeader("Content-Type", "application/json");
                 xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
 
