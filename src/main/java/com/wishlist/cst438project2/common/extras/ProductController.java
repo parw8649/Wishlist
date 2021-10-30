@@ -19,8 +19,8 @@ import java.util.Objects;
  * @version %I% %G%
  */
 
-@RestController
-@RequestMapping("/v1/product")
+//@RestController
+//@RequestMapping("/v1/product")
 @Slf4j
 public class ProductController {
 
