@@ -44,14 +44,14 @@ async function add_to_my_list(itemName,userId){
         var xhttp2 = new XMLHttpRequest();
         let DTOnUser = {"itemDTO": data,"username": username};
         DTOnUser = JSON.stringify(DTOnUser);
-        xhttp2.open("POST", "http://127.0.0.1:8080/wishlist/items", true);
+        xhttp2.open("POST", "https://wishlist-app-group-c.herokuapp.com/wishlist/items", true);
         xhttp2.setRequestHeader('accessToken',accessToken);
         xhttp2.setRequestHeader('Content-Type','application/json');
         xhttp2.send(DTOnUser);
         }
     };
 
-    xhttp.open("GET", "http://127.0.0.1:8080/wishlist/items?item_name="+itemName+"&userId="+userId, true);
+    xhttp.open("GET", "https://wishlist-app-group-c.herokuapp.com/wishlist/items?item_name="+itemName+"&userId="+userId, true);
     xhttp.setRequestHeader('accessToken',accessToken);
 
     xhttp.send();
@@ -71,7 +71,7 @@ async function fill_template() {
 				}
 			};
 
-			xhttp.open("GET", "http://127.0.0.1:8080/wishlist/items", true);
+			xhttp.open("GET", "https://wishlist-app-group-c.herokuapp.com/wishlist/items", true);
 			xhttp.setRequestHeader('AccessToken',accessToken);
 			xhttp.send();
 			}
@@ -112,7 +112,7 @@ function verifyAdmin() {
 
 function logout() {
 	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("POST", "http://127.0.0.1:8080/wishlist/v1/user/logout", false);
+	xmlhttp.open("POST", "https://wishlist-app-group-c.herokuapp.com/wishlist/v1/user/logout", false);
 	xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
 	xmlhttp.setRequestHeader("Content-Type", "application/json");
 

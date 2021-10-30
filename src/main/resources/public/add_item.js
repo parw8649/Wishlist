@@ -40,7 +40,7 @@ async function add_item() {
     var xhttp2 = new XMLHttpRequest();
         let DTOnUser = {"itemDTO": dto,"username": username};
         DTOnUser = JSON.stringify(DTOnUser);
-        xhttp2.open("POST", "http://127.0.0.1:8080/wishlist/items", true);
+        xhttp2.open("POST", "https://wishlist-app-group-c.herokuapp.com/wishlist/items", true);
         xhttp2.setRequestHeader('accessToken',accessToken);
         xhttp2.setRequestHeader('Content-Type','application/json');
         xhttp2.send(DTOnUser);
@@ -50,7 +50,7 @@ async function add_item() {
 
 function logout() {
     var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("POST", "http://127.0.0.1:8080/wishlist/v1/user/logout", false);
+    xmlhttp.open("POST", "https://wishlist-app-group-c.herokuapp.com/wishlist/v1/user/logout", false);
     xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
     xmlhttp.setRequestHeader("Content-Type", "application/json");
 

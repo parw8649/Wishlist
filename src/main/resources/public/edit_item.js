@@ -45,7 +45,7 @@ async function edit_item(index, OGName, itemId){
     //PATCH ITEM WITH NEW VALUES
     let xhttp2 = new XMLHttpRequest();
     data = JSON.stringify(data);
-    xhttp2.open("PATCH", "http://127.0.0.1:8080/wishlist/items?item_name="+OGName, true);
+    xhttp2.open("PATCH", "https://wishlist-app-group-c.herokuapp.com/wishlist/items?item_name="+OGName, true);
     xhttp2.setRequestHeader('accessToken',accessToken);
     xhttp2.setRequestHeader('Content-Type','application/json');
     xhttp2.send(data);
@@ -69,7 +69,7 @@ async function fill_template() {
     };
 
 
-    xhttp.open("GET", "http://127.0.0.1:8080/wishlist/items" + "?list=" + username, true);
+    xhttp.open("GET", "https://wishlist-app-group-c.herokuapp.com/wishlist/items" + "?list=" + username, true);
     xhttp.setRequestHeader('AccessToken',accessToken);
     xhttp.setRequestHeader('list',username);
     xhttp.send();
@@ -78,7 +78,7 @@ fill_template();
 
 function logout() {
 	let xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("POST", "http://127.0.0.1:8080/wishlist/v1/user/logout", false);
+	xmlhttp.open("POST", "https://wishlist-app-group-c.herokuapp.com/wishlist/v1/user/logout", false);
 	xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
 	xmlhttp.setRequestHeader("Content-Type", "application/json");
 

@@ -7,7 +7,7 @@ function login() {
     let request = `{"username": "${username}","password": "${password}"}`;
 
     var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("POST", "http://127.0.0.1:8080/wishlist/v1/user/login", false);
+    xmlhttp.open("POST", "https://wishlist-app-group-c.herokuapp.com/wishlist/v1/user/login", false);
     xmlhttp.setRequestHeader("Content-Type", "application/json");
 
     //xmlhttp.setRequestHeader('accessToken', accessToken); //This needs to be used where API requires accessToken in header params
@@ -27,7 +27,7 @@ function login() {
 
         try {
             var xmlhttp = new XMLHttpRequest();
-            xmlhttp.open("POST", "http://127.0.0.1:8080/wishlist/v1/admin/login", false);
+            xmlhttp.open("POST", "https://wishlist-app-group-c.herokuapp.com/wishlist/v1/admin/login", false);
             xmlhttp.setRequestHeader("Content-Type", "application/json");
 
             xmlhttp.send(request);
