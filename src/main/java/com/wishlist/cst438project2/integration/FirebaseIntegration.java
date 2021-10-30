@@ -17,6 +17,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 /**
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
+@DependsOn("firebaseConfig")
 public class FirebaseIntegration {
 
     public final Firestore dbFirestore = FirestoreClient.getFirestore();
