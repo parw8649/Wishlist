@@ -4,34 +4,87 @@
 	<title>Edit Item</title>
 	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Bootstrap CSS -->
+	<script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.7/dist/handlebars.min.js"></script>
+	<!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
 	<link href="design_script.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-	<div class="card" style="margin: auto;padding-top: 5%;padding-left: 10%;padding-right: 10%;">
-	<h1>Edit Item</h1>
-	  <div class="mb-3">
-		<label for="addItemName" class="form-label">Name</label>
-		<textarea class="form-control" id="addItemName" rows="3">Old Name</textarea>
-	  </div>
-	  <div class="mb-3">
-		<label for="addItemLink" class="form-label">Link</label>
-		<textarea class="form-control" id="addItemName" rows="3">Old Link</textarea>
-	  </div>
-	  <div class="mb-3">
-		<label for="addItemDescription" class="form-label">Description</label>
-		<textarea class="form-control" id="addItemName" rows="3">Old Description</textarea>
-	  </div>
-	  <div class="mb-3">
-		<label for="addItemURL" class="form-label">Image URL</label>
-		<textarea class="form-control" id="addItemName" rows="3">Old Image Url</textarea>
-	  </div>
-	  <div class="d-grid gap-2 col-6 mx-auto">
-		<button type="button" class="btn btn-primary" value="addNewItem">Submit Changes</button>
-	  </div>
-	  <br>
+<br>
+<nav class="nav justify-content-end">
+	<ul class="nav justify-content-center">
+		<li id="adminBtn" class="nav-item" style="margin-inline:5px;">
+			<input class="btn btn-danger" type="button" onclick=verifyAdmin() value="Administration" />
+		</li>
+		<li class="nav-item" style="margin-inline:5px">
+			<input class="btn btn-primary" type="button" onclick="location.href='/wishlist/edit_user.html'" value="Edit Profile" />
+		</li>
+		<li class="nav-item" style="margin-inline:5px">
+			<input class="btn btn-primary" type="button" onclick="location.href='/wishlist/wishlist_view_page.html'" value="All Items" />
+		</li>
+		<li class="nav-item" style="margin-inline:5px">
+			<input class="btn btn-primary" type="button" onclick="location.href='/wishlist/my_wishlist_page.html'" value="My Wishlist" />
+		</li>
+		<li class="nav-item" style="margin-inline:5px">
+			<input class="btn btn-success" type="button" onclick="location.href='/wishlist/add_item_page.html'" value="Add Items" />
+		</li>
+		<li class="nav-item" style="margin-inline:5px">
+			<input class="btn btn-success" type="button" onclick="location.href='/wishlist/edit_item_page.html'" value="Edit Items" />
+		</li>
+		<li class="nav-item">
+			<input class="btn btn-primary" type="button" onclick=logout() value="Sign Out" />
+		</li>
+	</ul>
+</nav>
+<br>
+<br>
+
+<script type="text/x-handlebars-template" id="wishlist_template">
+	{{#each this}}
+		<div class="card text-dark bg-light mb-3 mx-auto" style="width: 30%; margin-bottom: 10px;">
+			<img class="card-img-top" src="{{this.imgUrl}}" alt="Card image cap">
+			<br>
+			<form id="{{@index}}">
+				<div class="mb-3">
+					<label class="form-label" >Name</label>
+					<input type="text" name="name" value="{{this.name}}" placeholder="{{this.name}}"><br>
+				</div>
+				<div class="mb-3">
+					<label class="form-label" >Link</label>
+					<input type="text" name="link" value="{{this.link}}" placeholder="{{this.link}}"><br>
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Description</label>
+					<input type="text" name="description" value="{{this.description}}" placeholder="{{this.description}}"><br>
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Image URL</label>
+					<input type="text" name="imageUrl" value="{{this.imgUrl}}" placeholder="{{this.imgUrl}}"><br>
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Priority</label>
+					<input type="text" name="priority" value="{{this.priority}}" placeholder="{{this.priority}}"><br>
+				</div>
+				<div class="d-grid gap-2 col-6 mx-auto">
+					<button type="button" class="btn btn-primary" value="editNewItem" onclick="edit_item({{@index}}, '{{this.name}}', {{this.itemId}})">Edit Item</button>
+				</div>
+			</form>
+		</div>
+	{{/each}}
+</script>
+
+
+<div id="output">
+
+</div>
+
+<div class="card text-dark bg-light mb-3 mx-auto" style=" text-align: center; width: 30%; margin-bottom: 10px;">
+		<h1>Edit Item</h1>
+
+
   </div>
+
+<script type="text/javascript" src="edit_item.js"></script>
 
 </body>
 </html>

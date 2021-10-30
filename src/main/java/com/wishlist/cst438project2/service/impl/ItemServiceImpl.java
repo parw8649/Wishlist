@@ -41,7 +41,7 @@ public class ItemServiceImpl implements ItemService {
     @SneakyThrows
     @Override
     public String createItem(ItemDTO itemDTO, String username) {
-        log.info("ItemServiceImpl: starting createItem");
+//        log.info("ItemServiceImpl: starting createItem");
         long userId = firebaseIntegration.getUserId(username);
 
         // check for existence of item by name and userId
@@ -52,7 +52,7 @@ public class ItemServiceImpl implements ItemService {
         } else {
             // If item does not exist, add the item
             item = modelMapper.map(itemDTO, Item.class);
-            item.setItemId(firebaseIntegration.getAllItems().size() + 1L);
+            item.setItemId(firebaseIntegration.getAllItems().size() + 1L); // for admin functionalities
             item.setUserId(userId);
             item.logItem();
         }
@@ -64,9 +64,39 @@ public class ItemServiceImpl implements ItemService {
         ApiFuture<WriteResult> collectionsApiFuture = firebaseIntegration.dbFirestore.collection(Constants.DOCUMENT_ITEM).document().set(item);
         String timestamp = collectionsApiFuture.get().getUpdateTime().toString();
 
-        log.info("ItemServiceImpl: createItem: timestamp: {}", timestamp);
-        log.info("ItemServiceImpl: exiting createItem");
+//        log.info("ItemServiceImpl: createItem: timestamp: {}", timestamp);
+//        log.info("ItemServiceImpl: exiting createItem");
         return timestamp;
+    }
+
+    /**
+     * retrieve a specific document from item collection with a given userId and item name
+     * returns the item
+     */
+    @SneakyThrows
+    @Override
+    public ItemDTO getSpecificItem(String item_name, long userId) {
+        log.info("ItemServiceImpl: starting getSpecificItem");
+        Item item = fetchItem(item_name, userId);
+        item.logItem();
+
+        ItemDTO itemDTO = modelMapper.map(item, ItemDTO.class);
+        log.info("ItemServiceImpl: exiting getSpecificItem");
+        return  itemDTO;
+    }
+
+    /**
+     * retrieve a specific document from item collection with a given username and item name
+     * returns the item
+     */
+    @SneakyThrows
+    @Override
+    public ItemDTO getSpecificItem2(String item_name, String username) {
+        log.info("ItemServiceImpl: starting getSpecificItem2");
+        long userId = firebaseIntegration.getUserId(username);
+        ItemDTO itemDTO = firebaseIntegration.getItem(item_name, userId);
+        log.info("ItemServiceImpl: exiting getSpecificItem2");
+        return  itemDTO;
     }
 
     /**
@@ -76,10 +106,10 @@ public class ItemServiceImpl implements ItemService {
     @SneakyThrows
     @Override
     public List<ItemDTO> getAllItems() {
-        log.info("ItemServiceImpl: starting getAllItems");
+//        log.info("ItemServiceImpl: starting getAllItems");
         List<ItemDTO> collection = firebaseIntegration.getAllItems();
 
-        log.info("ItemServiceImpl: exiting getAllItems");
+//        log.info("ItemServiceImpl: exiting getAllItems");
         return collection;
     }
 
@@ -90,12 +120,12 @@ public class ItemServiceImpl implements ItemService {
     @SneakyThrows
     @Override
     public String removeItem(String name, String username) {
-        log.info("ItemServiceImpl: Starting removeItem");
+//        log.info("ItemServiceImpl: Starting removeItem");
         long userId = firebaseIntegration.getUserId(username);
         String docId = firebaseIntegration.getItemDocId(name, userId);
 
         String timestamp = firebaseIntegration.removeItem(docId);
-        log.info("ItemServiceImpl: exiting removeItem");
+//        log.info("ItemServiceImpl: exiting removeItem");
         return timestamp;
     }
 
@@ -106,11 +136,11 @@ public class ItemServiceImpl implements ItemService {
     @SneakyThrows
     @Override
     public String updateItem(String name, ItemDTO updatedItemDTO) {
-        log.info("ItemServiceImpl: Starting updateItem");
+//        log.info("ItemServiceImpl: Starting updateItem");
         String docId = firebaseIntegration.getItemDocId(name, updatedItemDTO.getUserId());
 
         String timestamp = firebaseIntegration.updateItem(docId, updatedItemDTO);
-        log.info("ItemServiceImpl: Exiting updateItem");
+//        log.info("ItemServiceImpl: Exiting updateItem");
         return timestamp;
     }
 
@@ -120,9 +150,9 @@ public class ItemServiceImpl implements ItemService {
     @SneakyThrows
     @Override
     public List<ItemDTO> getUserItems(String username) {
-        log.info("ItemServiceImpl: Starting updateItem");
+//        log.info("ItemServiceImpl: Starting updateItem");
         List<ItemDTO> userItems = firebaseIntegration.getUserItems(username);
-        log.info("ItemServiceImpl: Exiting updateItem");
+//        log.info("ItemServiceImpl: Exiting updateItem");
         return userItems;
     }
 
@@ -132,9 +162,9 @@ public class ItemServiceImpl implements ItemService {
     @SneakyThrows
     @Override
     public List<ItemDTO> getSearchAllItems(List<String> keywords) {
-        log.info("ItemServiceImpl: Starting getSearchItems");
+//        log.info("ItemServiceImpl: Starting getSearchItems");
         List<ItemDTO> searchItems = firebaseIntegration.getSearchAllItems(keywords);
-        log.info("ItemServiceImpl: Exiting getSearchItems");
+//        log.info("ItemServiceImpl: Exiting getSearchItems");
         return searchItems;
     }
 
