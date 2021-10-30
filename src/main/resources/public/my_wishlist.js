@@ -19,7 +19,6 @@ console.log("username: ", username);
 
 
 async function delete_item(itemName,userId) {
-    alert("Item Deleted");
     console.log("item name: ", itemName);
     console.log("userID: ", userId);
 
@@ -30,6 +29,8 @@ async function delete_item(itemName,userId) {
     xhttp.setRequestHeader('AccessToken',accessToken);
     xhttp.send();
 
+    location.reload();
+    alert("Item Deleted");
 }
 
 
