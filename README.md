@@ -1,4 +1,4 @@
-**Wishlist**
+# Wishlist
 
 - [Chaitanya Parwatkar](https://github.com/parw8649)
 - [Noah Ahmed](https://github.com/noa316)
